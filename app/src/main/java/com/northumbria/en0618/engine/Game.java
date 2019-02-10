@@ -1,0 +1,197 @@
+package com.northumbria.en0618.engine;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.opengl.GLSurfaceView;
+import android.support.annotation.LayoutRes;
+import android.view.View;
+
+import com.northumbria.en0618.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Game
+{
+    private GameActivity m_activity;
+    private AlertDialog m_pauseDialog = null;
+    private @LayoutRes int m_pauseDialogLayoutID = 0;
+
+    private List<GameObjectGroup> m_gameObjectGroups = new ArrayList<>();
+    private long m_currentFrameBegin = 0L;
+    private boolean m_launched = false;
+    private boolean m_paused = false;
+
+    Game(GameActivity context)
+    {
+        m_activity = context;
+    }
+
+    public void setPauseDialogLayoutID(@LayoutRes int pauseDialogLayoutID)
+    {
+        m_pauseDialogLayoutID = pauseDialogLayoutID;
+    }
+
+    public void launch()
+    {
+        m_launched = true;
+    }
+
+    public boolean isLaunched()
+    {
+        return m_launched;
+    }
+
+    public void pause()
+    {
+        m_paused = true;
+
+        m_activity.runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (m_pauseDialogLayoutID != 0)
+                {
+                    @SuppressLint("InflateParams")
+                    View view = m_activity.getLayoutInflater().inflate(m_pauseDialogLayoutID, null);
+                    m_pauseDialog = new AlertDialog.Builder(m_activity)
+                            .setView(view)
+                            .create();
+                }
+                else
+                {
+                    m_pauseDialog = new AlertDialog.Builder(m_activity)
+                    .setTitle("Game Paused")
+                    .setMessage("The game is paused.")
+                    .setPositiveButton("Resume", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            m_activity.onResumeGame(null);
+                        }
+                    })
+                    .setNegativeButton("Quit", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            m_activity.onQuitGame(null);
+                        }
+                    })
+                    .create();
+                }
+                m_pauseDialog.setOnCancelListener(new DialogInterface.OnCancelListener()
+                {
+                    @Override
+                    public void onCancel(DialogInterface dialog)
+                    {
+                        m_paused = false;
+                    }
+                });
+                m_pauseDialog.show();
+            }
+        });
+    }
+
+    public void unPause()
+    {
+        m_paused = false;
+        m_pauseDialog.dismiss();
+        m_pauseDialog = null;
+    }
+
+    public boolean isPaused()
+    {
+        return m_paused;
+    }
+
+    public AlertDialog getPauseDialog()
+    {
+        return m_pauseDialog;
+    }
+
+    public GameActivity getActivity()
+    {
+        return m_activity;
+    }
+
+    public void addGameObject(GameObject gameObject, boolean isHUD)
+    {
+        boolean added = false;
+        int bestGroupIndex = -1;
+        int bestMatchLevel = -1;
+
+        int gameObjectGroupCount = m_gameObjectGroups.size();
+        for (int i = 0; i < gameObjectGroupCount; i++)
+        {
+            GameObjectGroup group = m_gameObjectGroups.get(i);
+            if (group.isHUDGroup() == isHUD)
+            {
+                int matchLevel = group.matchLevel(isHUD, gameObject.getRenderable());
+                if (matchLevel == GameObjectGroup.FULL_MATCH_LEVEL)
+                {
+                    group.addGameObject(gameObject);
+                    added = true;
+                    break;
+                }
+                else if (matchLevel > bestMatchLevel)
+                {
+                    bestGroupIndex = i;
+                    bestMatchLevel = matchLevel;
+                }
+            }
+        }
+
+        if (!added)
+        {
+            GameObjectGroup group = new GameObjectGroup(isHUD, gameObject);
+            m_gameObjectGroups.add(bestGroupIndex + 1, group);
+        }
+    }
+
+    public void addGameObject(GameObject gameObject)
+    {
+        addGameObject(gameObject, false);
+    }
+
+    public void destroyAll()
+    {
+        m_gameObjectGroups.clear();
+    }
+
+    public void update(float[] vpMatrix)
+    {
+        long lastFrameBegin = m_currentFrameBegin;
+        m_currentFrameBegin = System.currentTimeMillis();
+        float deltaTime = (m_currentFrameBegin - lastFrameBegin) / 1000.0f;
+
+        if (!m_paused)
+        {
+            int gameObjectGroupCount = m_gameObjectGroups.size();
+            for (int i = 0; i < gameObjectGroupCount; i++)
+            {
+                GameObjectGroup group = m_gameObjectGroups.get(i);
+                if (group.size() == 0)
+                {
+                    m_gameObjectGroups.remove(i);
+                    i--;
+                }
+                else
+                {
+                    group.update(deltaTime);
+                }
+            }
+            m_activity.onGameUpdate();
+        }
+
+        for (GameObjectGroup gameObjectGroup : m_gameObjectGroups)
+        {
+            gameObjectGroup.draw(vpMatrix);
+        }
+
+        Input.update();
+    }
+}

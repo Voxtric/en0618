@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SpaceInvadersActivity">
+
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:text="Game Paused"
+        tools:layout_editor_absoluteX="149dp"
+        tools:layout_editor_absoluteY="164dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/resume_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/title_text_view"
+        android:text="Resume"
+        tools:layout_editor_absoluteX="236dp"
+        tools:layout_editor_absoluteY="333dp"
+        android:layout_alignParentEnd="true"
+        android:onClick="onResumeGame"/>
+
+    <Button
+        android:id="@+id/quit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/title_text_view"
+        android:text="Quit"
+        tools:layout_editor_absoluteX="61dp"
+        tools:layout_editor_absoluteY="333dp"
+        android:layout_alignParentStart="true"
+        android:onClick="onQuitGame"/>
+</RelativeLayout>
