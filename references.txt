@@ -4,3 +4,4 @@ alien2		-	https://sketchfab.com/3d-models/tie-interceptor-4f6e0afa79e846828902a4
 alien3		-	https://sketchfab.com/3d-models/star-wars-imperial-tie-bomber-e17d74b999a34ae4a0ed9c75ea808a33
 alien4		-	https://sketchfab.com/3d-models/tie-runner-b209951dbdff45a297fcf212f0fc6bd7
 large_alien	-	https://sketchfab.com/3d-models/star-wars-imperial-lambda-shuttle-4786e7c069c64f609c3fd51ef36e0390
+shot		-	https://ya-webdesign.com/explore/transparent-laser-blast/?utm_source=gg#gal_1514199
