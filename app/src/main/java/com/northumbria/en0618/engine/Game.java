@@ -184,7 +184,7 @@ public class Game
                     group.update(deltaTime);
                 }
             }
-            m_activity.onGameUpdate();
+            m_activity.onGameUpdate(deltaTime);
         }
 
         for (GameObjectGroup gameObjectGroup : m_gameObjectGroups)
