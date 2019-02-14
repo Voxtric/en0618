@@ -4,12 +4,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 public class MainMenuActivity extends AppCompatActivity
 {
@@ -33,6 +36,7 @@ public class MainMenuActivity extends AppCompatActivity
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
+
     }
 
     private void createNotificationChannel() {
@@ -63,11 +67,23 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     public void toggleSoundEffects(View view) {
-        Preference
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean currentValue = sp.getBoolean("play_sfx", true);
+
+        sp.edit().putBoolean("play_sfx", !currentValue).apply();
+
+//        Button b = (Button) view;
+//        b.setText();
     }
 
     public void toggleMusic(View view) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean currentValue = sp.getBoolean("play_music", true);
 
+        sp.edit().putBoolean("play_music", !currentValue).apply();
+
+//        Button b = (Button) view;
+//        b.setText();
     }
 
 
