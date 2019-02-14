@@ -66,4 +66,9 @@ public class CollidableGameObject extends SpriteGameObject
     {
         return m_collisionMask.getMaskValue(i, j, getX(), getY(), getXSize(), getYSize());
     }
+
+    public void hasCollided()
+    {
+
+    }
 }

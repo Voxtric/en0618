@@ -36,6 +36,7 @@ public class Game
     public void launch()
     {
         m_launched = true;
+        m_currentFrameBegin = System.currentTimeMillis();
     }
 
     public boolean isLaunched()
@@ -184,7 +185,7 @@ public class Game
                     group.update(deltaTime);
                 }
             }
-            m_activity.onGameUpdate();
+            m_activity.onGameUpdate(deltaTime);
         }
 
         for (GameObjectGroup gameObjectGroup : m_gameObjectGroups)
