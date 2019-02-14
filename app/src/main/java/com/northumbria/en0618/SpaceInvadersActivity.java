@@ -8,8 +8,6 @@ import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.CollidableGameObject;
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.Sprite;
-import com.northumbria.en0618.Player;
-import com.northumbria.en0618.CollisionLists;
 
 public class SpaceInvadersActivity extends GameActivity
 {
@@ -31,8 +29,9 @@ public class SpaceInvadersActivity extends GameActivity
 
         m_collidableObjects = new CollisionLists(m_player);
 
-        Bullet m_bullet = new Bullet(game.getActivity(), 540.0f,540.0f, direction.UP);
+        Bullet m_bullet = new Bullet(game.getActivity(), 540.0f,540.0f, direction.DOWN);
         game.addGameObject(m_bullet);
+        m_collidableObjects.addBullet(m_bullet);
 
         m_alien = new CollidableGameObject(this, Sprite.getSprite(this, R.drawable.player, true), 100.0f, 100.0f, 20.0f, 20.0f);
         game.addGameObject(m_alien);
@@ -53,7 +52,7 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameUpdate(float deltaTime)
     {
 //   \/ Example stuff for Michael. Feel free to replace with actual game loop code.                                     \/
-
+        m_collidableObjects.checkCollisions();
         if (m_player.collidesWith(m_alien))
         {
             m_text.setText("Collision: 1");

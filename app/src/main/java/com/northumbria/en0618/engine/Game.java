@@ -36,6 +36,7 @@ public class Game
     public void launch()
     {
         m_launched = true;
+        m_currentFrameBegin = System.currentTimeMillis();
     }
 
     public boolean isLaunched()

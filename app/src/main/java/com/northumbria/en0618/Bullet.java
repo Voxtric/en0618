@@ -14,7 +14,8 @@ public class Bullet extends CollidableGameObject {
 
     private direction m_moveDir;
 
-    public Bullet(Context context, float x, float y, direction moveDir) {
+    public Bullet(Context context, float x, float y, direction moveDir)
+    {
         super(context, Sprite.getSprite(context, R.drawable.player, true),
                 x, y, 100.0f, 100.0f);
         m_moveDir = moveDir;
@@ -31,7 +32,6 @@ public class Bullet extends CollidableGameObject {
         {
             moveBy(0.0f, -100.0f * deltaTime);
         }
-        Log.e(String.valueOf(getY()),String.valueOf(getY()));
     }
 
     public boolean shotByAlien()
