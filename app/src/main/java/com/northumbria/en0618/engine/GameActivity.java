@@ -120,7 +120,7 @@ public class GameActivity extends AppCompatActivity
     {
     }
 
-    public void onGameUpdate()
+    public void onGameUpdate(float deltaTime)
     {
     }
 }

@@ -8,13 +8,15 @@ import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.CollidableGameObject;
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.Sprite;
-import com.northumbria.en0618.testing.Player;
+import com.northumbria.en0618.Player;
+import com.northumbria.en0618.CollisionLists;
 
 public class SpaceInvadersActivity extends GameActivity
 {
     Player m_player;
     CollidableGameObject m_alien;
     TextGameObject m_text;
+    CollisionLists m_collidableObjects;
 
     @Override
     public void onGameReady()
@@ -26,6 +28,11 @@ public class SpaceInvadersActivity extends GameActivity
 
         m_player = new Player(game);
         game.addGameObject(m_player);
+
+        m_collidableObjects = new CollisionLists(m_player);
+
+        Bullet m_bullet = new Bullet(game.getActivity(), 540.0f,540.0f, direction.UP);
+        game.addGameObject(m_bullet);
 
         m_alien = new CollidableGameObject(this, Sprite.getSprite(this, R.drawable.player, true), 100.0f, 100.0f, 20.0f, 20.0f);
         game.addGameObject(m_alien);
@@ -43,7 +50,7 @@ public class SpaceInvadersActivity extends GameActivity
     }
 
     @Override
-    public void onGameUpdate()
+    public void onGameUpdate(float deltaTime)
     {
 //   \/ Example stuff for Michael. Feel free to replace with actual game loop code.                                     \/
 
@@ -54,6 +61,10 @@ public class SpaceInvadersActivity extends GameActivity
         else
         {
             m_text.setText("Collision: 0");
+        }
+        if(m_collidableObjects.collided)
+        {
+            m_text.setText("Derp");
         }
 
 //   /\ Example stuff for Michael. Feel free to replace with actual game loop code.                                     /\
