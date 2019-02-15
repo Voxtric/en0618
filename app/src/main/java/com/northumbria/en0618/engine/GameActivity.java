@@ -2,10 +2,17 @@ package com.northumbria.en0618.engine;
 
 import android.app.AlertDialog;
 import android.opengl.GLSurfaceView;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.northumbria.en0618.R;
+
+import java.io.Console;
 
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
@@ -13,10 +20,23 @@ import com.northumbria.en0618.engine.opengl.Shader;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.opengl.Texture;
 
+enum GameSound {PLAYER_HIT, ENEMY_HIT, BARRIER_HIT, PLAYER_FIRE, ENEMY_FIRE}
+
 public class GameActivity extends AppCompatActivity
 {
     private Game m_game;
     private GLSurfaceView m_glSurfaceView;
+
+    MediaPlayer mediaPlayer;
+    SoundPool soundPool;
+
+    int enemyHitID;
+    int enemyFiringID;
+    int playerHitID;
+    int playerFiringID;
+    int barrierHitID;
+
+    public static final int MAX_STREAMS = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,6 +78,16 @@ public class GameActivity extends AppCompatActivity
         //gameSurfaceView.setTargetFrameRate(30);
         setContentView(gameSurfaceView);
         m_glSurfaceView = gameSurfaceView;
+
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gamemusic);
+        mediaPlayer.pause();
+        soundPool = new SoundPool(MAX_STREAMS, AudioManager.USE_DEFAULT_STREAM_TYPE, 0);
+
+        enemyHitID = soundPool.load(this, R.raw.enemyhit, 1);
+        enemyFiringID = soundPool.load(this, R.raw.enemyfire, 1);
+        playerHitID = soundPool.load(this, R.raw.playerhit, 1);
+        playerFiringID = soundPool.load(this, R.raw.playerfire, 1);
+        barrierHitID = soundPool.load(this, R.raw.barrierhit, 1);
     }
 
     @Override
@@ -68,7 +98,11 @@ public class GameActivity extends AppCompatActivity
         Sprite.clearCache();
         Texture.clearCache();
         Shader.clearCache();
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        soundPool.release();
         super.onDestroy();
+
     }
 
     @Override
@@ -76,6 +110,9 @@ public class GameActivity extends AppCompatActivity
     {
         m_glSurfaceView.onPause();
         super.onPause();
+
+        mediaPlayer.pause();
+        soundPool.autoPause();
     }
 
     @Override
@@ -83,12 +120,23 @@ public class GameActivity extends AppCompatActivity
     {
         super.onResume();
         m_glSurfaceView.onResume();
+
+        mediaPlayer.start();
+        soundPool.autoResume();
     }
 
     @Override
     public void onBackPressed()
     {
         m_game.pause();
+
+        mediaPlayer.stop();
+        mediaPlayer.pause();
+
+        mediaPlayer.release();
+
+        //SoundManager.getInstance().gStopMusic();
+        //SoundManager.getInstance().gPause();
     }
 
     public Game getGame()
@@ -104,6 +152,9 @@ public class GameActivity extends AppCompatActivity
     public void onResumeGame(View view)
     {
         getGame().unPause();
+
+        mediaPlayer.start();
+        //SoundManager.getInstance().gResume();
     }
 
     public void onQuitGame(View view)
@@ -122,5 +173,27 @@ public class GameActivity extends AppCompatActivity
 
     public void onGameUpdate(float deltaTime)
     {
+    }
+
+    public void PlaySound(GameSound sound)
+    {
+        switch (sound)
+        {
+            case PLAYER_HIT:
+                SoundManager.getInstance().gPlaySoundPlayerHit();
+                break;
+            case ENEMY_HIT:
+                SoundManager.getInstance().gPlaySoundEnemyHit();
+                break;
+            case BARRIER_HIT:
+                SoundManager.getInstance().gPlaySoundBarrierHit();
+                break;
+            case PLAYER_FIRE:
+                SoundManager.getInstance().gPlaySoundPlayerFiring();
+                break;
+            case ENEMY_FIRE:
+                SoundManager.getInstance().gPlaySoundEnemyFiring();
+                break;
+        }
     }
 }

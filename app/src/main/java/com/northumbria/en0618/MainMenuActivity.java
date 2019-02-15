@@ -5,6 +5,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
+import android.media.SoundPool;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -13,10 +17,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import com.northumbria.en0618.engine.SoundManager;
 
 public class MainMenuActivity extends AppCompatActivity
 {
     NotificationCompat.Builder mBuilder;
+
+    MediaPlayer mediaPlayer;
+    SoundPool soundPool;
+
+    int menuSoundId;
+    public static final int MAX_STREAMS = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,7 +48,35 @@ public class MainMenuActivity extends AppCompatActivity
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mainmenu);
+        mediaPlayer.start();
+
+        soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+
+        menuSoundId = soundPool.load(this, R.raw.menuselect, 1);
+
+        //SoundManager.getInstance().Init(this);
+        //SoundManager.getInstance().gPlayMainMenu();
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mediaPlayer.start();
+        soundPool.autoResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        mediaPlayer.pause();
+        soundPool.autoPause();
+    }
+
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -58,12 +97,16 @@ public class MainMenuActivity extends AppCompatActivity
 
     public void startGame(View view)
     {
+        soundPool.play(menuSoundId, 1, 1, 1, 0, 1);
+
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
 
         //launch the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1, mBuilder.build());
+
+        soundPool.release();
     }
 
     public void toggleSoundEffects(View view) {
@@ -72,6 +115,11 @@ public class MainMenuActivity extends AppCompatActivity
 
         sp.edit().putBoolean("play_sfx", !currentValue).apply();
 
+        if (currentValue)
+        {
+            soundPool.play(menuSoundId, 1, 1, 1, 0, 1);
+        }
+
 //        Button b = (Button) view;
 //        b.setText();
     }
@@ -79,6 +127,17 @@ public class MainMenuActivity extends AppCompatActivity
     public void toggleMusic(View view) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean currentValue = sp.getBoolean("play_music", true);
+
+
+        //soundPool.play(menuSoundId, 1, 1, 1, 0, 1);
+        if (currentValue)
+        {
+            mediaPlayer.pause();
+        }
+        else if(!currentValue)
+        {
+            mediaPlayer.start();
+        }
 
         sp.edit().putBoolean("play_music", !currentValue).apply();
 
