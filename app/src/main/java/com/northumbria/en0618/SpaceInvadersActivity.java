@@ -15,6 +15,7 @@ public class SpaceInvadersActivity extends GameActivity
     CollidableGameObject m_alien;
     TextGameObject m_text;
     CollisionLists m_collidableObjects;
+    AlienManager m_alienManager;
 
     @Override
     public void onGameReady()
@@ -23,25 +24,26 @@ public class SpaceInvadersActivity extends GameActivity
         game.setPauseDialogLayoutID(R.layout.fragment_game_pause);
 
 //   \/ Example stuff for Michael. Feel free to replace with actual game setup code.                                    \/
-
-        m_player = new Player(game);
-        game.addGameObject(m_player);
-
-        m_collidableObjects = new CollisionLists(m_player);
-
-        Bullet m_bullet = new Bullet(game.getActivity(), 540.0f,540.0f, direction.DOWN);
-        game.addGameObject(m_bullet);
-        m_collidableObjects.addBullet(m_bullet);
-
-        m_alien = new CollidableGameObject(this, Sprite.getSprite(this, R.drawable.player, true), 100.0f, 100.0f, 20.0f, 20.0f);
-        game.addGameObject(m_alien);
-
+        // Settings Button
         GameObject settingsButton = new SettingsButton(game);
         game.addGameObject(settingsButton, true);
 
+        // Text
         Font font = Font.getFont(this, "Roboto-Regular.ttf", 100, 2);
         m_text = new TextGameObject(font, "Collision:", 10.0f, Input.getScreenHeight() - 60.0f);
         game.addGameObject(m_text);
+
+        // Creation of Player Character
+        m_player = new Player(game);
+        game.addGameObject(m_player);
+
+        // Member Variable to store all Collidable Objects for Automated Collision Detection
+        m_collidableObjects = new CollisionLists(m_player);
+
+        // Manager class for all ALien Objects
+        m_alienManager = new AlienManager(m_collidableObjects, game);
+        m_alienManager.createAliens(game);
+
 
 //   /\ Example stuff for Michael. Feel free to replace with actual game setup code.                                    /\
 
@@ -53,14 +55,7 @@ public class SpaceInvadersActivity extends GameActivity
     {
 //   \/ Example stuff for Michael. Feel free to replace with actual game loop code.                                     \/
         m_collidableObjects.checkCollisions();
-        if (m_player.collidesWith(m_alien))
-        {
-            m_text.setText("Collision: 1");
-        }
-        else
-        {
-            m_text.setText("Collision: 0");
-        }
+        //m_alienManager.update(deltaTime);
         if(m_collidableObjects.collided)
         {
             m_text.setText("Derp");
