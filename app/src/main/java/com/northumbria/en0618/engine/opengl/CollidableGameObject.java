@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import android.support.annotation.DrawableRes;
 
 import com.northumbria.en0618.engine.SpriteGameObject;
+import com.northumbria.en0618.objectType;
 
 public class CollidableGameObject extends SpriteGameObject
 {
@@ -68,6 +69,11 @@ public class CollidableGameObject extends SpriteGameObject
     }
 
     public void hasCollided()
+    {
+
+    }
+
+    public void collidedWith(objectType otherObject)
     {
 
     }

@@ -7,6 +7,8 @@ public class CollisionLists {
 
     private List<Bullet> m_playerBulletList = new ArrayList<>();
     private List<Bullet> m_alienBulletList = new ArrayList<>();
+    private List<Alien> m_alienList = new ArrayList<>();
+    private List<Asteroid> m_asteroidList = new ArrayList<>();
     private Player m_player;
     public boolean collided = false;
 
@@ -42,4 +44,8 @@ public class CollisionLists {
         }
     }
 
+    public void addAlien(Alien newAlien)
+    {
+        m_alienList.add(newAlien);
+    }
 }
