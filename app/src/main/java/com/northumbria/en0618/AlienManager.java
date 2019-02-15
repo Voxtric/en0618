@@ -34,17 +34,27 @@ public class AlienManager {
                 game.addGameObject(tempAlien);
                 m_colList.addAlien(tempAlien);
             }
-            Log.e(String.valueOf("Temp List Size: " + currentColumn.size()),String.valueOf("Temp List Size: " + currentColumn.size()));
-            Log.e(String.valueOf("List of List Size: " + alienColumns.size()),String.valueOf("List of List Size: " + alienColumns.size()));
+            Log.e("Temp List Size: ",String.valueOf(currentColumn.size()));
+            Log.e("List of List Size: ",String.valueOf(alienColumns.size()));
             alienColumns.add(currentColumn);
             for(Iterator<ArrayList<Alien>> l = alienColumns.iterator(); l.hasNext();)
             {
                 List<Alien> k = l.next();
-                Log.e("List Size: " + String.valueOf(k.size()),"List Size: " + String.valueOf(k.size()));
+                Log.e("List Size AFTER ADD: ",String.valueOf(k.size()));
             }
-            currentColumn.clear();
+            currentColumn.removeAll(currentColumn);
+        }
+        for(Iterator<ArrayList<Alien>> l = alienColumns.iterator(); l.hasNext();)
+        {
+            List<Alien> k = l.next();
+            Log.e("List Size AFTER LOOP: ",String.valueOf(k.size()));
         }
         checkLeft();
+        for(Iterator<ArrayList<Alien>> l = alienColumns.iterator(); l.hasNext();)
+        {
+            List<Alien> k = l.next();
+            Log.e("List Size AFTER FUNC: ", String.valueOf(k.size()));
+        }
     }
 
     public void checkBotY()
@@ -57,7 +67,7 @@ public class AlienManager {
         for(Iterator<ArrayList<Alien>> l = alienColumns.iterator(); l.hasNext();)
         {
             List<Alien> k = l.next();
-            Log.e("List Size2: " + String.valueOf(k.size()),"List Size2: " + String.valueOf(k.size()));
+            Log.e("List Size IN FUNC: ", String.valueOf(k.size()));
         }
         currentColumn.clear();
 //        Alien tempAlien = currentColumn.get(1);
