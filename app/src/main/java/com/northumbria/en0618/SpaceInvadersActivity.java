@@ -7,7 +7,6 @@ import com.northumbria.en0618.engine.Input;
 import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.CollidableGameObject;
 import com.northumbria.en0618.engine.opengl.Font;
-import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class SpaceInvadersActivity extends GameActivity
 {
@@ -33,12 +32,13 @@ public class SpaceInvadersActivity extends GameActivity
         m_text = new TextGameObject(font, "Collision:", 10.0f, Input.getScreenHeight() - 60.0f);
         game.addGameObject(m_text);
 
+        m_collidableObjects = new CollisionLists(m_player);
+
         // Creation of Player Character
-        m_player = new Player(game);
+        m_player = new Player(game, m_collidableObjects);
         game.addGameObject(m_player);
 
         // Member Variable to store all Collidable Objects for Automated Collision Detection
-        m_collidableObjects = new CollisionLists(m_player);
 
         // Manager class for all ALien Objects
         m_alienManager = new AlienManager(m_collidableObjects, game);
@@ -55,11 +55,8 @@ public class SpaceInvadersActivity extends GameActivity
     {
 //   \/ Example stuff for Michael. Feel free to replace with actual game loop code.                                     \/
         m_collidableObjects.checkCollisions();
-        //m_alienManager.update(deltaTime);
-        if(m_collidableObjects.collided)
-        {
+        m_alienManager.update(deltaTime);
             m_text.setText("Derp");
-        }
 
 //   /\ Example stuff for Michael. Feel free to replace with actual game loop code.                                     /\
     }

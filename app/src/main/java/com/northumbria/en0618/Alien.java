@@ -15,21 +15,33 @@ enum alienType{
 
 public class Alien extends CollidableGameObject {
 
-    private static float m_x = -20.0f;
-    private static float m_y = 0.0f;
+    private float m_x = -75.0f;
+    private boolean m_goingDown = false;
+    private int m_moveCounter = 0;
     public boolean m_alive = true;
 
-    public Alien(Context context, alienType alien, float x, float y, float xSize, float ySize) {
-        super(context, Sprite.getSprite(context, R.drawable.alien_1, true), x, y, xSize, ySize);
+    public Alien(Context context, alienType alien, float x, float y) {
+        super(context, Sprite.getSprite(context, R.drawable.alien_1, true), x, y, 75.0f, 75.0f);
         //Log.e("ALIEN SPAWNED", "ALIEN SPAWNED");
+        m_goingDown = false;
     }
 
     @Override
     public void update(float frameTime)
     {
-        if(m_y > 0.0f) {
-            moveBy(0.0f, m_y * frameTime);
-            m_y = 0.0f;
+        if(m_goingDown)
+        {
+            if(m_moveCounter >= 50)
+            {
+                moveBy(m_x * frameTime, 0.0f);
+                m_goingDown = false;
+                m_moveCounter = 0;
+            }
+            else
+            {
+                m_moveCounter++;
+                moveBy(0.0f, -100.0f * frameTime);
+            }
         }
         else
         {
@@ -43,19 +55,13 @@ public class Alien extends CollidableGameObject {
 
     }
 
-    public void moveDown()
+    public void switchDirection()
     {
-        m_y = - 50.0f;
+        if(!m_goingDown)
+        {
+            m_x = -m_x;
+            m_goingDown = true;
+        }
     }
 
-    public void moveLeft()
-    {
-        m_x = -50.0f;
-    }
-
-    public void moveRight()
-    {
-        m_x = 50.0f;
-
-    }
 }

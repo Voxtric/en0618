@@ -10,13 +10,16 @@ import com.northumbria.en0618.Bullet;
 
 public class Player extends CollidableGameObject {
 
-    int bulletCountdown = 0;
-    Game m_game;
+    private int bulletCountdown = 0;
+    private Game m_game;
+    private CollisionLists m_colList;
 
-    public Player(Game game) {
+
+    public Player(Game game, CollisionLists colList) {
         super(game.getActivity(),
                 Sprite.getSprite(game.getActivity(), R.drawable.player, true),
                 Input.getScreenWidth() / 2.0f, 75.0f, 200, 125);
+        m_colList = colList;
         m_game = game;
     }
 
@@ -24,12 +27,13 @@ public class Player extends CollidableGameObject {
     public void update(float deltaTime)
     {
         float screenWidth = Input.getScreenWidth();
-//        if(bulletCountdown >= 20)
-//        {
-//            Bullet bullet = new Bullet(m_game.getActivity(), getX(), getY(), direction.UP);
-//            m_game.addGameObject(bullet);
-//            bulletCountdown = 0;
-//        }
+        if(bulletCountdown >= 75)
+        {
+            Bullet bullet = new Bullet(m_game.getActivity(), getX(), getY(), direction.UP, R.drawable.player_shot, m_colList);
+            m_game.addGameObject(bullet);
+            m_colList.addBullet(bullet);
+            bulletCountdown = 0;
+        }
         if (Input.isTouched())
         {
             float touchX = Input.getCurrentTouchX();
