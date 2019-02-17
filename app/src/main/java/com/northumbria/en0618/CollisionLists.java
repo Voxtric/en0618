@@ -15,22 +15,26 @@ public class CollisionLists {
 
     CollisionLists(Player player)
     {
+
         m_player = player;
     }
 
     public void checkCollisions()
     {
-        int bulletCount = m_alienBulletList.size();
-        if(bulletCount > 0)
+        int aBulletCount = m_alienBulletList.size();
+        if(aBulletCount > 0)
         {
-            for(int i = 0; i < bulletCount; i++)
+            for(int i = 0; i < m_alienBulletList.size(); i++)
             {
+                if(m_player.collidesWith(m_alienBulletList.get(i)))
+                {
 
+                }
             }
         }
 
-        bulletCount = m_playerBulletList.size();
-        if(bulletCount > 0)
+        int pBulletCount = m_playerBulletList.size();
+        if(pBulletCount > 0)
         {
             for(int i = 0; i < m_alienList.size(); i++)
             {

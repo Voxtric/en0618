@@ -18,7 +18,6 @@ public class Alien extends CollidableGameObject {
     private float m_x = -75.0f;
     private boolean m_goingDown = false;
     private int m_moveCounter = 0;
-    public boolean m_alive = true;
 
     public Alien(Context context, alienType alien, float x, float y) {
         super(context, Sprite.getSprite(context, R.drawable.alien_1, true), x, y, 75.0f, 75.0f);

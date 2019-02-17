@@ -11,7 +11,6 @@ import com.northumbria.en0618.engine.opengl.Font;
 public class SpaceInvadersActivity extends GameActivity
 {
     Player m_player;
-    CollidableGameObject m_alien;
     TextGameObject m_text;
     CollisionLists m_collidableObjects;
     AlienManager m_alienManager;
