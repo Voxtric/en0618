@@ -179,6 +179,7 @@ public class Game
                 {
                     m_gameObjectGroups.remove(i);
                     i--;
+                    gameObjectGroupCount--;
                 }
                 else
                 {

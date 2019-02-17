@@ -38,6 +38,6 @@ public class CollisionMask
         int x = (int)((i - (int)(objectOriginX - (objectWidth / 2.0f))) * xRatio);
         int y = (int)((j - (int)(objectOriginY - (objectHeight / 2.0f))) * yRatio);
         int index = x + (y * m_collisionMaskXSize);
-        return m_collisionMask.get(index);
+        return (index >= 0) && m_collisionMask.get(index);
     }
 }
