@@ -22,7 +22,7 @@ public class CollisionMask
             for (int xPixel = 0; xPixel < m_collisionMaskXSize; xPixel++)
             {
                 int pixel = bitmap.getPixel(xPixel, m_collisionMaskYSize - yPixel - 1);
-                if (pixel != Color.TRANSPARENT)
+                if (Color.alpha(pixel) > 0xF0)
                 {
                     m_collisionMask.set(index);
                 }
