@@ -11,6 +11,7 @@ public class CollisionMask
     private int m_collisionMaskYSize;
     private BitSet m_collisionMask;
 
+
     public CollisionMask(Bitmap bitmap)
     {
         m_collisionMaskXSize = bitmap.getWidth();

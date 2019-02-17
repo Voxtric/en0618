@@ -14,6 +14,8 @@ public class SpaceInvadersActivity extends GameActivity
     TextGameObject m_text;
     CollisionLists m_collidableObjects;
     AlienManager m_alienManager;
+    int bulletCountdown = 0;
+    boolean leftGun = true;
 
     @Override
     public void onGameReady()
@@ -31,11 +33,12 @@ public class SpaceInvadersActivity extends GameActivity
         m_text = new TextGameObject(font, "Collision:", 10.0f, Input.getScreenHeight() - 60.0f);
         game.addGameObject(m_text);
 
-        m_collidableObjects = new CollisionLists(m_player);
 
         // Creation of Player Character
-        m_player = new Player(game, m_collidableObjects);
+        m_player = new Player(game);
         game.addGameObject(m_player);
+
+        m_collidableObjects = new CollisionLists(m_player);
 
         // Member Variable to store all Collidable Objects for Automated Collision Detection
 
@@ -52,11 +55,31 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onGameUpdate(float deltaTime)
     {
+        Game m_game = getGame();
 //   \/ Example stuff for Michael. Feel free to replace with actual game loop code.                                     \/
         m_collidableObjects.checkCollisions();
-        m_alienManager.update(deltaTime);
-            m_text.setText("Derp");
+        m_alienManager.update(deltaTime, m_collidableObjects.alienCount());
+            m_text.setText("Score: " + m_player.score);
 
+        if(bulletCountdown >= 75)
+        {
+            float bulletX = 0.0f;
+            if(leftGun)
+            {
+                bulletX = m_player.getX() - 100.0f;
+            }
+            else
+            {
+                bulletX = m_player.getX() + 100.0f;
+            }
+            leftGun = !leftGun;
+            Bullet bullet = new Bullet(m_game.getActivity(), bulletX, m_player.getY(),
+                    direction.UP, R.drawable.player_shot);
+            m_game.addGameObject(bullet);
+            m_collidableObjects.addBullet(bullet);
+            bulletCountdown = 0;
+        }
+        bulletCountdown++;
 //   /\ Example stuff for Michael. Feel free to replace with actual game loop code.                                     /\
     }
 }

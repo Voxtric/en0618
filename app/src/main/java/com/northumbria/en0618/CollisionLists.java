@@ -15,11 +15,10 @@ public class CollisionLists {
 
     CollisionLists(Player player)
     {
-
         m_player = player;
     }
 
-    public void checkCollisions()
+    void checkCollisions()
     {
         int aBulletCount = m_alienBulletList.size();
         if(aBulletCount > 0)
@@ -28,7 +27,8 @@ public class CollisionLists {
             {
                 if(m_player.collidesWith(m_alienBulletList.get(i)))
                 {
-
+                    m_alienBulletList.get(i).collidedWith(objectType.player);
+                    m_player.collidedWith(objectType.bullet);
                 }
             }
         }
@@ -44,13 +44,20 @@ public class CollisionLists {
                     {
                         m_alienList.get(i).collidedWith(objectType.bullet);
                         m_playerBulletList.get(k).collidedWith(objectType.alien);
+                        m_player.score += 50;
                     }
+                }
+
+                if(m_player.collidesWith(m_alienList.get(i)))
+                {
+                    m_player.collidedWith(objectType.alien);
                 }
             }
         }
+        cleanLists();
     }
 
-    public void addBullet(Bullet newBullet)
+    void addBullet(Bullet newBullet)
     {
         if(newBullet.shotByAlien())
         {
@@ -62,20 +69,54 @@ public class CollisionLists {
         }
     }
 
-    public void removeBullet(Bullet oldBullet, direction dir)
-    {
-        if(dir == direction.UP)
-        {
-            m_playerBulletList.remove(oldBullet);
-        }
-        else
-        {
-            m_alienBulletList.remove(oldBullet);
-        }
-    }
-
-    public void addAlien(Alien newAlien)
+    void addAlien(Alien newAlien)
     {
         m_alienList.add(newAlien);
+    }
+
+    private void cleanLists()
+    {
+        for(int i = m_alienList.size() - 1; i >= 0; i--)
+        {
+            if(!m_alienList.get(i).m_isAlive)
+            {
+                m_alienList.get(i).destroy();
+                m_alienList.remove(i);
+            }
+        }
+
+
+        for(int i = m_alienBulletList.size() - 1; i >= 0; i--)
+        {
+            if(!m_alienBulletList.get(i).m_isAlive)
+            {
+                m_alienBulletList.get(i).destroy();
+                m_alienBulletList.remove(i);
+            }
+        }
+
+
+        for(int i = m_playerBulletList.size() - 1; i >= 0; i--)
+        {
+            if(!m_playerBulletList.get(i).m_isAlive)
+            {
+                m_playerBulletList.get(i).destroy();
+                m_playerBulletList.remove(i);
+            }
+        }
+
+//        for(int i = m_asteroidList.size() - 1; i >= 0; i--)
+//        {
+//            if(m_asteroidList.get(i).m_isAlive == false)
+//            {
+//                m_asteroidList.get(i).destroy();
+//                m_asteroidList.remove(i);
+//            }
+//        }
+    }
+
+    public int alienCount()
+    {
+        return m_alienList.size();
     }
 }
