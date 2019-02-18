@@ -1,12 +1,15 @@
-package com.northumbria.en0618.engine.opengl;
+package com.northumbria.en0618.engine;
 
 import android.content.Context;
 import android.graphics.RectF;
 import android.support.annotation.DrawableRes;
 
-import com.northumbria.en0618.engine.SpriteGameObject;
+import com.northumbria.en0618.engine.opengl.CollisionMask;
+import com.northumbria.en0618.engine.opengl.Sprite;
+import com.northumbria.en0618.engine.opengl.Texture;
 import com.northumbria.en0618.objectType;
 
+// A game object that has a collision mask that matches its sprite.
 public class CollidableGameObject extends SpriteGameObject
 {
     private CollisionMask m_collisionMask;

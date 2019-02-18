@@ -51,7 +51,7 @@ public class TextGameObject extends GameObject
     @Override
     public void draw(float[] vpMatrix)
     {
-        m_font.draw(vpMatrix, m_color, m_text, getX(), getY());
+        m_font.draw(m_text, vpMatrix, getX(), getY(), m_color);
     }
 
     @Override

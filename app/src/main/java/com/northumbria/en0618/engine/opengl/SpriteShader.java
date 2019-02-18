@@ -2,6 +2,7 @@ package com.northumbria.en0618.engine.opengl;
 
 import android.opengl.GLES20;
 
+// Shader for generally rendering sprites.
 public class SpriteShader extends Shader
 {
     private static final String VERTEX_SHADER_CODE =
@@ -24,6 +25,7 @@ public class SpriteShader extends Shader
 
     private static SpriteShader s_instance = null;
 
+    // Gets the only instance allowed of the font shader, creating it if it doesn't already exist.
     public static SpriteShader getInstance()
     {
         if (s_instance == null)
@@ -38,39 +40,46 @@ public class SpriteShader extends Shader
         s_instance = null;
     }
 
+    // Handles pointing to OpenGL shader attributes and uniforms.
     private int m_mvpMatrixHandle;
     private int m_positionHandle;
     private int m_uvHandle;
     private int m_textureHandle;
     private int m_colorHandle;
 
+    // Creates the shader using the specified vertex and fragment shader code.
     private SpriteShader()
     {
         super(VERTEX_SHADER_CODE, FRAGMENT_SHADER_CODE);
-        getAttributeHandles();
-        getUniformHandles();
+        assignAttributeHandles();
+        assignUniformHandles();
     }
 
-    protected SpriteShader(String vertexShaderCode, String fragmentShaderCode)
+    // Creates the shader using the specified vertex and fragment shader code from
+    // an inheriting shader.
+    SpriteShader(String vertexShaderCode, String fragmentShaderCode)
     {
         super(vertexShaderCode, fragmentShaderCode);
-        getAttributeHandles();
-        getUniformHandles();
+        assignAttributeHandles();
+        assignUniformHandles();
     }
 
-    private void getAttributeHandles()
+    // Assigns handles for all the attributes of the shader.
+    private void assignAttributeHandles()
     {
         m_positionHandle = GLES20.glGetAttribLocation(m_handle, "aPosition");
         m_uvHandle = GLES20.glGetAttribLocation(m_handle, "aUV");
     }
 
-    private void getUniformHandles()
+    // Assigns handles for all the uniforms of the shader.
+    private void assignUniformHandles()
     {
         m_mvpMatrixHandle = GLES20.glGetUniformLocation(m_handle, "uMVPMatrix");
         m_textureHandle = GLES20.glGetUniformLocation(m_handle, "uTexture");
         m_colorHandle = GLES20.glGetUniformLocation(m_handle, "uColor");
     }
 
+    // Signal OpenGL to use the attributes of the shader.
     @Override
     public void use()
     {
@@ -78,6 +87,7 @@ public class SpriteShader extends Shader
         GLES20.glEnableVertexAttribArray(m_uvHandle);
     }
 
+    // Signal OpenGL to stop using the attributes of the shader.
     @Override
     public void unUse()
     {

@@ -5,7 +5,6 @@ import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
 import com.northumbria.en0618.engine.Input;
 import com.northumbria.en0618.engine.TextGameObject;
-import com.northumbria.en0618.engine.opengl.CollidableGameObject;
 import com.northumbria.en0618.engine.opengl.Font;
 
 public class SpaceInvadersActivity extends GameActivity
@@ -21,7 +20,7 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameReady()
     {
         Game game = getGame();
-        game.setPauseDialogLayoutID(R.layout.fragment_game_pause);
+        game.setPauseDialogLayoutID(R.layout.dialog_game_pause);
 
 //   \/ Example stuff for Michael. Feel free to replace with actual game setup code.                                    \/
         // Settings Button

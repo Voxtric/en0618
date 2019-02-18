@@ -21,6 +21,6 @@ public class SettingsButton extends Button
     @Override
     protected void onTouch()
     {
-        m_game.pause();
+        m_game.pause(true);
     }
 }

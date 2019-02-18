@@ -7,8 +7,6 @@ import android.opengl.GLSurfaceView;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.northumbria.en0618.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,55 +42,59 @@ public class Game
         return m_launched;
     }
 
-    public void pause()
+    public void pause(final boolean displayDialog)
     {
         m_paused = true;
-
         m_activity.runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
-                if (m_pauseDialogLayoutID != 0)
+                m_activity.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+                if (displayDialog)
                 {
-                    @SuppressLint("InflateParams")
-                    View view = m_activity.getLayoutInflater().inflate(m_pauseDialogLayoutID, null);
-                    m_pauseDialog = new AlertDialog.Builder(m_activity)
-                            .setView(view)
-                            .create();
-                }
-                else
-                {
-                    m_pauseDialog = new AlertDialog.Builder(m_activity)
-                    .setTitle("Game Paused")
-                    .setMessage("The game is paused.")
-                    .setPositiveButton("Resume", new DialogInterface.OnClickListener()
+                    if (m_pauseDialogLayoutID != 0)
+                    {
+                        @SuppressLint("InflateParams")
+                        View view = m_activity.getLayoutInflater().inflate(m_pauseDialogLayoutID, null);
+                        m_pauseDialog = new AlertDialog.Builder(m_activity)
+                                .setView(view)
+                                .create();
+                    } else
+                    {
+                        m_pauseDialog = new AlertDialog.Builder(m_activity)
+                                .setTitle("Game Paused")
+                                .setMessage("The game is paused.")
+                                .setPositiveButton("Resume", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    {
+                                        m_activity.onResumeGame(null);
+                                    }
+                                })
+                                .setNegativeButton("Quit", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    {
+                                        m_activity.onQuitGame(null);
+                                    }
+                                })
+                                .create();
+                    }
+
+                    m_pauseDialog.setOnCancelListener(new DialogInterface.OnCancelListener()
                     {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
+                        public void onCancel(DialogInterface dialog)
                         {
                             m_activity.onResumeGame(null);
                         }
-                    })
-                    .setNegativeButton("Quit", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            m_activity.onQuitGame(null);
-                        }
-                    })
-                    .create();
+                    });
+                    m_pauseDialog.show();
                 }
-                m_pauseDialog.setOnCancelListener(new DialogInterface.OnCancelListener()
-                {
-                    @Override
-                    public void onCancel(DialogInterface dialog)
-                    {
-                        m_paused = false;
-                    }
-                });
-                m_pauseDialog.show();
             }
         });
     }
@@ -100,13 +102,13 @@ public class Game
     public void unPause()
     {
         m_paused = false;
-        m_pauseDialog.dismiss();
-        m_pauseDialog = null;
-    }
-
-    public boolean isPaused()
-    {
-        return m_paused;
+        m_currentFrameBegin = System.currentTimeMillis();
+        m_activity.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        if (m_pauseDialog != null)
+        {
+            m_pauseDialog.dismiss();
+            m_pauseDialog = null;
+        }
     }
 
     public AlertDialog getPauseDialog()

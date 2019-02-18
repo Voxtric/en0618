@@ -2,10 +2,8 @@ package com.northumbria.en0618;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
-import android.util.Log;
 
-import com.northumbria.en0618.engine.Game;
-import com.northumbria.en0618.engine.opengl.CollidableGameObject;
+import com.northumbria.en0618.engine.CollidableGameObject;
 import com.northumbria.en0618.engine.opengl.Sprite;
 
 enum direction {

@@ -1,12 +1,9 @@
 package com.northumbria.en0618;
 
-import android.content.Context;
-
 import com.northumbria.en0618.engine.Game;
-import com.northumbria.en0618.engine.opengl.CollidableGameObject;
+import com.northumbria.en0618.engine.CollidableGameObject;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.Input;
-import com.northumbria.en0618.Bullet;
 
 public class Player extends CollidableGameObject {
 
