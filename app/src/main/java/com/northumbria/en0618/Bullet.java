@@ -26,7 +26,7 @@ public class Bullet extends CollidableGameObject {
     @Override
     public void update(float deltaTime)
     {
-        float yMove = 200.0f;
+        float yMove = 250.0f;
         if (m_moveDir == direction.DOWN)
         {
             yMove = -yMove;

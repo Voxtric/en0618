@@ -44,7 +44,14 @@ public class CollisionLists {
                     {
                         m_alienList.get(i).collidedWith(objectType.bullet);
                         m_playerBulletList.get(k).collidedWith(objectType.alien);
-                        m_player.score += 50;
+                        if(m_alienList.get(i).isBoss())
+                        {
+                            m_player.score += 150;
+                        }
+                        else
+                        {
+                            m_player.score += 50;
+                        }
                     }
                 }
 

@@ -1,6 +1,7 @@
 package com.northumbria.en0618;
 
 
+import android.support.annotation.DrawableRes;
 import android.util.Log;
 
 import com.northumbria.en0618.engine.Game;
@@ -18,10 +19,12 @@ public class AlienManager {
     private Game m_game;
 
     // Defines the number of Aliens to spawn
-    final private int m_numOfRows = 3;
-    final private int m_numOfColumns = 3;
+    final private int m_numOfRows = 4;
+    final private int m_numOfColumns = 4;
     private int m_alienCount = m_numOfColumns * m_numOfRows;
-    private float m_alienMoveSpeed = -100.0f;
+    private float m_alienMoveSpeed = -70.0f;
+    private float m_alienSize = 80.0f;
+    private int m_bossCounter = 0;
 
     AlienManager(CollisionLists collisionList, Game game )
     {
@@ -36,9 +39,27 @@ public class AlienManager {
             List<Alien> currentColumn = new ArrayList<>();
             for(int j = 0; j < m_numOfRows; j++)
             {
-                Alien tempAlien = new Alien(game.getActivity(), alienType.smallAlien,
-                        300.0f + (i * 200.0f), 1000.0f + (j * 200.0f),
-                        100.0f, m_alienMoveSpeed);
+                @DrawableRes int spriteType;
+                if(j == m_numOfRows - 1)
+                {
+                    spriteType = R.drawable.alien_4;
+                }
+                else if(j == m_numOfRows - 2)
+                {
+                    spriteType = R.drawable.alien_3;
+                }
+                else if(j == m_numOfRows - 3)
+                {
+                    spriteType = R.drawable.alien_2;
+                }
+                else
+                {
+                    spriteType = R.drawable.alien_1;
+                }
+                float testx = Input.getScreenHeight() - (((m_numOfRows * m_alienSize) * 2) + m_numOfRows * 2);
+                Alien tempAlien = new Alien(game.getActivity(), spriteType,
+                        300.0f + (i * 200.0f), testx + (j * (m_alienSize * 2)),
+                        m_alienSize, m_alienMoveSpeed);
                 currentColumn.add(tempAlien);
                 game.addGameObject(tempAlien);
                 m_colList.addAlien(tempAlien);
@@ -88,6 +109,17 @@ public class AlienManager {
     public void update(float frameTime, int alienCount)
     {
         checkSides();
+        if(m_bossCounter > 400)
+        {
+            Alien bossAlien = new Alien(m_game.getActivity(),
+                    R.drawable.alien_large,
+                    0.0f, Input.getScreenHeight() - m_alienSize - 20.0f,
+                    m_alienSize, -m_alienMoveSpeed);
+            m_game.addGameObject(bossAlien);
+            m_colList.addAlien(bossAlien);
+            m_bossCounter = 0;
+        }
+        m_bossCounter++;
         if(m_bulletCounter == 150)
         {
             Random rand = new Random();
