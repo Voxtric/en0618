@@ -56,7 +56,7 @@ public class Alien extends CollidableGameObject {
             }
             else
             {
-                Log.e(String.valueOf(getY()), String.valueOf(m_lastY - m_size));
+                //Log.e(String.valueOf(getY()), String.valueOf(m_lastY - m_size));
                 moveBy(0.0f, m_y * frameTime);
             }
         }

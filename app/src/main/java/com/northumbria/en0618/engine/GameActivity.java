@@ -12,8 +12,6 @@ import android.view.View;
 
 import com.northumbria.en0618.R;
 
-import java.io.Console;
-
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Shader;
@@ -26,8 +24,9 @@ public class GameActivity extends AppCompatActivity
 {
     private Game m_game;
     private GLSurfaceView m_glSurfaceView;
+    private boolean m_pauseOnResume = false;
 
-    MediaPlayer mediaPlayer;
+    MediaPlayer m_mediaPlayer;
     SoundPool soundPool;
 
     int enemyHitID;
@@ -79,8 +78,8 @@ public class GameActivity extends AppCompatActivity
         setContentView(gameSurfaceView);
         m_glSurfaceView = gameSurfaceView;
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gamemusic);
-        mediaPlayer.pause();
+        m_mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gamemusic);
+        m_mediaPlayer.pause();
         soundPool = new SoundPool(MAX_STREAMS, AudioManager.USE_DEFAULT_STREAM_TYPE, 0);
 
         enemyHitID = soundPool.load(this, R.raw.enemyhit, 1);
@@ -98,8 +97,8 @@ public class GameActivity extends AppCompatActivity
         Sprite.clearCache();
         Texture.clearCache();
         Shader.clearCache();
-        mediaPlayer.stop();
-        mediaPlayer.release();
+        m_mediaPlayer.stop();
+        m_mediaPlayer.release();
         soundPool.release();
         super.onDestroy();
 
@@ -108,11 +107,13 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onPause()
     {
-        m_glSurfaceView.onPause();
+        m_game.pause(false);
         super.onPause();
 
-        mediaPlayer.pause();
+        m_mediaPlayer.pause();
         soundPool.autoPause();
+
+        m_pauseOnResume = true;
     }
 
     @Override
@@ -121,22 +122,20 @@ public class GameActivity extends AppCompatActivity
         super.onResume();
         m_glSurfaceView.onResume();
 
-        mediaPlayer.start();
+        m_mediaPlayer.start();
         soundPool.autoResume();
+
+        if (m_pauseOnResume)
+        {
+            m_pauseOnResume = false;
+            m_game.pause(true);
+        }
     }
 
     @Override
     public void onBackPressed()
     {
-        m_game.pause();
-
-        mediaPlayer.stop();
-        mediaPlayer.pause();
-
-        mediaPlayer.release();
-
-        //SoundManager.getInstance().gStopMusic();
-        //SoundManager.getInstance().gPause();
+        m_game.pause(true);
     }
 
     public Game getGame()
@@ -152,9 +151,6 @@ public class GameActivity extends AppCompatActivity
     public void onResumeGame(View view)
     {
         getGame().unPause();
-
-        mediaPlayer.start();
-        //SoundManager.getInstance().gResume();
     }
 
     public void onQuitGame(View view)
@@ -175,7 +171,7 @@ public class GameActivity extends AppCompatActivity
     {
     }
 
-    public void PlaySound(GameSound sound)
+    public void playSound(GameSound sound)
     {
         switch (sound)
         {

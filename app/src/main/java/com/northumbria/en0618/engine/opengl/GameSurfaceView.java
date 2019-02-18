@@ -34,6 +34,7 @@ public class GameSurfaceView extends GLSurfaceView
     {
         if (targetFrameRate == 0)
         {
+            m_targetFrameTime = 0;
             setRenderMode(RENDERMODE_CONTINUOUSLY);
         }
         else
@@ -46,15 +47,19 @@ public class GameSurfaceView extends GLSurfaceView
 
     private void renderFrame()
     {
-        requestRender();
-        m_handler = new Handler();
-        m_handler.postDelayed(new Runnable()
+        m_handler = null;
+        if (m_targetFrameTime > 0)
         {
-            @Override
-            public void run()
+            requestRender();
+            m_handler = new Handler();
+            m_handler.postDelayed(new Runnable()
             {
-                renderFrame();
-            }
-        }, m_targetFrameTime);
+                @Override
+                public void run()
+                {
+                    renderFrame();
+                }
+            }, m_targetFrameTime);
+        }
     }
 }
