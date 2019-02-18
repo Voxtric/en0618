@@ -1,5 +1,6 @@
 package com.northumbria.en0618;
 
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnErrorListener;
 import android.media.SoundPool;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -17,10 +17,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import com.northumbria.en0618.engine.SoundManager;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MainMenuActivity extends AppCompatActivity
 {
+    private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
+    private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
+
     NotificationCompat.Builder mBuilder;
 
     MediaPlayer mediaPlayer;
@@ -34,6 +45,8 @@ public class MainMenuActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        determineGooglePlayGamesButton();
+
         createNotificationChannel();
 
         Intent intent = new Intent(this, MainMenuActivity.class);
@@ -77,6 +90,94 @@ public class MainMenuActivity extends AppCompatActivity
         soundPool.autoPause();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY)
+        {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess())
+            {
+                initialiseGooglePlayGamesButtonForLeaderboard(result.getSignInAccount());
+            }
+            else
+            {
+                String message = result.getStatus().getStatusMessage();
+                if (message == null || message.isEmpty())
+                {
+                    message = getString(R.string.google_sign_in_fail_message);
+                }
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.google_sign_in_fail_title)
+                        .setMessage(message)
+                        .setNeutralButton(android.R.string.ok, null)
+                        .show();
+            }
+        }
+        else if (requestCode == REQUEST_CODE_LEADERBOARD_ACTIVITY)
+        {
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+            if (account == null)
+            {
+                initialiseGooglePlayGamesButtonForSignIn();
+            }
+        }
+    }
+
+    private void determineGooglePlayGamesButton()
+    {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account == null)
+        {
+            initialiseGooglePlayGamesButtonForSignIn();
+        }
+        else
+        {
+            initialiseGooglePlayGamesButtonForLeaderboard(account);
+        }
+    }
+
+    private void initialiseGooglePlayGamesButtonForSignIn()
+    {
+        Button button = findViewById(R.id.google_play_games_button);
+        button.setText(R.string.google_sign_in_button);
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                GoogleSignInOptions googleSignIn = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                        .build();
+                GoogleSignInClient client = GoogleSignIn.getClient(MainMenuActivity.this, googleSignIn);
+                Intent intent = client.getSignInIntent();
+                startActivityForResult(intent, REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY);
+            }
+        });
+    }
+
+    private void initialiseGooglePlayGamesButtonForLeaderboard(final GoogleSignInAccount account)
+    {
+        Button button = findViewById(R.id.google_play_games_button);
+        button.setText(R.string.leaderboard_button);
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Games.getLeaderboardsClient(MainMenuActivity.this, account)
+                        .getLeaderboardIntent(getString(R.string.global_leaderboard_id))
+                        .addOnSuccessListener(new OnSuccessListener<Intent>()
+                        {
+                            @Override
+                            public void onSuccess(Intent intent)
+                            {
+                                startActivityForResult(intent, REQUEST_CODE_LEADERBOARD_ACTIVITY);
+                            }
+                        });
+            }
+        });
+    }
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -95,7 +196,7 @@ public class MainMenuActivity extends AppCompatActivity
         }
     }
 
-    public void startGame(View view)
+    public void startGameActivity(View view)
     {
         soundPool.play(menuSoundId, 1, 1, 1, 0, 1);
 
@@ -134,7 +235,7 @@ public class MainMenuActivity extends AppCompatActivity
         {
             mediaPlayer.pause();
         }
-        else if(!currentValue)
+        else
         {
             mediaPlayer.start();
         }
