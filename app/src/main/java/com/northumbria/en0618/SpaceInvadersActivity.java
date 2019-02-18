@@ -56,29 +56,44 @@ public class SpaceInvadersActivity extends GameActivity
     {
         Game m_game = getGame();
 //   \/ Example stuff for Michael. Feel free to replace with actual game loop code.                                     \/
-        m_collidableObjects.checkCollisions();
-        m_alienManager.update(deltaTime, m_collidableObjects.alienCount());
+        if(!m_player.gameOver())
+        {
+            m_collidableObjects.checkCollisions();
+            m_alienManager.update(deltaTime, m_collidableObjects.alienCount());
             m_text.setText("Score: " + m_player.score);
 
-        if(bulletCountdown >= 75)
-        {
-            float bulletX = 0.0f;
-            if(leftGun)
+            if(bulletCountdown >= 75)
             {
-                bulletX = m_player.getX() - 100.0f;
+                float bulletX;
+                if(leftGun)
+                {
+                    bulletX = m_player.getX() - 100.0f;
+                }
+                else
+                {
+                    bulletX = m_player.getX() + 100.0f;
+                }
+                leftGun = !leftGun;
+                Bullet bullet = new Bullet(m_game.getActivity(), bulletX, m_player.getY(),
+                        direction.UP, R.drawable.player_shot);
+                m_game.addGameObject(bullet);
+                m_collidableObjects.addBullet(bullet);
+                bulletCountdown = 0;
             }
-            else
+            bulletCountdown++;
+            if(m_collidableObjects.alienCount() <= 0)
             {
-                bulletX = m_player.getX() + 100.0f;
+                // m_collidableObjects.newLevel();
+                if(m_player.newLevel())
+                {
+                    m_alienManager.createAliens(m_game);
+                }
             }
-            leftGun = !leftGun;
-            Bullet bullet = new Bullet(m_game.getActivity(), bulletX, m_player.getY(),
-                    direction.UP, R.drawable.player_shot);
-            m_game.addGameObject(bullet);
-            m_collidableObjects.addBullet(bullet);
-            bulletCountdown = 0;
         }
-        bulletCountdown++;
+        else
+        {
+            // GAME OVER
+        }
 //   /\ Example stuff for Michael. Feel free to replace with actual game loop code.                                     /\
     }
 }

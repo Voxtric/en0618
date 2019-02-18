@@ -8,6 +8,7 @@ import com.northumbria.en0618.engine.Input;
 public class Player extends CollidableGameObject {
 
     private Game m_game;
+    public int m_lives = 3;
     public int score = 0;
 
 
@@ -57,11 +58,28 @@ public class Player extends CollidableGameObject {
     {
         if(other == objectType.bullet)
         {
-
+            m_lives--;
         }
         else
         {
-
+            m_lives = 0;
         }
+    }
+
+    public boolean gameOver()
+    {
+        return m_lives <= 0;
+    }
+
+    public boolean newLevel()
+    {
+        moveBy(0.0f, 100.0f);
+        boolean newLevel = false;
+        if(getY() >= Input.getScreenHeight())
+        {
+            newLevel = true;
+            setPosition(Input.getScreenWidth() / 2.0f, 75);
+        }
+        return newLevel;
     }
 }
