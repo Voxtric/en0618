@@ -1,7 +1,7 @@
 package com.northumbria.en0618.engine.opengl;
 
-import android.opengl.GLES20;
-
+// Shader specifically designed to render font sprites in a slightly different way to the normal
+// sprite shader.
 public class FontShader extends SpriteShader
 {
     private static final String VERTEX_SHADER_CODE =
@@ -24,6 +24,7 @@ public class FontShader extends SpriteShader
 
     private static FontShader s_instance = null;
 
+    // Gets the only instance allowed of the font shader, creating it if it doesn't already exist.
     public static FontShader getInstance()
     {
         if (s_instance == null)
@@ -38,6 +39,7 @@ public class FontShader extends SpriteShader
         s_instance = null;
     }
 
+    // Creates the shader using the specified vertex and fragment shader code.
     private FontShader()
     {
         super(VERTEX_SHADER_CODE, FRAGMENT_SHADER_CODE);
