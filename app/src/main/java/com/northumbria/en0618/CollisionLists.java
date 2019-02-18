@@ -81,18 +81,19 @@ public class CollisionLists {
         m_alienList.add(newAlien);
     }
 
+    void removeAlien(Alien oldAlien)
+    {
+        m_alienList.remove(oldAlien);
+    }
+
     private void cleanLists()
     {
-        for(int i = m_alienList.size() - 1; i >= 0; i--)
-        {
-            if(!m_alienList.get(i).m_isAlive)
-            {
-                m_alienList.get(i).destroy();
+        for(int i = m_alienList.size() - 1; i >= 0; i--) {
+            if (!m_alienList.get(i).m_isAlive) {
+                //m_alienList.get(i).destroy();
                 m_alienList.remove(i);
             }
         }
-
-
         for(int i = m_alienBulletList.size() - 1; i >= 0; i--)
         {
             if(!m_alienBulletList.get(i).m_isAlive)

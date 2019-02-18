@@ -140,7 +140,6 @@ public class AlienManager {
             while(m_alienCount > alienCount)
             {
                 m_alienCount--;
-                Log.e("Count:", String.valueOf(m_alienCount));
                 for(Iterator<List<Alien>> l = m_alienColumns.iterator(); l.hasNext();)
                 {
                     List<Alien> tempList = l.next();
@@ -150,6 +149,36 @@ public class AlienManager {
                         tempAlien.incSpeed();
                     }
                 }
+            }
+        }
+        checkLives();
+    }
+
+    private void checkLives()
+        {
+        for(int i = 0; i < m_alienColumns.size(); i++)
+        {
+//            for(int k = m_alienColumns.get(i).size() - 1; i >= 0; i--)
+//            {
+////                if(!m_alienColumns.get(i).get(k).m_isAlive)
+////                {
+////                    m_colList.removeAlien(m_alienColumns.get(i).get(k));
+////                    //m_alienColumns.get(i).get(k).destroy();
+////                    m_alienColumns.get(i).remove(k);
+////                }
+//            }
+////            if(m_alienColumns.size() == 0)
+//            {
+//                Log.e("Array Index", String.valueOf(i));
+//                m_alienColumns.remove(i);
+//            }
+        }
+
+        for(int i = m_alienColumns.size() - 1; i >= 0; i--)
+        {
+            if(m_alienColumns.get(i).size() == 0)
+            {
+                m_alienColumns.remove(i);
             }
         }
     }
