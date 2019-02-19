@@ -118,11 +118,14 @@ public class CollisionLists {
 
     public boolean alienAlive()
     {
+        // Checks that there is at least one living alien
         return m_alienList.size() > 0;
     }
 
     public void cleanLists()
     {
+        // Clears lists
+        // Only runs when Alien list is empty.
         m_alienBulletList.clear();
         m_playerBulletList.clear();
     }

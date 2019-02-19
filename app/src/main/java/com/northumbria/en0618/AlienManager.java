@@ -131,22 +131,6 @@ public class AlienManager
             m_colList.addBullet(alienBullet, false);
             m_timeToShotSpawn = SHOT_SPAWN_WAIT;
         }
-
-        // TODO: Fix this.
-//        if(MAX_COUNT != alienCount)
-//        {
-//            while(m_alienCount > alienCount)
-//            {
-//                m_alienCount--;
-//                for (List<Alien> tempList : m_alienColumns)
-//                {
-//                    for (Alien tempAlien : tempList)
-//                    {
-//                        tempAlien.increaseSpeed();
-//                    }
-//                }
-//            }
-//        }
         checkLives();
     }
 

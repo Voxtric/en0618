@@ -36,6 +36,7 @@ public class Bullet extends CollidableGameObject
         moveBy(0.0f, m_moveSpeed * deltaTime);
         if ((getY() < -getYSize()) || (getY() > Input.getScreenHeight() + getYSize()))
         {
+            // Self-Destroys if off the screen
             destroy();
         }
     }

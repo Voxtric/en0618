@@ -75,15 +75,18 @@ public class SpaceInvadersActivity extends GameActivity
         Game m_game = getGame();
         if(!m_player.isDead())
         {
+            // Checks if Player has any lives left
             if(m_collidableObjects.alienAlive())
             {
-                m_collidableObjects.checkCollisions();
-                m_alienManager.update(deltaTime);
-                m_text.setText("Score: " + m_player.score);
+                // Only runs if there is at least 1 alien alive
+                m_collidableObjects.checkCollisions(); // Checks Collisions for all objects
+                m_alienManager.update(deltaTime); // Updates Manager for Positional Checks and removal
+                m_text.setText("Score: " + m_player.score); // Puts Score on the screen
 
                 m_timeToShotSpawn -= deltaTime;
                 if(m_timeToShotSpawn <= 0.0f)
                 {
+                    // Calculates time to fire weapon and creates Bullet
                     float bulletX = m_player.getX() + m_playerShotOffset;
                     m_playerShotOffset = -m_playerShotOffset;
                     Bullet bullet = new Bullet(
@@ -98,6 +101,8 @@ public class SpaceInvadersActivity extends GameActivity
             {
                 if(m_player.newLevel())
                 {
+                    // newLevel will continue to run until the player has made sufficient moves that result
+                    // in it being off the screen.
                     m_collidableObjects.cleanLists();
                     m_player = new Player(m_game.getActivity());
                     m_alienManager.createAliens(m_game);

@@ -116,11 +116,13 @@ public class Player extends CollidableGameObject
 
     public boolean isDead()
     {
+        // Returns the players living state based off of lives
         return m_lives <= 0;
     }
 
     public boolean newLevel()
     {
+        // Player Moves upwards until they are off the screen. Once they are, returns true.
         moveBy(0.0f, m_moveSpeed * LEVEL_COMPLETE_SPEED_MODIFIER);
         boolean newLevel = false;
         if(getY() >= Input.getScreenHeight())
