@@ -129,4 +129,10 @@ public class CollisionLists {
         m_alienBulletList.clear();
         m_playerBulletList.clear();
     }
+
+    public void newPlayer(Player player)
+    {
+        // Sets m_player to new value
+        m_player = player;
+    }
 }

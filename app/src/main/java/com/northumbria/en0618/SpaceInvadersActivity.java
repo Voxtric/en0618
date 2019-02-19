@@ -105,6 +105,7 @@ public class SpaceInvadersActivity extends GameActivity
                     // in it being off the screen.
                     m_collidableObjects.cleanLists();
                     m_player = new Player(m_game.getActivity());
+                    m_collidableObjects.newPlayer(m_player);
                     m_alienManager.createAliens(m_game);
                 }
             }
