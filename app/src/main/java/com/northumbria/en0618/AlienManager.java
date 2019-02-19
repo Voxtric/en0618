@@ -64,8 +64,11 @@ public class AlienManager
         m_sideBorder = Input.getScreenHeight() * SCREEN_DISTANCE_SIDE_BORDER;
     }
 
-    public void createAliens(Game game)
+    public void createAliens(Game game, int currentLevel)
     {
+        m_alienWin = false;
+        m_alienMoveSpeed += (-10.0f * currentLevel);    // TODO: Check this
+
         float lowestHeight = (Input.getScreenHeight() * SCREEN_DISTANCE_START_HEIGHT) -
                 (ROWS * m_alienSize) - ((ROWS - 1) * (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS));
         float xPosition = m_sideBorder + (m_alienSize * 0.5f);
@@ -95,15 +98,16 @@ public class AlienManager
         {
             for (Alien tempAlien : tempList)
             {
+                if(tempAlien.getY() <= 0.0f)
+                {
+                    m_alienWin = true;
+                    break;
+                }
                 if (tempAlien.getX() < (tempAlien.getXSize() / 2.0f) + m_sideBorder ||
                         tempAlien.getX() > Input.getScreenWidth() - (tempAlien.getXSize() / 2.0f) - m_sideBorder)
                 {
                     changeDir = true;
                     break;
-                }
-                if(tempAlien.getY() < 0.0f)
-                {
-                    m_alienWin = true;
                 }
             }
         }
@@ -122,57 +126,71 @@ public class AlienManager
 
     public void update(float deltaTime)
     {
-        checkSides(deltaTime);
-
-        m_timeToBossSpawn -= deltaTime;
-        if(m_timeToBossSpawn <= 0.0f)
+        if(m_alienColumns.size() > 0)
         {
-            float bossAlienSize = m_alienSize * BOSS_ALIEN_SIZE_MULTIPLIER;
-            Alien bossAlien;
-            if (m_random.nextBoolean())
-            {
-                bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_right,
-                        -bossAlienSize * 0.5f, bossAlienSize,
-                        m_alienMoveSpeed * BOSS_ALIEN_SPEED_MULTIPLIER);
-            }
-            else
-            {
-                bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_left,
-                        Input.getScreenWidth() + (bossAlienSize * 0.5f), bossAlienSize,
-                        -m_alienMoveSpeed * BOSS_ALIEN_SPEED_MULTIPLIER);
-            }
+            checkSides(deltaTime);
 
-            m_game.addGameObject(bossAlien);
-            m_colList.addAlien(bossAlien);
-            m_timeToBossSpawn = BOSS_SPAWN_WAIT;
-        }
-
-        m_timeToShotSpawn -= deltaTime;
-        if(m_timeToShotSpawn <= 0.0f)
-        {
-            Random rand = new Random();
-            int alienChoice = rand.nextInt(m_alienColumns.size());
-            Bullet alienBullet = new Bullet(m_game.getActivity(),
-                    R.drawable.alien_shot,
-                    m_alienColumns.get(alienChoice).get(0).getX(),
-                    m_alienColumns.get(alienChoice).get(0).getY() - 25.0f);
-            m_game.addGameObject(alienBullet);
-            m_colList.addBullet(alienBullet, false);
-            m_timeToShotSpawn = SHOT_SPAWN_WAIT;
-        }
-
-        int alienCount = m_activeAliens;
-        checkSurvivingAliens();
-        if (alienCount != m_activeAliens)
-        {
-            for (List<Alien> tempList : m_alienColumns)
+            m_timeToBossSpawn -= deltaTime;
+            if(m_timeToBossSpawn <= 0.0f)
             {
-                for (Alien tempAlien : tempList)
+                float bossAlienSize = m_alienSize * BOSS_ALIEN_SIZE_MULTIPLIER;
+                Alien bossAlien;
+                if (m_random.nextBoolean())
                 {
-                    tempAlien.setSpeed(m_alienMoveSpeed *
-                            (1.0f + ((MAX_COUNT - m_activeAliens) /
-                                    ((float)MAX_COUNT * SPEEDUP_DIVISOR))));
+                    bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_right,
+                            -bossAlienSize * 0.5f, bossAlienSize,
+                            m_alienMoveSpeed * BOSS_ALIEN_SPEED_MULTIPLIER);
                 }
+                else
+                {
+                    bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_left,
+                            Input.getScreenWidth() + (bossAlienSize * 0.5f), bossAlienSize,
+                            -m_alienMoveSpeed * BOSS_ALIEN_SPEED_MULTIPLIER);
+                }
+
+                m_game.addGameObject(bossAlien);
+                m_colList.addAlien(bossAlien);
+                m_timeToBossSpawn = BOSS_SPAWN_WAIT;
+            }
+
+            m_timeToShotSpawn -= deltaTime;
+            if(m_timeToShotSpawn <= 0.0f)
+            {
+                Random rand = new Random();
+                int alienChoice = rand.nextInt(m_alienColumns.size());
+                Bullet alienBullet = new Bullet(m_game.getActivity(),
+                        R.drawable.alien_shot,
+                        m_alienColumns.get(alienChoice).get(0).getX(),
+                        m_alienColumns.get(alienChoice).get(0).getY() - 25.0f);
+                m_game.addGameObject(alienBullet);
+                m_colList.addBullet(alienBullet, false);
+                m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+            }
+
+            int alienCount = m_activeAliens;
+            checkSurvivingAliens();
+            if (alienCount != m_activeAliens)
+            {
+                for (List<Alien> tempList : m_alienColumns)
+                {
+                    for (Alien tempAlien : tempList)
+                    {
+                        tempAlien.setSpeed(m_alienMoveSpeed *
+                                (1.0f + ((MAX_COUNT - m_activeAliens) /
+                                        ((float)MAX_COUNT * SPEEDUP_DIVISOR))));
+                    }
+                }
+            }
+        }
+    }
+
+    public void clearAliens()
+    {
+        for (List<Alien> tempList : m_alienColumns)
+        {
+            for (Alien tempAlien : tempList)
+            {
+                tempAlien.destroy();
             }
         }
     }
