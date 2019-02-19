@@ -130,13 +130,12 @@ public class AlienManager
             Random rand = new Random();
             int alienChoice = rand.nextInt(m_alienColumns.size());
             Bullet alienBullet = new Bullet(m_game.getActivity(),
+                    R.drawable.alien_shot,
                     m_alienColumns.get(alienChoice).get(0).getX(),
-                    m_alienColumns.get(alienChoice).get(0).getY() - 25.0f,
-                    direction.DOWN,
-                    R.drawable.alien_shot);
+                    m_alienColumns.get(alienChoice).get(0).getY() - 25.0f);
             m_bulletCounter = 0;
             m_game.addGameObject(alienBullet);
-            m_colList.addBullet(alienBullet);
+            m_colList.addBullet(alienBullet, false);
         }
         m_bulletCounter++;
 

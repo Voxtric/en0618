@@ -86,10 +86,9 @@ public class SpaceInvadersActivity extends GameActivity
                     bulletX = m_player.getX() + 100.0f;
                 }
                 leftGun = !leftGun;
-                Bullet bullet = new Bullet(m_game.getActivity(), bulletX, m_player.getY(),
-                        direction.UP, R.drawable.player_shot);
+                Bullet bullet = new Bullet(m_game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
                 m_game.addGameObject(bullet);
-                m_collidableObjects.addBullet(bullet);
+                m_collidableObjects.addBullet(bullet, true);
                 bulletCountdown = 0;
             }
             bulletCountdown++;

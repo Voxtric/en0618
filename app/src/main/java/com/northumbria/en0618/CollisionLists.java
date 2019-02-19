@@ -1,7 +1,5 @@
 package com.northumbria.en0618;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,15 +85,15 @@ public class CollisionLists {
         }
     }
 
-    void addBullet(Bullet newBullet)
+    void addBullet(Bullet newBullet, boolean firedByPlayer)
     {
-        if(newBullet.shotByAlien())
+        if(firedByPlayer)
         {
-            m_alienBulletList.add(newBullet);
+            m_playerBulletList.add(newBullet);
         }
         else
         {
-            m_playerBulletList.add(newBullet);
+            m_alienBulletList.add(newBullet);
         }
     }
 
