@@ -13,12 +13,16 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class SpaceInvadersActivity extends GameActivity
 {
+    private static final float SHOT_SPAWN_WAIT = 1.3f;
+    private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
+
+    private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+    private float m_playerShotOffset = 0.0f;
+
     Player m_player;
     TextGameObject m_text;
     CollisionLists m_collidableObjects;
     AlienManager m_alienManager;
-    int bulletCountdown = 0;
-    boolean leftGun = true;
 
     @Override
     public void onGameReady()
@@ -52,6 +56,7 @@ public class SpaceInvadersActivity extends GameActivity
         // Creation of Player Character
         m_player = new Player(this);
         game.addGameObject(m_player);
+        m_playerShotOffset = m_player.getXSize() * SHOT_OFFSET_MULTIPLIER;
 
         m_collidableObjects = new CollisionLists(m_player);
 
@@ -74,24 +79,17 @@ public class SpaceInvadersActivity extends GameActivity
             m_alienManager.update(deltaTime, m_collidableObjects.alienCount());
             m_text.setText("Score: " + m_player.score);
 
-            if(bulletCountdown >= 75)
+            m_timeToShotSpawn -= deltaTime;
+            if(m_timeToShotSpawn <= 0.0f)
             {
-                float bulletX;
-                if(leftGun)
-                {
-                    bulletX = m_player.getX() - 100.0f;
-                }
-                else
-                {
-                    bulletX = m_player.getX() + 100.0f;
-                }
-                leftGun = !leftGun;
-                Bullet bullet = new Bullet(m_game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
+                float bulletX = m_player.getX() + m_playerShotOffset;
+                m_playerShotOffset = -m_playerShotOffset;
+                Bullet bullet = new Bullet(
+                        m_game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
                 m_game.addGameObject(bullet);
                 m_collidableObjects.addBullet(bullet, true);
-                bulletCountdown = 0;
+                m_timeToShotSpawn = SHOT_SPAWN_WAIT;
             }
-            bulletCountdown++;
             if(m_collidableObjects.alienCount() <= 0)
             {
                 // m_collidableObjects.newLevel();

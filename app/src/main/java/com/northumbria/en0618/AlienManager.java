@@ -14,7 +14,7 @@ public class AlienManager
 {
     private static final float BORDER = 40.0f;
     private static final float BOSS_SPAWN_WAIT = 15.0f; // In seconds
-    private static final float SHOT_SPAWN_WAIT = 3.0f;  // In seconds
+    private static final float SHOT_SPAWN_WAIT = 2.5f;  // In seconds
 
     private float m_timeToBossSpawn = BOSS_SPAWN_WAIT;
     private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
