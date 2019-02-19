@@ -75,24 +75,27 @@ public class SpaceInvadersActivity extends GameActivity
         Game m_game = getGame();
         if(!m_player.isDead())
         {
-            m_collidableObjects.checkCollisions();
-            m_alienManager.update(deltaTime, m_collidableObjects.alienCount());
-            m_text.setText("Score: " + m_player.score);
+            if(m_collidableObjects.alienAlive())
+            {
+                m_collidableObjects.checkCollisions();
+                m_alienManager.update(deltaTime);
+                m_text.setText("Score: " + m_player.score);
 
-            m_timeToShotSpawn -= deltaTime;
-            if(m_timeToShotSpawn <= 0.0f)
-            {
-                float bulletX = m_player.getX() + m_playerShotOffset;
-                m_playerShotOffset = -m_playerShotOffset;
-                Bullet bullet = new Bullet(
-                        m_game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
-                m_game.addGameObject(bullet);
-                m_collidableObjects.addBullet(bullet, true);
-                m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+                m_timeToShotSpawn -= deltaTime;
+                if(m_timeToShotSpawn <= 0.0f)
+                {
+                    float bulletX = m_player.getX() + m_playerShotOffset;
+                    m_playerShotOffset = -m_playerShotOffset;
+                    Bullet bullet = new Bullet(
+                            m_game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
+                    m_game.addGameObject(bullet);
+                    m_collidableObjects.addBullet(bullet, true);
+                    m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+                }
+                    // m_collidableObjects.newLevel();
             }
-            if(m_collidableObjects.alienCount() <= 0)
+            else
             {
-                // m_collidableObjects.newLevel();
                 if(m_player.newLevel())
                 {
                     m_alienManager.createAliens(m_game);
