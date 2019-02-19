@@ -51,7 +51,7 @@ public class SpaceInvadersActivity extends GameActivity
         game.addGameObject(m_text);
 
         // Creation of Player Character
-        m_player = new Player(game);
+        m_player = new Player(this);
         game.addGameObject(m_player);
 
         m_collidableObjects = new CollisionLists(m_player);

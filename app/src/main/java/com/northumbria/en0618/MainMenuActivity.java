@@ -1,5 +1,6 @@
 package com.northumbria.en0618;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -196,20 +197,56 @@ public class MainMenuActivity extends AppCompatActivity
         });
     }
 
-    private void createNotificationChannel() {
+    // Updates the app settings and the player with the new input method.
+    @SuppressLint("ApplySharedPref")    // We want the data to be available immediately.
+    public void changeInputMethod(View view)
+    {
+        // Find the current input method.
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int inputMethod = preferences.getInt(Player.PREFERENCE_KEY_INPUT_METHOD, Player.INPUT_METHOD_SCREEN_SIDE);
+        int newInputMethod = inputMethod;
+
+        // Determine the new input method and update the UI.
+        switch (inputMethod)
+        {
+            case Player.INPUT_METHOD_SCREEN_SIDE:
+                newInputMethod = Player.INPUT_METHOD_PLAYER_SIDE;
+                // TODO: Update button text here.
+                break;
+            case Player.INPUT_METHOD_PLAYER_SIDE:
+                newInputMethod = Player.INPUT_METHOD_SCREEN_TILT;
+                // TODO: Update button text here.
+                break;
+            case Player.INPUT_METHOD_SCREEN_TILT:
+                newInputMethod = Player.INPUT_METHOD_SCREEN_SIDE;
+                // TODO: Update button text here.
+                break;
+        }
+
+        // Update the settings and the player.
+        preferences.edit().putInt(Player.PREFERENCE_KEY_INPUT_METHOD, newInputMethod).commit();
+        Player.updateInputMethod(this);
+    }
+
+    private void createNotificationChannel()
+    {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("pie", name, importance);
-
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null)
+            {
+                CharSequence name = getString(R.string.channel_name);
+                String description = getString(R.string.channel_description);
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel channel = new NotificationChannel("pie", name, importance);
+
+                channel.setDescription(description);
+                // Register the channel with the system; you can't change the importance
+                // or other notification behaviors after this
+                notificationManager.createNotificationChannel(channel);
+            }
         }
     }
 
