@@ -8,7 +8,7 @@ public class BossAlien extends Alien
 {
     BossAlien(Context context, int spriteType, float x, float size, float moveSpeed)
     {
-        super(context, spriteType, x, Input.getScreenHeight() * 0.85f, size, moveSpeed);
+        super(context, spriteType, x, Input.getScreenHeight() * 0.85f, size, moveSpeed, 0.0f);
     }
 
     @Override

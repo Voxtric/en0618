@@ -13,7 +13,7 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class SpaceInvadersActivity extends GameActivity
 {
-    private static final float SHOT_SPAWN_WAIT = 1.3f;
+    private static final float SHOT_SPAWN_WAIT = 0.9f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
 
     private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;

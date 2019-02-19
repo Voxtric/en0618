@@ -84,13 +84,16 @@ public class Player extends CollidableGameObject
                     if (x < (screenWidth - halfWidth - m_sideBorder))
                     {
                         float xMove = Math.min(m_moveSpeed * deltaTime, touchX - x);
-                        moveBy(xMove, 0.0f);
+                        if (xMove > 1.0f)
+                        {
+                            moveBy(xMove, 0.0f);
+                        }
                     }
                 }
                 else if ((touchX < x) && (x > (halfWidth + m_sideBorder)))
                 {
-                    float xMove = Math.min(m_moveSpeed * -deltaTime, x - touchX);
-                    moveBy(xMove, 0.0f);
+                    float xMove = Math.min(m_moveSpeed * deltaTime, x - touchX);
+                    moveBy(-xMove, 0.0f);
                 }
             }
         }

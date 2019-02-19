@@ -20,7 +20,7 @@ import com.northumbria.en0618.engine.opengl.Texture;
 
 enum GameSound {PLAYER_HIT, ENEMY_HIT, BARRIER_HIT, PLAYER_FIRE, ENEMY_FIRE}
 
-public class GameActivity extends AppCompatActivity
+public abstract class GameActivity extends AppCompatActivity
 {
     private Game m_game;
     private GLSurfaceView m_glSurfaceView;

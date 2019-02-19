@@ -9,7 +9,7 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class Bullet extends CollidableGameObject
 {
-    private static final float SCREEN_DISTANCE_PER_SECOND = 0.33f;
+    private static final float SCREEN_DISTANCE_PER_SECOND = 0.4f;
     private static final float SCREEN_DISTANCE_HEIGHT = 0.025f;
     private static final float WIDTH_TO_HEIGHT_RATIO = 0.33f;
 
