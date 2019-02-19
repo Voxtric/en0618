@@ -1,12 +1,11 @@
 package com.northumbria.en0618;
 
-import com.northumbria.en0618.engine.Button;
+import com.northumbria.en0618.engine.ButtonGameObject;
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.Input;
-import com.northumbria.en0618.R;
 import com.northumbria.en0618.engine.opengl.Sprite;
 
-public class SettingsButton extends Button
+public class SettingsButton extends ButtonGameObject
 {
     private Game m_game;
 

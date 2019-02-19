@@ -31,7 +31,9 @@ public class SpaceInvadersActivity extends GameActivity
         GameObject settingsButton = new SettingsButton(game);
         game.addGameObject(settingsButton, true);
 
-        float height = Input.getScreenHeight() + (Input.getScreenHeight() % (int)BackgroundTile.SIZE) + BackgroundTile.SIZE;
+        // Add the tiling background.
+        float height = Input.getScreenHeight() + (Input.getScreenHeight() % (int)BackgroundTile.SIZE) + (BackgroundTile.SIZE * 0.5f);
+
         for (float x = BackgroundTile.SIZE * 0.5f; x < Input.getScreenWidth() + (BackgroundTile.SIZE * 0.5f); x += BackgroundTile.SIZE)
         {
             for (float y = BackgroundTile.SNAP_HEIGHT; y <= height; y += BackgroundTile.SIZE)

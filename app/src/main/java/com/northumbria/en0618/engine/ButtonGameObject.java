@@ -2,9 +2,9 @@ package com.northumbria.en0618.engine;
 
 import com.northumbria.en0618.engine.opengl.Sprite;
 
-public abstract class Button extends SpriteGameObject
+public abstract class ButtonGameObject extends SpriteGameObject
 {
-    protected Button(Sprite sprite, float x, float y, float xSize, float ySize)
+    protected ButtonGameObject(Sprite sprite, float x, float y, float xSize, float ySize)
     {
         super(sprite, x, y, xSize, ySize);
     }
