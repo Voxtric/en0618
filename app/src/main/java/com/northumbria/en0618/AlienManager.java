@@ -26,7 +26,6 @@ public class AlienManager
     // Defines the number of Aliens to spawn
     final private int m_numOfRows = 4;
     final private int m_numOfColumns = 4;
-    private int m_alienCount = m_numOfColumns * m_numOfRows;
     private float m_alienMoveSpeed = -70.0f;
     private float m_alienSize = 100.0f;
 
@@ -62,9 +61,10 @@ public class AlienManager
                 {
                     spriteType = R.drawable.alien_1;
                 }
-                float testx = Input.getScreenHeight() - (((m_numOfRows * m_alienSize) * 2) + m_numOfRows * 2);
+                float l_alienSpawnYBase = Input.getScreenHeight() - (((m_numOfRows * m_alienSize) * 2) + m_numOfRows * 2);
+                float l_alienSpawnXBase = Input.getScreenWidth() - (((m_numOfColumns * m_alienSize) * 2) + m_numOfColumns * 2);
                 Alien tempAlien = new Alien(game.getActivity(), spriteType,
-                        300.0f + (i * 200.0f), testx + (j * (m_alienSize * 2)),
+                        l_alienSpawnXBase + (i * (m_alienSize * 2)), l_alienSpawnYBase + (j * (m_alienSize * 2)),
                         m_alienSize, m_alienMoveSpeed);
                 currentColumn.add(tempAlien);
                 game.addGameObject(tempAlien);
@@ -102,7 +102,7 @@ public class AlienManager
         }
     }
 
-    public void update(float deltaTime, int alienCount)
+    public void update(float deltaTime)
     {
         checkSides(deltaTime);
 
@@ -139,21 +139,6 @@ public class AlienManager
             m_colList.addBullet(alienBullet, false);
             m_timeToShotSpawn = SHOT_SPAWN_WAIT;
         }
-
-        if(m_alienCount != alienCount)
-        {
-            while(m_alienCount > alienCount)
-            {
-                m_alienCount--;
-                for (List<Alien> tempList : m_alienColumns)
-                {
-                    for (Alien tempAlien : tempList)
-                    {
-                        tempAlien.increaseSpeed();
-                    }
-                }
-            }
-        }
         checkLives();
     }
 
@@ -169,6 +154,7 @@ public class AlienManager
                     m_colList.removeAlien(alienColumn.get(j));
                     alienColumn.remove(j);
                     j--;
+                    increaseSpeed();
                 }
             }
 
@@ -176,6 +162,17 @@ public class AlienManager
             {
                 m_alienColumns.remove(i);
                 i--;
+            }
+        }
+    }
+
+    private void increaseSpeed()
+    {
+        for (List<Alien> tempList : m_alienColumns)
+        {
+            for (Alien tempAlien : tempList)
+            {
+                tempAlien.increaseSpeed();
             }
         }
     }

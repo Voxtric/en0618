@@ -9,7 +9,7 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class Alien extends CollidableGameObject
 {
-    protected float m_moveSpeed;
+    float m_moveSpeed;
 
     private float m_lastY;
     private boolean m_goingDown = false;
@@ -42,7 +42,7 @@ public class Alien extends CollidableGameObject
         }
     }
 
-    public void switchDirection(float deltaTime)
+    void switchDirection(float deltaTime)
     {
         if(!m_goingDown)
         {
@@ -53,9 +53,8 @@ public class Alien extends CollidableGameObject
         }
     }
 
-    @SuppressWarnings("SuspiciousNameCombination")
-    public void increaseSpeed()
+    void increaseSpeed()
     {
-        m_moveSpeed *= 1.1f;
+        m_moveSpeed *= 1.3f;
     }
 }

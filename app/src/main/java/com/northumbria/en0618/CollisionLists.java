@@ -107,8 +107,8 @@ public class CollisionLists {
         m_alienList.remove(oldAlien);
     }
 
-    public int alienCount()
+    public boolean alienAlive()
     {
-        return m_alienList.size();
+        return m_alienList.size() > 0;
     }
 }
