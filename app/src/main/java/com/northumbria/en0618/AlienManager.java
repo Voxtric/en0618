@@ -28,7 +28,7 @@ public class AlienManager
     private List<List<Alien>> m_alienColumns = new ArrayList<>();
     private CollisionLists m_colList;
     private Game m_game;
-    private float m_alienMoveSpeed = -70.0f;
+    private float m_alienMoveSpeed = -60.0f;
     private float m_alienSize = 100.0f;
     private boolean m_alienWin = false;
 
@@ -40,8 +40,11 @@ public class AlienManager
         m_game = game;
     }
 
-    public void createAliens(Game game)
+    public void createAliens(Game game, int currentLevel)
     {
+        m_alienWin = false;
+        m_alienMoveSpeed += (-10.0f * currentLevel);
+
         @DrawableRes int[] alienSprites = new int[]
         {
                R.drawable.alien_1,
@@ -74,15 +77,16 @@ public class AlienManager
         {
             for (Alien tempAlien : tempList)
             {
+                if(tempAlien.getY() <= 0.0f)
+                {
+                    m_alienWin = true;
+                    break;
+                }
                 if (tempAlien.getX() < (tempAlien.getXSize() / 2.0f) + BORDER ||
                         tempAlien.getX() > Input.getScreenWidth() - (tempAlien.getXSize() / 2.0f) - BORDER)
                 {
                     changeDir = true;
                     break;
-                }
-                if(tempAlien.getY() < 0.0f)
-                {
-                    m_alienWin = true;
                 }
             }
         }
@@ -101,40 +105,55 @@ public class AlienManager
 
     public void update(float deltaTime)
     {
-        checkSides(deltaTime);
-
-        m_timeToBossSpawn -= deltaTime;
-        if(m_timeToBossSpawn <= 0.0f)
+        if(m_alienColumns.size() > 0)
         {
-            Alien bossAlien;
-            if (m_random.nextBoolean())
+            checkSides(deltaTime);
+
+            m_timeToBossSpawn -= deltaTime;
+            if(m_timeToBossSpawn <= 0.0f)
             {
-                bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_right,
-                        -m_alienSize * 0.5f, m_alienSize * 1.2f, -m_alienMoveSpeed * 3.0f);
-            }
-            else
-            {
-                bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_left,
-                        Input.getScreenWidth() + (m_alienSize * 0.5f), m_alienSize * 1.2f, m_alienMoveSpeed * 3.0f);
+                Alien bossAlien;
+                if (m_random.nextBoolean())
+                {
+                    bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_right,
+                            -m_alienSize * 0.5f, m_alienSize * 1.2f, -m_alienMoveSpeed * 3.0f);
+                }
+                else
+                {
+                    bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_left,
+                            Input.getScreenWidth() + (m_alienSize * 0.5f), m_alienSize * 1.2f, m_alienMoveSpeed * 3.0f);
+                }
+
+                m_game.addGameObject(bossAlien);
+                m_colList.addAlien(bossAlien);
+                m_timeToBossSpawn = BOSS_SPAWN_WAIT;
             }
 
-            m_game.addGameObject(bossAlien);
-            m_colList.addAlien(bossAlien);
-            m_timeToBossSpawn = BOSS_SPAWN_WAIT;
+            m_timeToShotSpawn -= deltaTime;
+            if(m_timeToShotSpawn <= 0.0f)
+            {
+                Random rand = new Random();
+                int alienChoice = rand.nextInt(m_alienColumns.size());
+                Bullet alienBullet = new Bullet(m_game.getActivity(),
+                        R.drawable.alien_shot,
+                        m_alienColumns.get(alienChoice).get(0).getX(),
+                        m_alienColumns.get(alienChoice).get(0).getY() - 25.0f);
+                m_game.addGameObject(alienBullet);
+                m_colList.addBullet(alienBullet, false);
+                m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+            }
+            checkLives();
         }
+    }
 
-        m_timeToShotSpawn -= deltaTime;
-        if(m_timeToShotSpawn <= 0.0f)
+    public void clearAliens()
+    {
+        for (List<Alien> tempList : m_alienColumns)
         {
-            Random rand = new Random();
-            int alienChoice = rand.nextInt(m_alienColumns.size());
-            Bullet alienBullet = new Bullet(m_game.getActivity(),
-                    R.drawable.alien_shot,
-                    m_alienColumns.get(alienChoice).get(0).getX(),
-                    m_alienColumns.get(alienChoice).get(0).getY() - 25.0f);
-            m_game.addGameObject(alienBullet);
-            m_colList.addBullet(alienBullet, false);
-            m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+            for (Alien tempAlien : tempList)
+            {
+                tempAlien.destroy();
+            }
         }
         checkLives();
     }
@@ -168,7 +187,7 @@ public class AlienManager
         {
             for (Alien tempAlien : tempList)
             {
-                tempAlien.increaseSpeed();
+                //tempAlien.increaseSpeed();
             }
         }
     }

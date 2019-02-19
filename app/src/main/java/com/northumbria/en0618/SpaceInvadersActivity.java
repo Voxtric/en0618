@@ -2,6 +2,7 @@ package com.northumbria.en0618;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
@@ -16,11 +17,13 @@ public class SpaceInvadersActivity extends GameActivity
     private static final float SHOT_SPAWN_WAIT = 1.3f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
 
+    private int m_currentLevel = 1;
     private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
     private float m_playerShotOffset = 0.0f;
 
     Player m_player;
-    TextGameObject m_text;
+    TextGameObject m_ScoreText;
+    TextGameObject m_LevelText;
     CollisionLists m_collidableObjects;
     AlienManager m_alienManager;
 
@@ -49,9 +52,13 @@ public class SpaceInvadersActivity extends GameActivity
 
         // Text
         Font font = Font.getFont(this, "Roboto-Regular.ttf", 100, 2);
-        m_text = new TextGameObject(font, "Score:", 10.0f, Input.getScreenHeight() - 60.0f);
-        m_text.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-        game.addGameObject(m_text);
+        m_ScoreText = new TextGameObject(font, "Score:", 10.0f, Input.getScreenHeight() - 150.0f);
+        m_ScoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_ScoreText);
+
+        m_LevelText = new TextGameObject(font, "Level:", 10.0f, Input.getScreenHeight() - 60.0f);
+        m_LevelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_LevelText);
 
         // Creation of Player Character
         m_player = new Player(this);
@@ -64,7 +71,7 @@ public class SpaceInvadersActivity extends GameActivity
 
         // Manager class for all ALien Objects
         m_alienManager = new AlienManager(m_collidableObjects, game);
-        m_alienManager.createAliens(game);
+        m_alienManager.createAliens(game, m_currentLevel);
 
         super.onGameReady();
     }
@@ -72,8 +79,8 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onGameUpdate(float deltaTime)
     {
-        Game m_game = getGame();
-        if(!m_player.isDead() || m_alienManager.checkAlienWin())
+        final Game m_game = getGame();
+        if(!m_player.isDead() && !m_alienManager.checkAlienWin())
         {
             // Checks if Player has any lives left
             if(m_collidableObjects.alienAlive())
@@ -81,7 +88,8 @@ public class SpaceInvadersActivity extends GameActivity
                 // Only runs if there is at least 1 alien alive
                 m_collidableObjects.checkCollisions(); // Checks Collisions for all objects
                 m_alienManager.update(deltaTime); // Updates Manager for Positional Checks and removal
-                m_text.setText("Score: " + m_player.score); // Puts Score on the screen
+                m_ScoreText.setText("Score: " + m_player.score); // Puts Score on the screen
+                m_LevelText.setText("Level: " + m_currentLevel); // Puts current Level onto Screen
 
                 m_timeToShotSpawn -= deltaTime;
                 if(m_timeToShotSpawn <= 0.0f)
@@ -104,9 +112,11 @@ public class SpaceInvadersActivity extends GameActivity
                     // newLevel will continue to run until the player has made sufficient moves that result
                     // in it being off the screen.
                     m_collidableObjects.cleanLists();
+                    m_currentLevel++;
                     m_player = new Player(m_game.getActivity());
+                    m_game.addGameObject(m_player);
                     m_collidableObjects.newPlayer(m_player);
-                    m_alienManager.createAliens(m_game);
+                    m_alienManager.createAliens(m_game, m_currentLevel);
                 }
             }
         }
@@ -137,6 +147,13 @@ public class SpaceInvadersActivity extends GameActivity
                                 {
                                     getGame().unPause();
                                     // Restart the game here
+                                    m_currentLevel = 1;
+                                    m_alienManager.clearAliens();
+                                    m_player = new Player(m_game.getActivity());
+                                    m_game.addGameObject(m_player);
+                                    m_collidableObjects.cleanLists();
+                                    m_collidableObjects.newPlayer(m_player);
+                                    m_alienManager.createAliens(m_game, m_currentLevel);
                                 }
                             })
                             .create();
