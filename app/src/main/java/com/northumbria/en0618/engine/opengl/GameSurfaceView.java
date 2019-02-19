@@ -25,6 +25,7 @@ public class GameSurfaceView extends GLSurfaceView
 
         setRenderer(new GameSurfaceViewRenderer(context));
         setRenderMode(RENDERMODE_CONTINUOUSLY);
+        setKeepScreenOn(true);
     }
 
     @SuppressLint("ClickableViewAccessibility") // Blind people cannot play this game, sorry.

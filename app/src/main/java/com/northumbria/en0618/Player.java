@@ -53,19 +53,6 @@ public class Player extends CollidableGameObject {
 //        }
     }
 
-    @Override
-    public void collidedWith(objectType other)
-    {
-        if(other == objectType.bullet)
-        {
-            m_lives--;
-        }
-        else
-        {
-            m_lives = 0;
-        }
-    }
-
     public boolean gameOver()
     {
         return m_lives <= 0;

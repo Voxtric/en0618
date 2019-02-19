@@ -65,15 +65,6 @@ public class Alien extends CollidableGameObject {
         }
     }
 
-    @Override
-    public void collidedWith(objectType other)
-    {
-        if(other == objectType.bullet)
-        {
-            destroy();
-        }
-    }
-
     public void switchDirection(float deltaTime)
     {
         if(!m_goingDown)
