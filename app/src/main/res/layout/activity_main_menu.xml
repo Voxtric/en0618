@@ -85,7 +85,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button5" />
 
+    <!-- Text hardcoded to show developer intent, will be set using string resources from code. -->
     <Button
+        tools:ignore="HardcodedText"
         android:id="@+id/google_play_games_button"
         style="@style/button_style"
         android:layout_width="300dp"
@@ -102,7 +104,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button6" />
+        app:layout_constraintTop_toBottomOf="@+id/button6"/>
 
     <TextView
         android:id="@+id/textView"

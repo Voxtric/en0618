@@ -6,6 +6,7 @@ import com.northumbria.en0618.engine.GameObject;
 import com.northumbria.en0618.engine.Input;
 import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.Font;
+import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class SpaceInvadersActivity extends GameActivity
 {
@@ -22,16 +23,26 @@ public class SpaceInvadersActivity extends GameActivity
         Game game = getGame();
         game.setPauseDialogLayoutID(R.layout.dialog_game_pause);
 
-//   \/ Example stuff for Michael. Feel free to replace with actual game setup code.                                    \/
         // Settings Button
         GameObject settingsButton = new SettingsButton(game);
         game.addGameObject(settingsButton, true);
 
+        float height = Input.getScreenHeight() + (Input.getScreenHeight() % (int)BackgroundTile.SIZE) + BackgroundTile.SIZE;
+        for (float x = BackgroundTile.SIZE * 0.5f; x < Input.getScreenWidth() + (BackgroundTile.SIZE * 0.5f); x += BackgroundTile.SIZE)
+        {
+            for (float y = BackgroundTile.SNAP_HEIGHT; y <= height; y += BackgroundTile.SIZE)
+            {
+                BackgroundTile backgroundTile = new BackgroundTile(this, x, y, height);
+                ((Sprite)backgroundTile.getRenderable()).setUseTransparency(false);
+                game.addGameObject(backgroundTile);
+            }
+        }
+
         // Text
         Font font = Font.getFont(this, "Roboto-Regular.ttf", 100, 2);
-        m_text = new TextGameObject(font, "Collision:", 10.0f, Input.getScreenHeight() - 60.0f);
+        m_text = new TextGameObject(font, "Score:", 10.0f, Input.getScreenHeight() - 60.0f);
+        m_text.setColor(1.0f, 1.0f, 1.0f, 0.8f);
         game.addGameObject(m_text);
-
 
         // Creation of Player Character
         m_player = new Player(game);
@@ -45,9 +56,6 @@ public class SpaceInvadersActivity extends GameActivity
         m_alienManager = new AlienManager(m_collidableObjects, game);
         m_alienManager.createAliens(game);
 
-
-//   /\ Example stuff for Michael. Feel free to replace with actual game setup code.                                    /\
-
         super.onGameReady();
     }
 
@@ -55,7 +63,6 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameUpdate(float deltaTime)
     {
         Game m_game = getGame();
-//   \/ Example stuff for Michael. Feel free to replace with actual game loop code.                                     \/
         if(!m_player.gameOver())
         {
             m_collidableObjects.checkCollisions();
@@ -94,6 +101,5 @@ public class SpaceInvadersActivity extends GameActivity
         {
             // GAME OVER
         }
-//   /\ Example stuff for Michael. Feel free to replace with actual game loop code.                                     /\
     }
 }

@@ -171,6 +171,7 @@ public class Texture
         else if (s_transparencyActive)
         {
             // Turn off blending if transparency isn't needed but it is currently on.
+            s_transparencyActive = false;
             GLES20.glDisable(GLES20.GL_BLEND);
         }
     }
