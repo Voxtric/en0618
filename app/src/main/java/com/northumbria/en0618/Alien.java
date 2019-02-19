@@ -43,7 +43,7 @@ public class Alien extends CollidableGameObject {
         {
             if(getX() <= -50.0f || getX() >= Input.getScreenWidth() + 50.0f)
             {
-                m_isAlive = false;
+                destroy();
             }
         }
 

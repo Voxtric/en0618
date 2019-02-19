@@ -14,7 +14,6 @@ public class CollidableGameObject extends SpriteGameObject
 {
     private CollisionMask m_collisionMask;
     private RectF m_boundingRect;
-    public boolean m_isAlive = true;
 
     public CollidableGameObject(Context context, Sprite sprite, float x, float y, float xSize, float ySize)
     {

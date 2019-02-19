@@ -20,31 +20,50 @@ public class CollisionLists {
 
     void checkCollisions()
     {
-        int aBulletCount = m_alienBulletList.size();
-        if(aBulletCount > 0)
+        int alienBulletCount = m_alienBulletList.size();
+        if(alienBulletCount > 0)
         {
-            for(int i = 0; i < m_alienBulletList.size(); i++)
+            for(int i = 0; i < alienBulletCount; i++)
             {
-                if(m_player.collidesWith(m_alienBulletList.get(i)))
+                Bullet bullet = m_alienBulletList.get(i);
+                if(m_player.collidesWith(bullet))
                 {
-                    m_alienBulletList.get(i).collidedWith(objectType.player);
-                    m_player.collidedWith(objectType.bullet);
+                    bullet.destroy();
+                    m_alienBulletList.remove(i);
+                    alienBulletCount--;
+                    i--;
+
+
+                    m_player.m_lives--;
+                    if (m_player.m_lives == 0)
+                    {
+                        m_player.destroy();
+                        break;
+                    }
                 }
             }
         }
 
-        int pBulletCount = m_playerBulletList.size();
-        if(pBulletCount > 0)
+        int alienCount = m_alienList.size();
+        int playerBulletCount = m_playerBulletList.size();
+        if(playerBulletCount > 0)
         {
-            for(int i = 0; i < m_alienList.size(); i++)
+            for(int i = 0; i < alienCount; i++)
             {
-                for(int k = 0; k < m_playerBulletList.size(); k++)
+                Alien alien = m_alienList.get(i);
+
+                if(m_player.collidesWith(alien))
                 {
-                    if(m_alienList.get(i).collidesWith(m_playerBulletList.get(k)))
+                    m_player.m_lives = 0;
+                    m_player.destroy();
+                }
+
+                for(int k = 0; k < playerBulletCount; k++)
+                {
+                    Bullet playerBullet = m_playerBulletList.get(k);
+                    if(alien.collidesWith(playerBullet))
                     {
-                        m_alienList.get(i).collidedWith(objectType.bullet);
-                        m_playerBulletList.get(k).collidedWith(objectType.alien);
-                        if(m_alienList.get(i).isBoss())
+                        if(alien.isBoss())
                         {
                             m_player.score += 150;
                         }
@@ -52,16 +71,20 @@ public class CollisionLists {
                         {
                             m_player.score += 50;
                         }
-                    }
-                }
 
-                if(m_player.collidesWith(m_alienList.get(i)))
-                {
-                    m_player.collidedWith(objectType.alien);
+                        playerBullet.destroy();
+                        m_playerBulletList.remove(k);
+                        playerBulletCount--;
+                        k--;
+
+                        alien.destroy();
+                        m_alienList.remove(i);
+                        alienCount--;
+                        i--;
+                    }
                 }
             }
         }
-        cleanLists();
     }
 
     void addBullet(Bullet newBullet)
@@ -84,43 +107,6 @@ public class CollisionLists {
     void removeAlien(Alien oldAlien)
     {
         m_alienList.remove(oldAlien);
-    }
-
-    private void cleanLists()
-    {
-        for(int i = m_alienList.size() - 1; i >= 0; i--) {
-            if (!m_alienList.get(i).m_isAlive) {
-                //m_alienList.get(i).destroy();
-                m_alienList.remove(i);
-            }
-        }
-        for(int i = m_alienBulletList.size() - 1; i >= 0; i--)
-        {
-            if(!m_alienBulletList.get(i).m_isAlive)
-            {
-                m_alienBulletList.get(i).destroy();
-                m_alienBulletList.remove(i);
-            }
-        }
-
-
-        for(int i = m_playerBulletList.size() - 1; i >= 0; i--)
-        {
-            if(!m_playerBulletList.get(i).m_isAlive)
-            {
-                m_playerBulletList.get(i).destroy();
-                m_playerBulletList.remove(i);
-            }
-        }
-
-//        for(int i = m_asteroidList.size() - 1; i >= 0; i--)
-//        {
-//            if(m_asteroidList.get(i).m_isAlive == false)
-//            {
-//                m_asteroidList.get(i).destroy();
-//                m_asteroidList.remove(i);
-//            }
-//        }
     }
 
     public int alienCount()

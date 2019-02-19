@@ -1,5 +1,9 @@
 package com.northumbria.en0618;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.widget.Space;
+
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
@@ -100,6 +104,36 @@ public class SpaceInvadersActivity extends GameActivity
         else
         {
             // GAME OVER
+            getGame().pause(false);
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    AlertDialog dialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
+                            .setTitle("Game Over")
+                            .setMessage("You suck\nScore:" + m_player.score)
+                            .setNegativeButton("Main Menu", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    finish();
+                                }
+                            })
+                            .setPositiveButton("Restart", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    getGame().unPause();
+                                    // Restart the game here
+                                }
+                            })
+                            .create();
+                    dialog.show();
+                }
+            });
         }
     }
 }
