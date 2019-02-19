@@ -10,11 +10,12 @@ enum direction {
     UP, DOWN
 }
 
-public class Bullet extends CollidableGameObject {
+public class Bullet extends CollidableGameObject
+{
 
     private direction m_moveDir;
 
-    public Bullet(Context context, float x, float y, direction moveDir, @DrawableRes int spriteType)
+    Bullet(Context context, float x, float y, direction moveDir, @DrawableRes int spriteType)
     {
         super(context, Sprite.getSprite(context, spriteType, true),
                 x, y, 50.0f, 50.0f);
@@ -34,16 +35,7 @@ public class Bullet extends CollidableGameObject {
 
     public boolean shotByAlien()
     {
-        boolean result;
-        if(m_moveDir == direction.UP)
-        {
-            result = false;
-        }
-        else
-        {
-            result = true;
-        }
-        return result;
+        return m_moveDir != direction.UP;
     }
 
 
@@ -52,5 +44,4 @@ public class Bullet extends CollidableGameObject {
     {
         m_isAlive = false;
     }
-
 }

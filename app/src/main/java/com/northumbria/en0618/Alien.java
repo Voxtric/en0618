@@ -9,8 +9,8 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class Alien extends CollidableGameObject {
 
-    private float m_x = -75.0f;
-    private float m_y = 0.0f;
+    private float m_xSpeed = -75.0f;
+    private float m_ySpeed = 0.0f;
     private boolean m_goingDown = false;
     private float m_size;
     private float m_lastY;
@@ -20,14 +20,14 @@ public class Alien extends CollidableGameObject {
         super(context, Sprite.getSprite(context, spriteType, true), x, y, size, size);
         //Log.e("ALIEN SPAWNED", "ALIEN SPAWNED");
         m_goingDown = false;
-        m_x = moveSpeed;
-        if(m_x > 0)
+        m_xSpeed = moveSpeed;
+        if(m_xSpeed > 0)
         {
-            m_y = -m_x;
+            m_ySpeed = -m_xSpeed;
         }
         else
         {
-            m_y = m_x;
+            m_ySpeed = m_xSpeed;
         }
         m_size = size;
         if(spriteType == R.drawable.alien_large)
@@ -46,55 +46,56 @@ public class Alien extends CollidableGameObject {
                 m_isAlive = false;
             }
         }
+
         if(m_goingDown)
         {
             if(getY() <= m_lastY - m_size)
             {
-                moveBy(m_x * frameTime, 0.0f);
+                moveBy(m_xSpeed * frameTime, 0.0f);
                 m_goingDown = false;
             }
             else
             {
-                moveBy(0.0f, m_y * frameTime);
+                moveBy(0.0f, m_ySpeed * frameTime);
             }
         }
         else
         {
-            moveBy(m_x * frameTime, 0.0f);
+            moveBy(m_xSpeed * frameTime, 0.0f);
         }
     }
-
 
     @Override
     public void collidedWith(objectType other)
     {
         if(other == objectType.bullet)
         {
-            m_isAlive = false;
+            destroy();
         }
     }
 
-    public void switchDirection()
+    public void switchDirection(float deltaTime)
     {
         if(!m_goingDown)
         {
-            m_x = -m_x;
+            m_xSpeed = -m_xSpeed;
             m_lastY = getY();
             m_goingDown = true;
+            moveBy(m_xSpeed * deltaTime, 0.0f);
         }
     }
 
     public void incSpeed()
     {
-        float spdMult = m_x / 5;
-        m_x = m_x + spdMult;
-        if(m_x > 0)
+        float spdMult = m_xSpeed / 5;
+        m_xSpeed = m_xSpeed + spdMult;
+        if(m_xSpeed > 0)
         {
-            m_y = -m_x;
+            m_ySpeed = -m_xSpeed;
         }
         else
         {
-            m_y = m_x;
+            m_ySpeed = m_xSpeed;
         }
     }
 

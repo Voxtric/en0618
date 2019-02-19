@@ -12,7 +12,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class AlienManager {
+public class AlienManager
+{
+    private static final float BORDER = 40.0f;
+
     private List<List<Alien>> m_alienColumns = new ArrayList<>();
     private CollisionLists m_colList;
     private int m_bulletCounter = 0;
@@ -68,47 +71,37 @@ public class AlienManager {
         }
     }
 
-    public void checkSides()
+    private void checkSides(float deltaTime)
     {
         boolean changeDir = false;
-        for(Iterator<List<Alien>> l = m_alienColumns.iterator(); l.hasNext();)
+        for (List<Alien> tempList : m_alienColumns)
         {
-            List<Alien> tempList = l.next();
-            for(Iterator<Alien> k = tempList.iterator(); k.hasNext();)
+            for (Alien tempAlien : tempList)
             {
-                Alien tempAlien = k.next();
-                if(tempAlien.getX() <= 100.0f ||
-                        tempAlien.getX() >= Input.getScreenWidth() - 100.0f)
+                if (tempAlien.getX() < (tempAlien.getXSize() / 2.0f) + BORDER ||
+                        tempAlien.getX() > Input.getScreenWidth() - (tempAlien.getXSize() / 2.0f) - BORDER)
                 {
                     changeDir = true;
+                    break;
                 }
             }
         }
-
 
         if(changeDir)
         {
-            for(Iterator<List<Alien>> l = m_alienColumns.iterator(); l.hasNext();)
+            for (List<Alien> tempList : m_alienColumns)
             {
-                List<Alien> tempList = l.next();
-                for(Iterator<Alien> k = tempList.iterator(); k.hasNext();)
+                for (Alien tempAlien : tempList)
                 {
-                    Alien tempAlien = k.next();
-                    tempAlien.switchDirection();
+                    tempAlien.switchDirection(deltaTime);
                 }
             }
         }
-
-//        Alien tempAlien = currentColumn.get(1);
-//        if(tempAlien.getX() <= 50.0f)
-//        {
-//            tempAlien.moveRight();
-//        }
     }
 
-    public void update(float frameTime, int alienCount)
+    public void update(float deltaTime, int alienCount)
     {
-        checkSides();
+        checkSides(deltaTime);
         if(m_bossCounter > 400)
         {
             Alien bossAlien = new Alien(m_game.getActivity(),
@@ -155,30 +148,24 @@ public class AlienManager {
     }
 
     private void checkLives()
-        {
+    {
         for(int i = 0; i < m_alienColumns.size(); i++)
         {
-//            for(int k = m_alienColumns.get(i).size() - 1; i >= 0; i--)
-//            {
-////                if(!m_alienColumns.get(i).get(k).m_isAlive)
-////                {
-////                    m_colList.removeAlien(m_alienColumns.get(i).get(k));
-////                    //m_alienColumns.get(i).get(k).destroy();
-////                    m_alienColumns.get(i).remove(k);
-////                }
-//            }
-////            if(m_alienColumns.size() == 0)
-//            {
-//                Log.e("Array Index", String.valueOf(i));
-//                m_alienColumns.remove(i);
-//            }
-        }
+            List<Alien> alienColumn = m_alienColumns.get(i);
+            for (int j = 0; j < alienColumn.size(); j++)
+            {
+                if (alienColumn.get(j).isDestroyed())
+                {
+                    m_colList.removeAlien(alienColumn.get(j));
+                    alienColumn.remove(j);
+                    j--;
+                }
+            }
 
-        for(int i = m_alienColumns.size() - 1; i >= 0; i--)
-        {
-            if(m_alienColumns.get(i).size() == 0)
+            if (alienColumn.size() == 0)
             {
                 m_alienColumns.remove(i);
+                i--;
             }
         }
     }
