@@ -10,7 +10,14 @@ import com.northumbria.en0618.engine.Input;
 
 public class Player extends CollidableGameObject
 {
-    private static final float BORDER = 40.0f;
+    private static final float SCREEN_DISTANCE_PER_SECOND = 0.6f;
+    private static final float SCREEN_DISTANCE_SIDE_BORDER = 0.02f;
+    private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.05f;
+    private static final float SCREEN_DISTANCE_WIDTH = 0.2f;
+    private static final float HEIGHT_TO_WIDTH_RATIO = 0.6f;
+    private static final float LEVEL_COMPLETE_SPEED_MODIFIER = 5.0f;
+
+    private static final int START_LIVES_COUNT = 3;
 
     public static final String PREFERENCE_KEY_INPUT_METHOD = "input_method";
     public static final int INPUT_METHOD_SCREEN_SIDE = 0;
@@ -19,21 +26,30 @@ public class Player extends CollidableGameObject
 
     private static int s_inputMethod;
 
+    private float m_moveSpeed;
+    private float m_sideBorder;
+
     public static void updateInputMethod(Context context)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         s_inputMethod = preferences.getInt(PREFERENCE_KEY_INPUT_METHOD, INPUT_METHOD_SCREEN_SIDE);
     }
 
-    public int m_lives = 3;
+    public int m_lives = START_LIVES_COUNT;
     public int score = 0;
-
 
     Player(Context context)
     {
-        super(context, Sprite.getSprite(context, R.drawable.player, true),
-                Input.getScreenWidth() / 2.0f, 75.0f, 200, 125);
+        super(context,
+                Sprite.getSprite(context, R.drawable.player, true),
+                Input.getScreenWidth() * 0.5f,
+                Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER,
+                Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH,
+                (Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH) * HEIGHT_TO_WIDTH_RATIO);
         updateInputMethod(context);
+
+        m_moveSpeed = Input.getScreenWidth() * SCREEN_DISTANCE_PER_SECOND;
+        m_sideBorder = Input.getScreenHeight() * SCREEN_DISTANCE_SIDE_BORDER;
     }
 
     @Override
@@ -46,16 +62,16 @@ public class Player extends CollidableGameObject
         if (s_inputMethod == INPUT_METHOD_SCREEN_TILT)
         {
             float deviceRoll = Input.getDeviceRoll();
-            if (deviceRoll > 5.0f)
+            if (deviceRoll > 0.0f)
             {
-                if (x < (screenWidth - halfWidth - BORDER))
+                if (x < (screenWidth - halfWidth - m_sideBorder))
                 {
-                    moveBy(800.0f * deltaTime, 0.0f);
+                    moveBy(m_moveSpeed* deltaTime, 0.0f);
                 }
             }
-            else if ((deviceRoll < -5.0f) && (x > (halfWidth + BORDER)))
+            else if ((deviceRoll < 0.0f) && (x > (halfWidth + m_sideBorder)))
             {
-                moveBy(-800.0f * deltaTime, 0.0f);
+                moveBy(-m_moveSpeed * deltaTime, 0.0f);
             }
         }
         else if (s_inputMethod == INPUT_METHOD_PLAYER_SIDE)
@@ -65,15 +81,15 @@ public class Player extends CollidableGameObject
                 float touchX = Input.getCurrentTouchX();
                 if (touchX > x)
                 {
-                    if (x < (screenWidth - halfWidth - BORDER))
+                    if (x < (screenWidth - halfWidth - m_sideBorder))
                     {
-                        float xMove = Math.min(800.0f * deltaTime, touchX - x);
+                        float xMove = Math.min(m_moveSpeed * deltaTime, touchX - x);
                         moveBy(xMove, 0.0f);
                     }
                 }
-                else if ((touchX < x) && (x > (halfWidth + BORDER)))
+                else if ((touchX < x) && (x > (halfWidth + m_sideBorder)))
                 {
-                    float xMove = Math.min(800.0f * -deltaTime, x - touchX);
+                    float xMove = Math.min(m_moveSpeed * -deltaTime, x - touchX);
                     moveBy(xMove, 0.0f);
                 }
             }
@@ -85,32 +101,32 @@ public class Player extends CollidableGameObject
                 float touchX = Input.getCurrentTouchX();
                 if (touchX > (screenWidth * 0.5f))
                 {
-                    if (x < (screenWidth - halfWidth - BORDER))
+                    if (x < (screenWidth - halfWidth - m_sideBorder))
                     {
-                        moveBy(800.0f * deltaTime, 0.0f);
+                        moveBy(m_moveSpeed * deltaTime, 0.0f);
                     }
                 }
-                else if (x > (halfWidth + BORDER))
+                else if (x > (halfWidth + m_sideBorder))
                 {
-                    moveBy(-800.0f * deltaTime, 0.0f);
+                    moveBy(-m_moveSpeed * deltaTime, 0.0f);
                 }
             }
         }
     }
 
-    public boolean gameOver()
+    public boolean isDead()
     {
         return m_lives <= 0;
     }
 
     public boolean newLevel()
     {
-        moveBy(0.0f, 100.0f);
+        moveBy(0.0f, m_moveSpeed * LEVEL_COMPLETE_SPEED_MODIFIER);
         boolean newLevel = false;
         if(getY() >= Input.getScreenHeight())
         {
             newLevel = true;
-            setPosition(Input.getScreenWidth() / 2.0f, 75);
+            setPosition(Input.getScreenWidth() * 0.5f, Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER);
         }
         return newLevel;
     }

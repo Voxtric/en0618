@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 public class Input
 {
     private static final int FROM_RADS_TO_DEGS = -57;
+    private static final float DEAD_ZONE = 5.0f;
 
     private static class RotationSensorListener implements SensorEventListener
     {
@@ -192,6 +193,15 @@ public class Input
         SensorManager.getOrientation(adjustedRotationMatrix, orientation);
         s_pitch = orientation[1] * FROM_RADS_TO_DEGS;
         s_roll = orientation[2] * -FROM_RADS_TO_DEGS;
+
+        if (s_pitch < DEAD_ZONE)
+        {
+            s_pitch = 0.0f;
+        }
+        if (s_roll < DEAD_ZONE)
+        {
+            s_roll = 0.0f;
+        }
     }
 
     public static void update()

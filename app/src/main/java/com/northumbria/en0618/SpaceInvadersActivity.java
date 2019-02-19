@@ -2,7 +2,6 @@ package com.northumbria.en0618;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.widget.Space;
 
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
@@ -69,7 +68,7 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameUpdate(float deltaTime)
     {
         Game m_game = getGame();
-        if(!m_player.gameOver())
+        if(!m_player.isDead())
         {
             m_collidableObjects.checkCollisions();
             m_alienManager.update(deltaTime, m_collidableObjects.alienCount());
