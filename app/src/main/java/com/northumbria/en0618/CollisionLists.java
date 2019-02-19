@@ -111,4 +111,10 @@ public class CollisionLists {
     {
         return m_alienList.size() > 0;
     }
+
+    public void cleanLists()
+    {
+        m_alienBulletList.clear();
+        m_playerBulletList.clear();
+    }
 }

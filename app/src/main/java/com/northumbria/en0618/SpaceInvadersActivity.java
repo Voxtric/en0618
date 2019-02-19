@@ -98,6 +98,8 @@ public class SpaceInvadersActivity extends GameActivity
             {
                 if(m_player.newLevel())
                 {
+                    m_collidableObjects.cleanLists();
+                    m_player = new Player(m_game.getActivity());
                     m_alienManager.createAliens(m_game);
                 }
             }
