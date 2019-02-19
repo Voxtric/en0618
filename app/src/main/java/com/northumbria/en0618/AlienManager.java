@@ -27,7 +27,7 @@ public class AlienManager
     private static final float SCREEN_DISTANCE_GAP_BETWEEN_ALIENS = 0.05f;
     private static final float SCREEN_DISTANCE_SPACE_UNTIL_EDGE = 0.3f;
     private static final float SCREEN_DISTANCE_SIDE_BORDER = 0.02f;
-    private static final float SCREEN_DISTANCE_START_HEIGHT = 0.75f;
+    private static final float SCREEN_DISTANCE_START_HEIGHT = 0.8f;
 
     private static final float BOSS_ALIEN_SIZE_MULTIPLIER = 1.3f;
     private static final float BOSS_ALIEN_SPEED_MULTIPLIER = 5.0f;
@@ -74,7 +74,7 @@ public class AlienManager
         float xPosition = m_sideBorder + (m_alienSize * 0.5f);
         for(int i = 0; i < COLUMNS; i++)
         {
-            float yPosition = Input.getScreenHeight() * SCREEN_DISTANCE_START_HEIGHT;
+            float yPosition = lowestHeight;
             List<Alien> currentColumn = new ArrayList<>();
             for(int j = 0; j < ROWS; j++)
             {
@@ -83,7 +83,7 @@ public class AlienManager
                 currentColumn.add(tempAlien);
                 game.addGameObject(tempAlien);
                 m_colList.addAlien(tempAlien);
-                yPosition -= m_alienSize + (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS);
+                yPosition += m_alienSize + (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS);
             }
             m_alienColumns.add(currentColumn);
             xPosition += m_alienSize + (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS);
