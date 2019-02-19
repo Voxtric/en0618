@@ -32,11 +32,11 @@ public class SpaceInvadersActivity extends GameActivity
         game.addGameObject(settingsButton, true);
 
         // Add the tiling background.
-        float height = Input.getScreenHeight() + (Input.getScreenHeight() % (int)BackgroundTile.SIZE) + (BackgroundTile.SIZE * 0.5f);
-
+        int count = (int)(Input.getScreenHeight() / BackgroundTile.SIZE) + 2;
+        float height = count * BackgroundTile.SIZE;
         for (float x = BackgroundTile.SIZE * 0.5f; x < Input.getScreenWidth() + (BackgroundTile.SIZE * 0.5f); x += BackgroundTile.SIZE)
         {
-            for (float y = BackgroundTile.SNAP_HEIGHT; y <= height; y += BackgroundTile.SIZE)
+            for (float y = BackgroundTile.SNAP_HEIGHT; y < height; y += BackgroundTile.SIZE)
             {
                 BackgroundTile backgroundTile = new BackgroundTile(this, x, y, height);
                 ((Sprite)backgroundTile.getRenderable()).setUseTransparency(false);
