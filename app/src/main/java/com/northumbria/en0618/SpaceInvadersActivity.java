@@ -73,7 +73,7 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameUpdate(float deltaTime)
     {
         Game m_game = getGame();
-        if(!m_player.isDead())
+        if(!m_player.isDead() || m_alienManager.checkAlienWin())
         {
             // Checks if Player has any lives left
             if(m_collidableObjects.alienAlive())

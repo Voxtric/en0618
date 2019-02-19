@@ -30,6 +30,7 @@ public class AlienManager
     private Game m_game;
     private float m_alienMoveSpeed = -70.0f;
     private float m_alienSize = 100.0f;
+    private boolean m_alienWin = false;
 
     private Random m_random = new Random(System.currentTimeMillis());
 
@@ -78,6 +79,10 @@ public class AlienManager
                 {
                     changeDir = true;
                     break;
+                }
+                if(tempAlien.getY() < 0.0f)
+                {
+                    m_alienWin = true;
                 }
             }
         }
@@ -166,5 +171,10 @@ public class AlienManager
                 tempAlien.increaseSpeed();
             }
         }
+    }
+
+    public boolean checkAlienWin()
+    {
+        return m_alienWin;
     }
 }
