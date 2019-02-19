@@ -14,12 +14,13 @@ public class AlienManager
 {
     private static final float BORDER = 40.0f;
     private static final float BOSS_SPAWN_WAIT = 15.0f; // In seconds
+    private static final float SHOT_SPAWN_WAIT = 3.0f;  // In seconds
 
     private float m_timeToBossSpawn = BOSS_SPAWN_WAIT;
+    private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
 
     private List<List<Alien>> m_alienColumns = new ArrayList<>();
     private CollisionLists m_colList;
-    private int m_bulletCounter = 0;
     private Game m_game;
 
     // Defines the number of Aliens to spawn
@@ -125,7 +126,8 @@ public class AlienManager
             m_timeToBossSpawn = BOSS_SPAWN_WAIT;
         }
 
-        if(m_bulletCounter == 150)
+        m_timeToShotSpawn -= deltaTime;
+        if(m_timeToShotSpawn <= 0.0f)
         {
             Random rand = new Random();
             int alienChoice = rand.nextInt(m_alienColumns.size());
@@ -133,11 +135,10 @@ public class AlienManager
                     R.drawable.alien_shot,
                     m_alienColumns.get(alienChoice).get(0).getX(),
                     m_alienColumns.get(alienChoice).get(0).getY() - 25.0f);
-            m_bulletCounter = 0;
             m_game.addGameObject(alienBullet);
             m_colList.addBullet(alienBullet, false);
+            m_timeToShotSpawn = SHOT_SPAWN_WAIT;
         }
-        m_bulletCounter++;
 
         if(m_alienCount != alienCount)
         {
