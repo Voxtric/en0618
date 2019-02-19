@@ -159,7 +159,6 @@ public class AlienManager
             {
                 if (alienColumn.get(j).isDestroyed())
                 {
-                    m_colList.removeAlien(alienColumn.get(j));
                     alienColumn.remove(j);
                     j--;
                     increaseSpeed();

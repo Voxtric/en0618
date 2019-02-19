@@ -26,28 +26,34 @@ public class Alien extends CollidableGameObject
 
         if(m_goingDown)
         {
+            // If Alien is Moving down
             if(getY() <= m_lastY - getYSize())
             {
+                // If Alien has moved at least it's own size in a downward distance
+                // Move sideways and stop going down
                 moveBy(m_moveSpeed * frameTime, 0.0f);
                 m_goingDown = false;
             }
             else
             {
+                // Otherwise, Move down until above is true
                 moveBy(0.0f, -Math.abs(m_moveSpeed) * frameTime);
             }
         }
         else
         {
+            // Not Moving down, Horizontal Movement
             moveBy(m_moveSpeed * frameTime, 0.0f);
         }
     }
 
     void switchDirection(float deltaTime)
     {
+        // Switch Direction if not going down
         if(!m_goingDown)
         {
-            m_moveSpeed = -m_moveSpeed;
-            m_lastY = getY();
+            m_moveSpeed = -m_moveSpeed; // Switches Move speed
+            m_lastY = getY(); // Saving Current Y
             m_goingDown = true;
             moveBy(m_moveSpeed * deltaTime, 0.0f);
         }
@@ -55,6 +61,8 @@ public class Alien extends CollidableGameObject
 
     void increaseSpeed()
     {
+        // Increments speed
+        // Ratio TBD
         m_moveSpeed *= 1.3f;
     }
 }

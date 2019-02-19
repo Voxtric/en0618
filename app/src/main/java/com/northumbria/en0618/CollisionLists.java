@@ -21,11 +21,15 @@ public class CollisionLists {
         int alienBulletCount = m_alienBulletList.size();
         if(alienBulletCount > 0)
         {
+            // Loops through each Alien Bullet to check for
+            // Collision with Player or Asteroids
             for(int i = 0; i < alienBulletCount; i++)
             {
                 Bullet bullet = m_alienBulletList.get(i);
                 if(m_player.collidesWith(bullet))
                 {
+                    // If Player and Bullet collide, lower payer health and
+                    // destroy bullet
                     bullet.destroy();
                     m_alienBulletList.remove(i);
                     alienBulletCount--;
@@ -35,6 +39,7 @@ public class CollisionLists {
                     m_player.m_lives--;
                     if (m_player.m_lives == 0)
                     {
+                        // Destroy player if lives = 0
                         m_player.destroy();
                         break;
                     }
@@ -48,21 +53,26 @@ public class CollisionLists {
         {
             for(int i = 0; i < alienCount; i++)
             {
+                // Loops through each Player Bullet to check for
+                // Collision with Aliens or Asteroids
                 Alien alien = m_alienList.get(i);
 
                 if(m_player.collidesWith(alien))
                 {
+                    // Player vs Alien? Kill player.
                     m_player.m_lives = 0;
                     m_player.destroy();
                 }
 
                 for(int k = 0; k < playerBulletCount; k++)
                 {
+                    // Alien vs Bullet? Destroy both, award Points.
                     Bullet playerBullet = m_playerBulletList.get(k);
                     if(alien.collidesWith(playerBullet))
                     {
                         if(alien instanceof BossAlien)
                         {
+                            // REMOVE LITERALS, REPLACE WITH VARIABLE NUMBER
                             m_player.score += 150;
                         }
                         else
@@ -70,11 +80,13 @@ public class CollisionLists {
                             m_player.score += 50;
                         }
 
+                        // Destroy Bullet
                         playerBullet.destroy();
                         m_playerBulletList.remove(k);
                         playerBulletCount--;
                         k--;
 
+                        // Destroy Alien
                         alien.destroy();
                         m_alienList.remove(i);
                         alienCount--;
@@ -87,6 +99,7 @@ public class CollisionLists {
 
     void addBullet(Bullet newBullet, boolean firedByPlayer)
     {
+        // Add Bullet to List based on who fired it.
         if(firedByPlayer)
         {
             m_playerBulletList.add(newBullet);
@@ -99,12 +112,8 @@ public class CollisionLists {
 
     void addAlien(Alien newAlien)
     {
+        // Add Alien, Called by Manager
         m_alienList.add(newAlien);
-    }
-
-    void removeAlien(Alien oldAlien)
-    {
-        m_alienList.remove(oldAlien);
     }
 
     public boolean alienAlive()
