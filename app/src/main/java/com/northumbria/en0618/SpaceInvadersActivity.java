@@ -129,6 +129,8 @@ public class SpaceInvadersActivity extends GameActivity
                                 }
                             })
                             .create();
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }
             });

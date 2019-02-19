@@ -16,6 +16,12 @@ public class AlienManager
     private static final float BOSS_SPAWN_WAIT = 15.0f; // In seconds
     private static final float SHOT_SPAWN_WAIT = 2.5f;  // In seconds
 
+    // Defines the number of Aliens to spawn
+    public static final int COLUMNS = 5;
+    public static final int ROWS = 4;
+    private static final int MAX_COUNT = COLUMNS * ROWS;
+    private static final int STEPS_TO_PLAYER = 7;
+
     private float m_timeToBossSpawn = BOSS_SPAWN_WAIT;
     private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
 
@@ -23,10 +29,6 @@ public class AlienManager
     private CollisionLists m_colList;
     private Game m_game;
 
-    // Defines the number of Aliens to spawn
-    final private int m_numOfRows = 4;
-    final private int m_numOfColumns = 4;
-    private int m_alienCount = m_numOfColumns * m_numOfRows;
     private float m_alienMoveSpeed = -70.0f;
     private float m_alienSize = 100.0f;
 
@@ -40,30 +42,20 @@ public class AlienManager
 
     public void createAliens(Game game)
     {
-        for(int i = 0; i < m_numOfColumns; i++)
+        @DrawableRes int[] alienSprites = new int[]
+        {
+               R.drawable.alien_1,
+               R.drawable.alien_2,
+               R.drawable.alien_3,
+               R.drawable.alien_4
+        };
+        for(int i = 0; i < COLUMNS; i++)
         {
             List<Alien> currentColumn = new ArrayList<>();
-            for(int j = 0; j < m_numOfRows; j++)
+            for(int j = 0; j < ROWS; j++)
             {
-                @DrawableRes int spriteType;
-                if(j == m_numOfRows - 1)
-                {
-                    spriteType = R.drawable.alien_4;
-                }
-                else if(j == m_numOfRows - 2)
-                {
-                    spriteType = R.drawable.alien_3;
-                }
-                else if(j == m_numOfRows - 3)
-                {
-                    spriteType = R.drawable.alien_2;
-                }
-                else
-                {
-                    spriteType = R.drawable.alien_1;
-                }
-                float testx = Input.getScreenHeight() - (((m_numOfRows * m_alienSize) * 2) + m_numOfRows * 2);
-                Alien tempAlien = new Alien(game.getActivity(), spriteType,
+                float testx = Input.getScreenHeight() - (((ROWS * m_alienSize) * 2) + ROWS * 2);
+                Alien tempAlien = new Alien(game.getActivity(), alienSprites[j],
                         300.0f + (i * 200.0f), testx + (j * (m_alienSize * 2)),
                         m_alienSize, m_alienMoveSpeed);
                 currentColumn.add(tempAlien);
@@ -140,20 +132,21 @@ public class AlienManager
             m_timeToShotSpawn = SHOT_SPAWN_WAIT;
         }
 
-        if(m_alienCount != alienCount)
-        {
-            while(m_alienCount > alienCount)
-            {
-                m_alienCount--;
-                for (List<Alien> tempList : m_alienColumns)
-                {
-                    for (Alien tempAlien : tempList)
-                    {
-                        tempAlien.increaseSpeed();
-                    }
-                }
-            }
-        }
+        // TODO: Fix this.
+//        if(MAX_COUNT != alienCount)
+//        {
+//            while(m_alienCount > alienCount)
+//            {
+//                m_alienCount--;
+//                for (List<Alien> tempList : m_alienColumns)
+//                {
+//                    for (Alien tempAlien : tempList)
+//                    {
+//                        tempAlien.increaseSpeed();
+//                    }
+//                }
+//            }
+//        }
         checkLives();
     }
 
