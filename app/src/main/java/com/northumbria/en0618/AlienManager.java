@@ -2,19 +2,20 @@ package com.northumbria.en0618;
 
 
 import android.support.annotation.DrawableRes;
-import android.util.Log;
 
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.Input;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 public class AlienManager
 {
     private static final float BORDER = 40.0f;
+    private static final float BOSS_SPAWN_WAIT = 15.0f; // In seconds
+
+    private float m_timeToBossSpawn = BOSS_SPAWN_WAIT;
 
     private List<List<Alien>> m_alienColumns = new ArrayList<>();
     private CollisionLists m_colList;
@@ -26,10 +27,11 @@ public class AlienManager
     final private int m_numOfColumns = 4;
     private int m_alienCount = m_numOfColumns * m_numOfRows;
     private float m_alienMoveSpeed = -70.0f;
-    private float m_alienSize = 80.0f;
-    private int m_bossCounter = 0;
+    private float m_alienSize = 100.0f;
 
-    AlienManager(CollisionLists collisionList, Game game )
+    private Random m_random = new Random(System.currentTimeMillis());
+
+    AlienManager(CollisionLists collisionList, Game game)
     {
         m_colList = collisionList;
         m_game = game;
@@ -102,17 +104,27 @@ public class AlienManager
     public void update(float deltaTime, int alienCount)
     {
         checkSides(deltaTime);
-        if(m_bossCounter > 400)
+
+        m_timeToBossSpawn -= deltaTime;
+        if(m_timeToBossSpawn <= 0.0f)
         {
-            Alien bossAlien = new Alien(m_game.getActivity(),
-                    R.drawable.alien_large,
-                    0.0f, Input.getScreenHeight() - m_alienSize - 20.0f,
-                    m_alienSize, -m_alienMoveSpeed);
+            Alien bossAlien;
+            if (m_random.nextBoolean())
+            {
+                bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_right,
+                        -m_alienSize * 0.5f, m_alienSize * 1.2f, -m_alienMoveSpeed * 3.0f);
+            }
+            else
+            {
+                bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_left,
+                        Input.getScreenWidth() + (m_alienSize * 0.5f), m_alienSize * 1.2f, m_alienMoveSpeed * 3.0f);
+            }
+
             m_game.addGameObject(bossAlien);
             m_colList.addAlien(bossAlien);
-            m_bossCounter = 0;
+            m_timeToBossSpawn = BOSS_SPAWN_WAIT;
         }
-        m_bossCounter++;
+
         if(m_bulletCounter == 150)
         {
             Random rand = new Random();
@@ -133,13 +145,11 @@ public class AlienManager
             while(m_alienCount > alienCount)
             {
                 m_alienCount--;
-                for(Iterator<List<Alien>> l = m_alienColumns.iterator(); l.hasNext();)
+                for (List<Alien> tempList : m_alienColumns)
                 {
-                    List<Alien> tempList = l.next();
-                    for (Iterator<Alien> k = tempList.iterator(); k.hasNext(); )
+                    for (Alien tempAlien : tempList)
                     {
-                        Alien tempAlien = k.next();
-                        tempAlien.incSpeed();
+                        tempAlien.increaseSpeed();
                     }
                 }
             }

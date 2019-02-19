@@ -63,7 +63,7 @@ public class CollisionLists {
                     Bullet playerBullet = m_playerBulletList.get(k);
                     if(alien.collidesWith(playerBullet))
                     {
-                        if(alien.isBoss())
+                        if(alien instanceof BossAlien)
                         {
                             m_player.score += 150;
                         }

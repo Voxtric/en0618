@@ -22,7 +22,7 @@ public class Player extends CollidableGameObject
     public static void updateInputMethod(Context context)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        s_inputMethod = preferences.getInt("input_method", INPUT_METHOD_SCREEN_SIDE);
+        s_inputMethod = preferences.getInt(PREFERENCE_KEY_INPUT_METHOD, INPUT_METHOD_SCREEN_SIDE);
     }
 
     public int m_lives = 3;
