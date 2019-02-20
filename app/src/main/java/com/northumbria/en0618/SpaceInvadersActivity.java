@@ -5,6 +5,10 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
@@ -20,7 +24,7 @@ public class SpaceInvadersActivity extends GameActivity
 {
     private static final int POWER_SAVER_FRAME_RATE = 30;
 
-    private static final float PLAYER_SHOT_SPAWN_WAIT = 0.9f;
+    private static final float PLAYER_SHOT_SPAWN_WAIT = 0.1f;//0.9f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
 
     private static final float SCREEN_DISTANCE_FONT_SIZE = 0.05f;
@@ -118,7 +122,6 @@ public class SpaceInvadersActivity extends GameActivity
                     m_collidableObjects.addBullet(bullet, true);
                     m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
                 }
-                    // m_collidableObjects.newLevel();
             }
             else
             {
@@ -139,6 +142,26 @@ public class SpaceInvadersActivity extends GameActivity
 
                     m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
                     m_asteroidManager.createAsteroids();
+
+                    final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                    if (account != null)
+                    {
+                        final String[] levelAchievementIDs = getResources().getStringArray(R.array.level_achievement_ids);
+                        if (m_currentLevel <= levelAchievementIDs.length)
+                        {
+                            runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    GamesClient gamesClient = Games.getGamesClient(SpaceInvadersActivity.this, account);
+                                    gamesClient.setViewForPopups(getSurfaceView());
+                                    Games.getAchievementsClient(SpaceInvadersActivity.this, account)
+                                            .unlock(levelAchievementIDs[m_currentLevel - 2]);
+                                }
+                            });
+                        }
+                    }
                 }
             }
         }
