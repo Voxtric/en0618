@@ -2,6 +2,8 @@ package com.northumbria.en0618;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
@@ -9,10 +11,13 @@ import com.northumbria.en0618.engine.GameObject;
 import com.northumbria.en0618.engine.Input;
 import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.Font;
+import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class SpaceInvadersActivity extends GameActivity
 {
+    private static final int POWER_SAVER_FRAMERATE = 30;
+
     private static final float SHOT_SPAWN_WAIT = 0.9f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
 
@@ -33,6 +38,13 @@ public class SpaceInvadersActivity extends GameActivity
     {
         Game game = getGame();
         game.setPauseDialogLayoutID(R.layout.dialog_game_pause);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (preferences.getBoolean(MainMenuActivity.PREFERENCE_KEY_POWER_SAVER, false))
+        {
+            ((GameSurfaceView) getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAMERATE);
+        }
+
 
         Font font = Font.getFont(this, "death_star.ttf", (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 4);
         // Score

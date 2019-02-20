@@ -61,7 +61,8 @@ public class Game
                         m_pauseDialog = new AlertDialog.Builder(m_activity)
                                 .setView(view)
                                 .create();
-                    } else
+                    }
+                    else
                     {
                         m_pauseDialog = new AlertDialog.Builder(m_activity)
                                 .setTitle("Game Paused")

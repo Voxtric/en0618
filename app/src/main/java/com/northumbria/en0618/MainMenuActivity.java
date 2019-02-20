@@ -36,6 +36,8 @@ public class MainMenuActivity extends AppCompatActivity
     private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
     private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
 
+    public static final String PREFERENCE_KEY_POWER_SAVER = "power_saver";
+
     NotificationCompat.Builder mBuilder;
 
     MediaPlayer mediaPlayer;
@@ -253,6 +255,22 @@ public class MainMenuActivity extends AppCompatActivity
         // Update the settings and the player.
         preferences.edit().putInt(Player.PREFERENCE_KEY_INPUT_METHOD, newInputMethod).commit();
         Player.updateInputMethod(this);
+    }
+
+    public void togglePowerSaver(View view)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean powerSaverOn = preferences.getBoolean(PREFERENCE_KEY_POWER_SAVER, false);
+        boolean newPowerSaverOn = !powerSaverOn;
+        if (newPowerSaverOn)
+        {
+            // TODO: Update button text here.
+        }
+        else
+        {
+            // TODO: Update button text here.
+        }
+        preferences.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, newPowerSaverOn).apply();
     }
 
     private void createNotificationChannel()
