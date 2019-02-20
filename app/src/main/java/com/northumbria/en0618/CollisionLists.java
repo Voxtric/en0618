@@ -19,10 +19,12 @@ public class CollisionLists {
     void checkCollisions()
     {
         int alienBulletCount = m_alienBulletList.size();
+        int asteroidCount = m_asteroidList.size();
         if(alienBulletCount > 0)
         {
             // Loops through each Alien Bullet to check for
             // Collision with Player or Asteroids
+
             for(int i = 0; i < alienBulletCount; i++)
             {
                 Bullet bullet = m_alienBulletList.get(i);
@@ -42,11 +44,29 @@ public class CollisionLists {
                         break;
                     }
                 }
+                if(asteroidCount > 0)
+                {
+                    for (int j = 0; j < asteroidCount; j++) {
+                        Asteroid asteroid = m_asteroidList.get(j);
+                        if (bullet.collidesWith(asteroid)) {
+                            bullet.destroy();
+                            m_alienBulletList.remove(i);
+                            alienBulletCount--;
+                            i--;
+
+                            asteroid.destroy();
+                            m_asteroidList.remove(j);
+                            asteroidCount--;
+                            j--;
+                        }
+                    }
+                }
             }
         }
 
         int alienCount = m_alienList.size();
         int playerBulletCount = m_playerBulletList.size();
+        asteroidCount = m_asteroidList.size();
         if(playerBulletCount > 0)
         {
             for(int i = 0; i < alienCount; i++)
@@ -59,6 +79,21 @@ public class CollisionLists {
                 {
                     // Player vs Alien? Kill player.
                     m_player.destroy();
+                }
+
+                if(asteroidCount > 0)
+                {
+                    for (int j = 0; j < asteroidCount; j++)
+                    {
+                        Asteroid asteroid = m_asteroidList.get(j);
+                        if (alien.collidesWith(asteroid))
+                        {
+                            asteroid.destroy();
+                            m_asteroidList.remove(j);
+                            asteroidCount--;
+                            j--;
+                        }
+                    }
                 }
 
                 for(int k = 0; k < playerBulletCount; k++)
@@ -91,6 +126,31 @@ public class CollisionLists {
                     }
                 }
             }
+
+            asteroidCount = m_asteroidList.size();
+            if(asteroidCount > 0)
+            {
+                for(int i = 0; i < playerBulletCount; i++)
+                {
+                    Bullet bullet = m_playerBulletList.get(i);
+                    for(int j = 0; j < asteroidCount; j++)
+                    {
+                        Asteroid asteroid = m_asteroidList.get(j);
+                        if(bullet.collidesWith(asteroid))
+                        {
+                            bullet.destroy();
+                            m_playerBulletList.remove(i);
+                            playerBulletCount--;
+                            i--;
+
+                            asteroid.destroy();
+                            m_asteroidList.remove(j);
+                            asteroidCount--;
+                            j--;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -105,6 +165,11 @@ public class CollisionLists {
         {
             m_alienBulletList.add(newBullet);
         }
+    }
+
+    void addAsteroid(Asteroid newAsteroid)
+    {
+        m_asteroidList.add(newAsteroid);
     }
 
     void addAlien(Alien newAlien)
@@ -136,11 +201,5 @@ public class CollisionLists {
         {
             m_player.destroy();
         }
-    }
-
-    public void newPlayer(Player player)
-    {
-        // Sets m_player to new value
-        m_player = player;
     }
 }
