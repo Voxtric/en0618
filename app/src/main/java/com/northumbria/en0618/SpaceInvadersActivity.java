@@ -27,6 +27,7 @@ public class SpaceInvadersActivity extends GameActivity
     TextGameObject m_LevelText;
     CollisionLists m_collidableObjects;
     AlienManager m_alienManager;
+    AsteroidManager m_asteroidManager;
 
     @Override
     public void onGameReady()
@@ -72,7 +73,10 @@ public class SpaceInvadersActivity extends GameActivity
 
         // Manager class for all ALien Objects
         m_alienManager = new AlienManager(m_collidableObjects, game);
-        m_alienManager.createAliens(game, m_currentLevel);
+        m_alienManager.createAliens(m_currentLevel);
+
+        m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
+        m_asteroidManager.createAsteroids();
 
         super.onGameReady();
     }
@@ -117,7 +121,8 @@ public class SpaceInvadersActivity extends GameActivity
                     m_player = new Player(m_game.getActivity());
                     m_game.addGameObject(m_player);
                     m_collidableObjects.newPlayer(m_player);
-                    m_alienManager.createAliens(m_game, m_currentLevel);
+                    m_alienManager.createAliens(m_currentLevel);
+                    m_asteroidManager.createAsteroids();
                 }
             }
         }
@@ -154,7 +159,8 @@ public class SpaceInvadersActivity extends GameActivity
                                     m_game.addGameObject(m_player);
                                     m_collidableObjects.cleanLists();
                                     m_collidableObjects.newPlayer(m_player);
-                                    m_alienManager.createAliens(m_game, m_currentLevel);
+                                    m_alienManager.createAliens(m_currentLevel);
+                                    m_asteroidManager.createAsteroids();
                                 }
                             })
                             .create();
