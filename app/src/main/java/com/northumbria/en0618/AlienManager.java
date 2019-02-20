@@ -19,10 +19,13 @@ public class AlienManager
             R.drawable.alien_4
     };
 
-    private static final float BOSS_SPAWN_WAIT = 10.0f; // In seconds
-    private static final float SHOT_SPAWN_WAIT = 2.5f;  // In seconds
-    private static final float SPEEDUP_DIVISOR = 0.05f; // Lower means larger speedup
-    private static final float SPEEDUP_PER_LEVEL = 1.1f;
+    private static final float BOSS_ALIEN_SPAWN_WAIT = 10.0f; // In seconds
+    private static final float ALIEN_SHOT_SPAWN_WAIT = 2.5f;  // In seconds
+
+    private static final float BOSS_ALIEN_SIZE_MULTIPLIER = 1.3f;
+    private static final float BOSS_ALIEN_SPEED_MULTIPLIER = 5.0f;
+    private static final float ALIEN_SPEEDUP_DIVISOR = 0.05f;       // Lower means larger speedup
+    private static final float ALIEN_SPEEDUP_PER_LEVEL = 1.1f;
 
     private static final float SCREEN_DISTANCE_PER_SECOND = 0.03f;
     private static final float SCREEN_DISTANCE_GAP_BETWEEN_ALIENS = 0.05f;
@@ -30,17 +33,14 @@ public class AlienManager
     private static final float SCREEN_DISTANCE_SIDE_BORDER = 0.02f;
     private static final float SCREEN_DISTANCE_START_HEIGHT = 0.8f;
 
-    private static final float BOSS_ALIEN_SIZE_MULTIPLIER = 1.3f;
-    private static final float BOSS_ALIEN_SPEED_MULTIPLIER = 5.0f;
-
     // Defines the number of Aliens to spawn
     private static final int COLUMNS = 5;
     private static final int ROWS = 4;
     private static final int MAX_COUNT = COLUMNS * ROWS;
     private static final int STEPS_TO_PLAYER = 7;
 
-    private float m_timeToBossSpawn = BOSS_SPAWN_WAIT;
-    private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+    private float m_timeToBossSpawn = BOSS_ALIEN_SPAWN_WAIT;
+    private float m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
 
     private List<List<Alien>> m_alienColumns = new ArrayList<>();
     private int m_activeAliens;
@@ -67,7 +67,7 @@ public class AlienManager
 
     public void incrementBaseAlienSpeed(int level)
     {
-        m_alienMoveSpeed *= (SPEEDUP_PER_LEVEL * level);
+        m_alienMoveSpeed *= (ALIEN_SPEEDUP_PER_LEVEL * level);
     }
 
     void createAliens()
@@ -84,7 +84,7 @@ public class AlienManager
             for(int j = 0; j < ROWS; j++)
             {
                 Alien tempAlien = new Alien(m_game.getActivity(), ALIEN_SPRITE_DRAWABLE_IDS[j % ALIEN_SPRITE_DRAWABLE_IDS.length],
-                        xPosition, yPosition, m_alienSize, m_alienMoveSpeed, lowestHeight / (float)STEPS_TO_PLAYER);
+                        xPosition, yPosition, m_alienSize, m_alienMoveSpeed, (lowestHeight - Player.getStartHeight()) / (float)STEPS_TO_PLAYER);
                 currentColumn.add(tempAlien);
                 m_game.addGameObject(tempAlien);
                 m_colList.addAlien(tempAlien);
@@ -155,7 +155,7 @@ public class AlienManager
 
                 m_game.addGameObject(bossAlien);
                 m_colList.addAlien(bossAlien);
-                m_timeToBossSpawn = BOSS_SPAWN_WAIT;
+                m_timeToBossSpawn = BOSS_ALIEN_SPAWN_WAIT;
             }
 
             m_timeToShotSpawn -= deltaTime;
@@ -169,7 +169,7 @@ public class AlienManager
                         m_alienColumns.get(alienChoice).get(0).getY() - 25.0f); // TODO: CHeck this
                 m_game.addGameObject(alienBullet);
                 m_colList.addBullet(alienBullet, false);
-                m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+                m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
             }
 
             int alienCount = m_activeAliens;
@@ -182,7 +182,7 @@ public class AlienManager
                     {
                         tempAlien.setSpeed(m_alienMoveSpeed *
                                 (1.0f + ((MAX_COUNT - m_activeAliens) /
-                                        ((float)MAX_COUNT * SPEEDUP_DIVISOR))));
+                                        ((float)MAX_COUNT * ALIEN_SPEEDUP_DIVISOR))));
                     }
                 }
             }

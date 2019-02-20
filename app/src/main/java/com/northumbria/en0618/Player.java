@@ -16,7 +16,7 @@ public class Player extends CollidableGameObject
 {
     private static final float SCREEN_DISTANCE_PER_SECOND = 0.6f;
     private static final float SCREEN_DISTANCE_SIDE_BORDER = 0.02f;
-    private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.05f;
+    private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.1f;
     private static final float SCREEN_DISTANCE_WIDTH = 0.2f;
     private static final float HEIGHT_TO_WIDTH_RATIO = 0.6f;
     private static final float LEVEL_COMPLETE_SPEED_MODIFIER = 3.0f;
@@ -37,6 +37,11 @@ public class Player extends CollidableGameObject
         s_inputMethod = preferences.getInt(PREFERENCE_KEY_INPUT_METHOD, INPUT_METHOD_SCREEN_SIDE);
     }
 
+    public static float getStartHeight()
+    {
+        return Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER;
+    }
+
     private int m_lives = START_LIVES_COUNT;
     private int m_score = 0;
 
@@ -50,7 +55,7 @@ public class Player extends CollidableGameObject
         super(game.getActivity(),
                 Sprite.getSprite(game.getActivity(), R.drawable.player, true),
                 Input.getScreenWidth() * 0.5f,
-                Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER,
+                getStartHeight(),
                 Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH,
                 (Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH) * HEIGHT_TO_WIDTH_RATIO);
         updateInputMethod(game.getActivity());

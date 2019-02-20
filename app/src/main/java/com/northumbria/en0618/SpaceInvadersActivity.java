@@ -3,7 +3,9 @@ package com.northumbria.en0618;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -24,7 +26,7 @@ public class SpaceInvadersActivity extends GameActivity
 {
     private static final int POWER_SAVER_FRAME_RATE = 30;
 
-    private static final float PLAYER_SHOT_SPAWN_WAIT = 0.1f;//0.9f;
+    private static final float PLAYER_SHOT_SPAWN_WAIT = 0.9f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
 
     private static final float SCREEN_DISTANCE_FONT_SIZE = 0.05f;
@@ -33,12 +35,28 @@ public class SpaceInvadersActivity extends GameActivity
     private float m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
     private float m_playerShotOffset = 0.0f;
 
-    Player m_player;
-    TextGameObject m_scoreText;
-    TextGameObject m_levelText;
-    CollisionLists m_collidableObjects;
-    AlienManager m_alienManager;
-    AsteroidManager m_asteroidManager;
+    private Player m_player;
+    private TextGameObject m_scoreText;
+    private TextGameObject m_levelText;
+    private CollisionLists m_collidableObjects;
+    private AlienManager m_alienManager;
+    private AsteroidManager m_asteroidManager;
+
+    private boolean m_inLevelTransition = false;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null)
+        {
+            GamesClient gamesClient = Games.getGamesClient(SpaceInvadersActivity.this, account);
+            gamesClient.setGravityForPopups(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+            gamesClient.setViewForPopups(getSurfaceView());
+        }
+    }
 
     @Override
     public void onGameReady()
@@ -126,8 +144,31 @@ public class SpaceInvadersActivity extends GameActivity
             }
             else
             {
+                if (!m_inLevelTransition)
+                {
+                    final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                    if (account != null)
+                    {
+                        final String[] levelAchievementIDs = getResources().getStringArray(R.array.level_achievement_ids);
+                        if (m_currentLevel <= levelAchievementIDs.length)
+                        {
+                            runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    Games.getAchievementsClient(SpaceInvadersActivity.this, account)
+                                            .unlock(levelAchievementIDs[m_currentLevel - 1]);
+                                }
+                            });
+                        }
+                    }
+                }
+                m_inLevelTransition = true;
+
                 if(m_player.newLevel(deltaTime))
                 {
+                    m_inLevelTransition = false;
                     // newLevel will continue to run until the player has made sufficient moves that result
                     // in it being off the screen.
 
@@ -143,26 +184,6 @@ public class SpaceInvadersActivity extends GameActivity
 
                     m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
                     m_asteroidManager.createAsteroids();
-
-                    final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                    if (account != null)
-                    {
-                        final String[] levelAchievementIDs = getResources().getStringArray(R.array.level_achievement_ids);
-                        if (m_currentLevel <= levelAchievementIDs.length)
-                        {
-                            runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    GamesClient gamesClient = Games.getGamesClient(SpaceInvadersActivity.this, account);
-                                    gamesClient.setViewForPopups(getSurfaceView());
-                                    Games.getAchievementsClient(SpaceInvadersActivity.this, account)
-                                            .unlock(levelAchievementIDs[m_currentLevel - 2]);
-                                }
-                            });
-                        }
-                    }
                 }
             }
         }
@@ -175,6 +196,13 @@ public class SpaceInvadersActivity extends GameActivity
                 @Override
                 public void run()
                 {
+                    final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SpaceInvadersActivity.this);
+                    if (account != null)
+                    {
+                        Games.getLeaderboardsClient(SpaceInvadersActivity.this, account)
+                                .submitScore(getString(R.string.global_leaderboard_id), m_player.getScore());
+                    }
+
                     AlertDialog dialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
                             .setTitle("Game Over")
                             .setMessage("You suck\nScore:" + m_player.getScore())
