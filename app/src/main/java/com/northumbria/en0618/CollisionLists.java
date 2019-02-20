@@ -35,9 +35,7 @@ public class CollisionLists {
                     alienBulletCount--;
                     i--;
 
-
-                    m_player.m_lives--;
-                    if (m_player.m_lives == 0)
+                    if (m_player.consumeLife())
                     {
                         // Destroy player if lives = 0
                         m_player.destroy();
@@ -60,7 +58,6 @@ public class CollisionLists {
                 if(m_player.collidesWith(alien))
                 {
                     // Player vs Alien? Kill player.
-                    m_player.m_lives = 0;
                     m_player.destroy();
                 }
 
@@ -72,12 +69,12 @@ public class CollisionLists {
                     {
                         if(alien instanceof BossAlien)
                         {
-                            // REMOVE LITERALS, REPLACE WITH VARIABLE NUMBER
-                            m_player.score += 150;
+                            // TODO: REMOVE LITERALS, REPLACE WITH VARIABLE NUMBER
+                            m_player.addScore(150);
                         }
                         else
                         {
-                            m_player.score += 50;
+                            m_player.addScore(50);
                         }
 
                         // Destroy Bullet
@@ -116,7 +113,7 @@ public class CollisionLists {
         m_alienList.add(newAlien);
     }
 
-    public boolean alienAlive()
+    public boolean alienRemaining()
     {
         // Checks that there is at least one living alien
         return m_alienList.size() > 0;

@@ -78,7 +78,7 @@ public class AlienManager
             List<Alien> currentColumn = new ArrayList<>();
             for(int j = 0; j < ROWS; j++)
             {
-                Alien tempAlien = new Alien(m_game.getActivity(), ALIEN_SPRITE_DRAWABLE_IDS[j],
+                Alien tempAlien = new Alien(m_game.getActivity(), ALIEN_SPRITE_DRAWABLE_IDS[j % ALIEN_SPRITE_DRAWABLE_IDS.length],
                         xPosition, yPosition, m_alienSize, m_alienMoveSpeed, lowestHeight / (float)STEPS_TO_PLAYER);
                 currentColumn.add(tempAlien);
                 m_game.addGameObject(tempAlien);

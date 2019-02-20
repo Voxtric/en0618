@@ -5,8 +5,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.northumbria.en0618.engine.CollidableGameObject;
+import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.Input;
+
+import java.util.Locale;
 
 public class Player extends CollidableGameObject
 {
@@ -26,19 +29,21 @@ public class Player extends CollidableGameObject
 
     private static int s_inputMethod;
 
-    private float m_moveSpeed;
-    private float m_sideBorder;
-
     public static void updateInputMethod(Context context)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         s_inputMethod = preferences.getInt(PREFERENCE_KEY_INPUT_METHOD, INPUT_METHOD_SCREEN_SIDE);
     }
 
-    public int m_lives = START_LIVES_COUNT;
-    public int score = 0;
+    private int m_lives = START_LIVES_COUNT;
+    private int m_score = 0;
 
-    Player(Context context)
+    private float m_moveSpeed;
+    private float m_sideBorder;
+
+    private TextGameObject m_scoreTracker;
+
+    Player(Context context, TextGameObject scoreTracker)
     {
         super(context,
                 Sprite.getSprite(context, R.drawable.player, true),
@@ -50,6 +55,7 @@ public class Player extends CollidableGameObject
 
         m_moveSpeed = Input.getScreenWidth() * SCREEN_DISTANCE_PER_SECOND;
         m_sideBorder = Input.getScreenHeight() * SCREEN_DISTANCE_SIDE_BORDER;
+        m_scoreTracker = scoreTracker;
     }
 
     @Override
@@ -134,5 +140,22 @@ public class Player extends CollidableGameObject
             setPosition(Input.getScreenWidth() * 0.5f, Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER);
         }
         return newLevel;
+    }
+
+    public void addScore(int score)
+    {
+        m_score += score;
+        m_scoreTracker.setText(String.format(Locale.getDefault(), "Score: %d", m_score));
+    }
+
+    public int getScore()
+    {
+        return m_score;
+    }
+
+    public boolean consumeLife()
+    {
+        m_lives--;
+        return m_lives == 0;
     }
 }

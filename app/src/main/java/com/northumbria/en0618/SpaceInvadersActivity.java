@@ -14,9 +14,11 @@ import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Sprite;
 
+import java.util.Locale;
+
 public class SpaceInvadersActivity extends GameActivity
 {
-    private static final int POWER_SAVER_FRAMERATE = 30;
+    private static final int POWER_SAVER_FRAME_RATE = 30;
 
     private static final float SHOT_SPAWN_WAIT = 0.9f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
@@ -28,8 +30,8 @@ public class SpaceInvadersActivity extends GameActivity
     private float m_playerShotOffset = 0.0f;
 
     Player m_player;
-    TextGameObject m_ScoreText;
-    TextGameObject m_LevelText;
+    TextGameObject m_scoreText;
+    TextGameObject m_levelText;
     CollisionLists m_collidableObjects;
     AlienManager m_alienManager;
     AsteroidManager m_asteroidManager;
@@ -43,19 +45,18 @@ public class SpaceInvadersActivity extends GameActivity
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.getBoolean(MainMenuActivity.PREFERENCE_KEY_POWER_SAVER, false))
         {
-            ((GameSurfaceView) getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAMERATE);
+            ((GameSurfaceView) getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
         }
 
-
-        Font font = Font.getFont(this, "death_star.ttf", (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 4);
+        Font font = Font.getFont(this, "death_star.ttf", (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);
         // Score
-        m_ScoreText = new TextGameObject(font, "Score:", 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
-        m_ScoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-        game.addGameObject(m_ScoreText, true);
+        m_scoreText = new TextGameObject(font, "Score: 0", 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
+        m_scoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_scoreText, true);
         // Level
-        m_LevelText = new TextGameObject(font, "Level:", 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
-        m_LevelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-        game.addGameObject(m_LevelText, true);
+        m_levelText = new TextGameObject(font, "Level: 1", 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
+        m_levelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_levelText, true);
 
         // Settings Button
         GameObject settingsButton = new SettingsButton(game);
@@ -75,7 +76,7 @@ public class SpaceInvadersActivity extends GameActivity
         }
 
         // Creation of Player Character
-        m_player = new Player(this);
+        m_player = new Player(this, m_scoreText);
         game.addGameObject(m_player);
         m_playerShotOffset = m_player.getXSize() * SHOT_OFFSET_MULTIPLIER;
 
@@ -99,14 +100,11 @@ public class SpaceInvadersActivity extends GameActivity
         final Game m_game = getGame();
         if(!m_player.isDead() && !m_alienManager.checkAlienWin())
         {
-            // Checks if Player has any lives left
-            if(m_collidableObjects.alienAlive())
+            if(m_collidableObjects.alienRemaining())
             {
                 // Only runs if there is at least 1 alien alive
                 m_collidableObjects.checkCollisions(); // Checks Collisions for all objects
                 m_alienManager.update(deltaTime); // Updates Manager for Positional Checks and removal
-                m_ScoreText.setText("Score: " + m_player.score); // Puts Score on the screen
-                m_LevelText.setText("Level: " + m_currentLevel); // Puts current Level onto Screen
 
                 m_timeToShotSpawn -= deltaTime;
                 if(m_timeToShotSpawn <= 0.0f)
@@ -130,7 +128,7 @@ public class SpaceInvadersActivity extends GameActivity
                     // in it being off the screen.
                     m_collidableObjects.cleanLists();
                     m_currentLevel++;
-                    m_player = new Player(m_game.getActivity());
+                    m_levelText.setText(String.format(Locale.getDefault(), "Level: %d", m_currentLevel));
                     m_game.addGameObject(m_player);
                     m_collidableObjects.newPlayer(m_player);
                     m_alienManager.createAliens(m_currentLevel);
@@ -140,7 +138,7 @@ public class SpaceInvadersActivity extends GameActivity
         }
         else
         {
-            // GAME OVER
+            // TODO: Change all of this to use a proper UI.
             getGame().pause(false);
             runOnUiThread(new Runnable()
             {
@@ -149,7 +147,7 @@ public class SpaceInvadersActivity extends GameActivity
                 {
                     AlertDialog dialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
                             .setTitle("Game Over")
-                            .setMessage("You suck\nScore:" + m_player.score)
+                            .setMessage("You suck\nScore:" + m_player.getScore())
                             .setNegativeButton("Main Menu", new DialogInterface.OnClickListener()
                             {
                                 @Override
@@ -167,7 +165,7 @@ public class SpaceInvadersActivity extends GameActivity
                                     // Restart the game here
                                     m_currentLevel = 1;
                                     m_alienManager.clearAliens();
-                                    m_player = new Player(m_game.getActivity());
+                                    m_player = new Player(m_game.getActivity(), m_scoreText);
                                     m_game.addGameObject(m_player);
                                     m_collidableObjects.cleanLists();
                                     m_collidableObjects.newPlayer(m_player);
