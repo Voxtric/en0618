@@ -1,12 +1,15 @@
 package com.northumbria.en0618;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -16,6 +19,7 @@ import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -54,6 +58,8 @@ public class SpaceInvadersActivity extends GameActivity
 
     private boolean m_inLevelTransition = false;
 
+    private AlertDialog m_gameOverDialog = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -63,8 +69,8 @@ public class SpaceInvadersActivity extends GameActivity
         if (account != null)
         {
             GamesClient gamesClient = Games.getGamesClient(SpaceInvadersActivity.this, account);
-            gamesClient.setGravityForPopups(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
             gamesClient.setViewForPopups(getSurfaceView());
+            gamesClient.setGravityForPopups(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         }
     }
 
@@ -199,7 +205,7 @@ public class SpaceInvadersActivity extends GameActivity
         }
         else
         {
-            endGame();
+            endGame(m_player.getScore());
         }
     }
 
@@ -208,7 +214,38 @@ public class SpaceInvadersActivity extends GameActivity
         return m_currentLevel;
     }
 
-    private void endGame()
+    public void restartGame(View view)
+    {
+        Game game = getGame();
+
+        m_currentLevel = 1;
+        m_levelText.setText("Level: 1");
+
+        m_player = new Player(game, m_scoreText);
+        game.addGameObject(m_player);
+        m_scoreText.setText("Score: 0");
+
+        m_collidableObjects.destroyAll(true);
+        m_collidableObjects = new CollisionLists(m_player, SpaceInvadersActivity.this);
+
+        m_alienManager = new AlienManager(m_collidableObjects, game);
+        m_alienManager.createAliens();
+
+        m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
+        m_asteroidManager.createAsteroids();
+
+        game.unPause();
+        m_gameOverDialog.dismiss();
+    }
+
+    public void returnToMainMenu(View view)
+    {
+        m_gameOverDialog.dismiss();
+        m_gameOverDialog = null;
+        finish();
+    }
+
+    private void endGame(final long score)
     {
         getGame().pause(false);
         runOnUiThread(new Runnable()
@@ -216,99 +253,98 @@ public class SpaceInvadersActivity extends GameActivity
             @Override
             public void run()
             {
+                @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_game_over, null);
+                TextView scoreTextView = view.findViewById(R.id.score_text_view);
+                scoreTextView.setText(String.format(Locale.getDefault(), "Score: %d", score));
+                final ProgressBar newHighScoreProgressBar = view.findViewById(R.id.new_high_score_progress_bar);
+                final TextView newHighScoreTextView = view.findViewById(R.id.new_high_score_text_view);
+
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SpaceInvadersActivity.this);
                 final long score = m_player.getScore();
                 final long locallySavedHighScore = preferences.getLong(PREFERENCE_KEY_HIGH_SCORE, 0);
                 if (score > locallySavedHighScore)
                 {
-                    preferences.edit().putLong(PREFERENCE_KEY_HIGH_SCORE, score).apply();
+                  preferences.edit().putLong(PREFERENCE_KEY_HIGH_SCORE, score).apply();
                 }
 
                 final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SpaceInvadersActivity.this);
                 if (account == null)
                 {
-                    showGameOverDialog(score, score > locallySavedHighScore);
+                  newHighScoreProgressBar.setVisibility(View.GONE);
+                  newHighScoreTextView.setVisibility(View.VISIBLE);
+                  if (score < locallySavedHighScore)
+                  {
+                      newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", locallySavedHighScore));
+                  }
                 }
                 else
                 {
-                    final LeaderboardsClient leaderboardsClient = Games.getLeaderboardsClient(SpaceInvadersActivity.this, account);
-                    // Always submit the score as google tracks high scores over different periods.
-                    leaderboardsClient.submitScore(getString(R.string.global_leaderboard_id), m_player.getScore());
+                  final LeaderboardsClient leaderboardsClient = Games.getLeaderboardsClient(SpaceInvadersActivity.this, account);
+                  // Always submit the score as google tracks high scores over different periods.
+                  leaderboardsClient.submitScore(getString(R.string.global_leaderboard_id), m_player.getScore());
 
-                    Task<AnnotatedData<LeaderboardScore>> loadScoreTask =
-                            leaderboardsClient.loadCurrentPlayerLeaderboardScore(
-                                    getString(R.string.global_leaderboard_id),
-                                    LeaderboardVariant.TIME_SPAN_ALL_TIME,
-                                    LeaderboardVariant.COLLECTION_PUBLIC);
-                    loadScoreTask.addOnFailureListener(new OnFailureListener()
-                    {
-                        @Override
-                        public void onFailure(@NonNull Exception exception)
-                        {
-                            showGameOverDialog(score, score > locallySavedHighScore);
-                        }
-                    });
-                    loadScoreTask.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>()
-                    {
-                        @Override
-                        public void onSuccess(AnnotatedData<LeaderboardScore> leaderboardScoreAnnotatedData)
-                        {
-                            LeaderboardScore leaderboardScores = leaderboardScoreAnnotatedData.get();
-                            if (leaderboardScores != null)
-                            {
-                                long cloudSavedHighScore = leaderboardScores.getRawScore();
-                                showGameOverDialog(score, score > Math.max(locallySavedHighScore, cloudSavedHighScore));
-                            }
-                        }
-                    });
+                  Task<AnnotatedData<LeaderboardScore>> loadScoreTask =
+                          leaderboardsClient.loadCurrentPlayerLeaderboardScore(
+                                  getString(R.string.global_leaderboard_id),
+                                  LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                                  LeaderboardVariant.COLLECTION_PUBLIC);
+                  loadScoreTask.addOnFailureListener(new OnFailureListener()
+                  {
+                      @Override
+                      public void onFailure(@NonNull Exception exception)
+                      {
+                          newHighScoreProgressBar.setVisibility(View.GONE);
+                          newHighScoreTextView.setVisibility(View.VISIBLE);
+                          if (score < locallySavedHighScore)
+                          {
+                              newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", locallySavedHighScore));
+                          }
+                      }
+                  });
+                  loadScoreTask.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>()
+                  {
+                      @Override
+                      public void onSuccess(AnnotatedData<LeaderboardScore> leaderboardScoreAnnotatedData)
+                      {
+                          LeaderboardScore leaderboardScores = leaderboardScoreAnnotatedData.get();
+                          if (leaderboardScores != null)
+                          {
+                              long cloudSavedHighScore = leaderboardScores.getRawScore();
+                              long highScore = Math.max(locallySavedHighScore, cloudSavedHighScore);
+                              newHighScoreProgressBar.setVisibility(View.GONE);
+                              newHighScoreTextView.setVisibility(View.VISIBLE);
+                              if (score < highScore)
+                              {
+                                  newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", highScore));
+                              }
+                          }
+                      }
+                  });
+                  loadScoreTask.addOnCompleteListener(new OnCompleteListener<AnnotatedData<LeaderboardScore>>()
+                  {
+                      @Override
+                      public void onComplete(@NonNull Task<AnnotatedData<LeaderboardScore>> task)
+                      {
+                          if (newHighScoreProgressBar.getVisibility() != View.GONE)
+                          {
+                              newHighScoreProgressBar.setVisibility(View.GONE);
+                              newHighScoreTextView.setVisibility(View.VISIBLE);
+                              if (score < locallySavedHighScore)
+                              {
+                                  newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", locallySavedHighScore));
+                              }
+                          }
+                      }
+                  });
                 }
+
+                m_gameOverDialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
+                      .setView(view)
+                      .create();
+                m_gameOverDialog.setCancelable(false);
+                m_gameOverDialog.setCanceledOnTouchOutside(false);
+                m_gameOverDialog.show();
             }
         });
-    }
-
-    private void showGameOverDialog(long score, boolean isNewHighScore)
-    {
-        // TODO: Change all of this to use a proper UI.
-        AlertDialog dialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
-                .setTitle("Game Over")
-                .setMessage("You suck\nScore:" + m_player.getScore())
-                .setNegativeButton("Main Menu", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        finish();
-                    }
-                })
-                .setPositiveButton("Restart", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        Game game = getGame();
-
-                        m_currentLevel = 1;
-                        m_levelText.setText("Level: 1");
-
-                        m_player = new Player(game, m_scoreText);
-                        game.addGameObject(m_player);
-                        m_scoreText.setText("Score: 0");
-
-                        m_collidableObjects.destroyAll(true);
-                        m_collidableObjects = new CollisionLists(m_player, SpaceInvadersActivity.this);
-
-                        m_alienManager = new AlienManager(m_collidableObjects, game);
-                        m_alienManager.createAliens();
-
-                        m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
-                        m_asteroidManager.createAsteroids();
-
-                        game.unPause();
-                    }
-                })
-                .create();
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
     }
 }

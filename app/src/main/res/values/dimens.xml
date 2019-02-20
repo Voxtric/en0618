@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dialog_margin">32dp</dimen>
+
+    <dimen name="small_text_size">16sp</dimen>
+    <dimen name="medium_text_size">32sp</dimen>
+    <dimen name="large_text_size">48sp</dimen>
+
+    <dimen name="button_height">48dp</dimen>
+</resources>

@@ -24,7 +24,7 @@ public class AlienManager
 
     private static final float BOSS_ALIEN_SIZE_MULTIPLIER = 1.3f;
     private static final float BOSS_ALIEN_SPEED_MULTIPLIER = 5.0f;
-    private static final float ALIEN_SPEEDUP_DIVISOR = 0.05f;       // Lower means larger speedup
+    private static final float ALIEN_SPEEDUP_DIVISOR = 0.1f;       // Lower means larger speedup
     private static final float ALIEN_SPEEDUP_PER_LEVEL = 1.1f;
 
     private static final float SCREEN_DISTANCE_PER_SECOND = 0.03f;
@@ -37,7 +37,7 @@ public class AlienManager
     private static final int COLUMNS = 5;
     private static final int ROWS = 4;
     private static final int MAX_COUNT = COLUMNS * ROWS;
-    private static final int STEPS_TO_PLAYER = 7;
+    private static final int STEPS_TO_PLAYER = 10;
 
     private float m_timeToBossSpawn = BOSS_ALIEN_SPAWN_WAIT;
     private float m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
