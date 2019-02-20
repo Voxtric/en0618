@@ -130,26 +130,23 @@ public class CollisionLists {
             }
 
             asteroidCount = m_asteroidList.size();
-            if(asteroidCount > 0)
+            for(int j = 0; j < asteroidCount; j++)
             {
+                Asteroid asteroid = m_asteroidList.get(j);
                 for(int i = 0; i < playerBulletCount; i++)
                 {
                     Bullet bullet = m_playerBulletList.get(i);
-                    for(int j = 0; j < asteroidCount; j++)
+                    if(bullet.collidesWith(asteroid))
                     {
-                        Asteroid asteroid = m_asteroidList.get(j);
-                        if(bullet.collidesWith(asteroid))
-                        {
-                            bullet.destroy();
-                            m_playerBulletList.remove(i);
-                            playerBulletCount--;
-                            i--;
+                        bullet.destroy();
+                        m_playerBulletList.remove(i);
+                        playerBulletCount--;
+                        i--;
 
-                            asteroid.destroy();
-                            m_asteroidList.remove(j);
-                            asteroidCount--;
-                            j--;
-                        }
+                        asteroid.destroy();
+                        m_asteroidList.remove(j);
+                        asteroidCount--;
+                        j--;
                     }
                 }
             }
