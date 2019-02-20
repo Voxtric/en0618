@@ -7,13 +7,17 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class SettingsButton extends ButtonGameObject
 {
+    private static final float SCREEN_DISTANCE_SIZE = 0.1f;
+
     private Game m_game;
 
     public SettingsButton(Game game)
     {
         super(Sprite.getSprite(game.getActivity(), R.drawable.settings),
-              Input.getScreenWidth() - 100.0f, Input.getScreenHeight() - 100.0f,
-              200.0f, 200.0f);
+              Input.getScreenWidth() - ((Input.getScreenHeight() * SCREEN_DISTANCE_SIZE) * 0.5f),
+                Input.getScreenHeight() - ((Input.getScreenHeight() * SCREEN_DISTANCE_SIZE) * 0.5f),
+                Input.getScreenHeight() * SCREEN_DISTANCE_SIZE,
+                Input.getScreenHeight() * SCREEN_DISTANCE_SIZE);
         m_game = game;
     }
 

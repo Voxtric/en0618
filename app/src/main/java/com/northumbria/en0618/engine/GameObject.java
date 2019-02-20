@@ -9,18 +9,18 @@ public abstract class GameObject
     private boolean m_destroyed = false;
 
     private float[] m_matrix = new float[16];
-    private float m_x = 0.0f;
-    private float m_y = 0.0f;
+    private float m_x;
+    private float m_y;
     private float m_xScale;
     private float m_yScale;
 
-    public GameObject(float x, float y, float xSize, float ySize)
+    GameObject(float x, float y, float xSize, float ySize)
     {
         Matrix.setIdentityM(m_matrix, 0);
 
         m_xScale = xSize;
         m_yScale = ySize;
-        Matrix.scaleM(m_matrix, 0, xSize, ySize, 0.0f);
+        Matrix.scaleM(m_matrix, 0, xSize, ySize, 1.0f);
 
         m_x = x;
         m_y = y;
@@ -41,7 +41,7 @@ public abstract class GameObject
         m_y = y;
     }
 
-    public float[] getMatrix()
+    float[] getMatrix()
     {
         return m_matrix;
     }

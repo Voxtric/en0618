@@ -2,7 +2,6 @@ package com.northumbria.en0618;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
 
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
@@ -16,6 +15,8 @@ public class SpaceInvadersActivity extends GameActivity
 {
     private static final float SHOT_SPAWN_WAIT = 0.9f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
+
+    private static final float SCREEN_DISTANCE_FONT_SIZE = 0.05f;
 
     private int m_currentLevel = 1;
     private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
@@ -33,6 +34,16 @@ public class SpaceInvadersActivity extends GameActivity
         Game game = getGame();
         game.setPauseDialogLayoutID(R.layout.dialog_game_pause);
 
+        Font font = Font.getFont(this, "death_star.ttf", (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 4);
+        // Score
+        m_ScoreText = new TextGameObject(font, "Score:", 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
+        m_ScoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_ScoreText, true);
+        // Level
+        m_LevelText = new TextGameObject(font, "Level:", 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
+        m_LevelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_LevelText, true);
+
         // Settings Button
         GameObject settingsButton = new SettingsButton(game);
         game.addGameObject(settingsButton, true);
@@ -49,16 +60,6 @@ public class SpaceInvadersActivity extends GameActivity
                 game.addGameObject(backgroundTile);
             }
         }
-
-        // Text
-        Font font = Font.getFont(this, "death_star.ttf", 100, 4);
-        m_ScoreText = new TextGameObject(font, "Score:", 10.0f, Input.getScreenHeight() - 150.0f);
-        m_ScoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-        game.addGameObject(m_ScoreText);
-
-        m_LevelText = new TextGameObject(font, "Level:", 10.0f, Input.getScreenHeight() - 60.0f);
-        m_LevelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-        game.addGameObject(m_LevelText);
 
         // Creation of Player Character
         m_player = new Player(this);
