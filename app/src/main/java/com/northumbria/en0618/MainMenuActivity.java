@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -17,7 +18,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -47,6 +50,10 @@ public class MainMenuActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         determineGooglePlayGamesButton();
+
+        Typeface font = Typeface.createFromAsset(getAssets(), "death_star.ttf");
+        ViewGroup root = findViewById(R.id.view_root);
+        setAllFonts(root, font);
 
         createNotificationChannel();
 
@@ -195,6 +202,26 @@ public class MainMenuActivity extends AppCompatActivity
                         });
             }
         });
+    }
+
+    private void setAllFonts(ViewGroup viewGroup, Typeface font)
+    {
+        for (int i = 0; i < viewGroup.getChildCount(); i++)
+        {
+            View child = viewGroup.getChildAt(i);
+            if (child instanceof ViewGroup)
+            {
+                setAllFonts((ViewGroup)child, font);
+            }
+            else if (child instanceof Button)
+            {
+                ((Button)child).setTypeface(font);
+            }
+            else if (child instanceof TextView)
+            {
+                ((TextView)child).setTypeface(font);
+            }
+        }
     }
 
     // Updates the app settings and the player with the new input method.

@@ -65,9 +65,12 @@ public class Font implements IRenderable
     private float[] m_charWidths = new float[CHAR_COUNT];   // Width of each individual character.
     private Sprite[] m_characterSprites = new Sprite[CHAR_COUNT];   // Sprites for each character.
     private Texture m_texture;
+    private int m_padding;
 
     private Font(Typeface typeface, int size, int padding)
     {
+        m_padding = padding;
+
         // Use inbuilt Android functions to determine font characteristics.
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -229,7 +232,7 @@ public class Font implements IRenderable
             m_characterSprites[index].draw(mvpMatrix, color);
 
             // Translate the model matrix along using the width of the char just drawn.
-            Matrix.translateM(modelMatrix, 0, m_charWidths[index] / m_cellWidth, 0, 0);
+            Matrix.translateM(modelMatrix, 0, ((m_charWidths[index] + m_padding) / m_cellWidth), 0, 0);
         }
     }
 

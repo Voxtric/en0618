@@ -51,7 +51,7 @@ public class SpaceInvadersActivity extends GameActivity
         }
 
         // Text
-        Font font = Font.getFont(this, "Roboto-Regular.ttf", 100, 2);
+        Font font = Font.getFont(this, "death_star.ttf", 100, 4);
         m_ScoreText = new TextGameObject(font, "Score:", 10.0f, Input.getScreenHeight() - 150.0f);
         m_ScoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
         game.addGameObject(m_ScoreText);

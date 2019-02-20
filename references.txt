@@ -7,3 +7,4 @@ large_alien	-	https://sketchfab.com/3d-models/star-wars-imperial-lambda-shuttle-
 shots		-	https://ya-webdesign.com/explore/transparent-laser-blast/?utm_source=gg#gal_1514199
 asteroids	-	https://sketchfab.com/3d-models/asteroids-bi6oZSkyn9f9QGgTAqq7GvaCohn
 game_background	-	http://a1star.com/
+stjedise font	-	https://www.dafont.com/star-jedi.font
