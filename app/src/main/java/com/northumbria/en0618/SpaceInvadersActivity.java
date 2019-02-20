@@ -76,7 +76,7 @@ public class SpaceInvadersActivity extends GameActivity
         }
 
         // Creation of Player Character
-        m_player = new Player(this, m_scoreText);
+        m_player = new Player(game, m_scoreText);
         game.addGameObject(m_player);
         m_playerShotOffset = m_player.getXSize() * SHOT_OFFSET_MULTIPLIER;
 
@@ -90,6 +90,7 @@ public class SpaceInvadersActivity extends GameActivity
 
         m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
         m_asteroidManager.createAsteroids();
+
 
         super.onGameReady();
     }
@@ -172,7 +173,7 @@ public class SpaceInvadersActivity extends GameActivity
                                     m_currentLevel = 1;
                                     m_levelText.setText("Level: 1");
 
-                                    m_player = new Player(SpaceInvadersActivity.this, m_scoreText);
+                                    m_player = new Player(game, m_scoreText);
                                     game.addGameObject(m_player);
                                     m_scoreText.setText("Score: 0");
 

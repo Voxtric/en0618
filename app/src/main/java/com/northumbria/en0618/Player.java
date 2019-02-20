@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.northumbria.en0618.engine.CollidableGameObject;
+import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.Input;
@@ -26,6 +27,7 @@ public class Player extends CollidableGameObject
     public static final int INPUT_METHOD_SCREEN_SIDE = 0;
     public static final int INPUT_METHOD_PLAYER_SIDE = 1;
     public static final int INPUT_METHOD_SCREEN_TILT = 3;
+    private LifeManager m_lifeManager;
 
     private static int s_inputMethod;
 
@@ -43,19 +45,20 @@ public class Player extends CollidableGameObject
 
     private TextGameObject m_scoreTracker;
 
-    Player(Context context, TextGameObject scoreTracker)
+    Player(Game game, TextGameObject scoreTracker)
     {
-        super(context,
-                Sprite.getSprite(context, R.drawable.player, true),
+        super(game.getActivity(),
+                Sprite.getSprite(game.getActivity(), R.drawable.player, true),
                 Input.getScreenWidth() * 0.5f,
                 Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER,
                 Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH,
                 (Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH) * HEIGHT_TO_WIDTH_RATIO);
-        updateInputMethod(context);
+        updateInputMethod(game.getActivity());
 
         m_moveSpeed = Input.getScreenWidth() * SCREEN_DISTANCE_PER_SECOND;
         m_sideBorder = Input.getScreenHeight() * SCREEN_DISTANCE_SIDE_BORDER;
         m_scoreTracker = scoreTracker;
+        m_lifeManager = new LifeManager(game, 500.0f, 3);
     }
 
     @Override
@@ -156,6 +159,7 @@ public class Player extends CollidableGameObject
     public boolean consumeLife()
     {
         m_lives--;
+        m_lifeManager.loseLife();
         return m_lives == 0;
     }
 }
