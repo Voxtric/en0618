@@ -16,4 +16,11 @@
     <string name="google_sign_in_fail_message">
         An account must be chosen and the necessary permissions given in order to sign in.
     </string>
+
+    <string-array name="level_achievement_ids">
+        <item>CgkIo5GK9LEcEAIQAg</item>
+        <item>CgkIo5GK9LEcEAIQCA</item>
+        <item>CgkIo5GK9LEcEAIQCQ</item>
+        <item>CgkIo5GK9LEcEAIQCg</item>
+    </string-array>
 </resources>

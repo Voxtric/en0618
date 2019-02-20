@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MainMenuActivity extends AppCompatActivity
@@ -200,6 +202,14 @@ public class MainMenuActivity extends AppCompatActivity
                             public void onSuccess(Intent intent)
                             {
                                 startActivityForResult(intent, REQUEST_CODE_LEADERBOARD_ACTIVITY);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener()
+                        {
+                            @Override
+                            public void onFailure(@NonNull Exception exception)
+                            {
+                                exception.printStackTrace();
                             }
                         });
             }
