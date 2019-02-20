@@ -44,11 +44,13 @@ public class CollisionLists {
                         break;
                     }
                 }
-                if(asteroidCount > 0)
+                if(asteroidCount > 0 && i >= 0)
                 {
-                    for (int j = 0; j < asteroidCount; j++) {
+                    for (int j = 0; j < asteroidCount; j++)
+                    {
                         Asteroid asteroid = m_asteroidList.get(j);
-                        if (bullet.collidesWith(asteroid)) {
+                        if (bullet.collidesWith(asteroid))
+                        {
                             bullet.destroy();
                             m_alienBulletList.remove(i);
                             alienBulletCount--;

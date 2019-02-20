@@ -14,7 +14,6 @@ import com.google.android.gms.games.AnnotatedData;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.games.LeaderboardsClient;
-import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -213,7 +212,7 @@ public class SpaceInvadersActivity extends GameActivity
             public void run()
             {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SpaceInvadersActivity.this);
-                final int score = m_player.getScore();
+                final long score = m_player.getScore();
                 final long locallySavedHighScore = preferences.getLong(PREFERENCE_KEY_HIGH_SCORE, 0);
                 if (score > locallySavedHighScore)
                 {
@@ -262,7 +261,7 @@ public class SpaceInvadersActivity extends GameActivity
         });
     }
 
-    private void showGameOverDialog(int score, boolean isNewHighScore)
+    private void showGameOverDialog(long score, boolean isNewHighScore)
     {
         // TODO: Change all of this to use a proper UI.
         AlertDialog dialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
