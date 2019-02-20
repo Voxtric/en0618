@@ -64,7 +64,7 @@ public class AlienManager
         m_sideBorder = Input.getScreenHeight() * SCREEN_DISTANCE_SIDE_BORDER;
     }
 
-    public void createAliens(Game game, int currentLevel)
+    void createAliens(int currentLevel)
     {
         m_alienWin = false;
         m_alienMoveSpeed += (-10.0f * currentLevel);    // TODO: Check this
@@ -78,10 +78,10 @@ public class AlienManager
             List<Alien> currentColumn = new ArrayList<>();
             for(int j = 0; j < ROWS; j++)
             {
-                Alien tempAlien = new Alien(game.getActivity(), ALIEN_SPRITE_DRAWABLE_IDS[j],
+                Alien tempAlien = new Alien(m_game.getActivity(), ALIEN_SPRITE_DRAWABLE_IDS[j],
                         xPosition, yPosition, m_alienSize, m_alienMoveSpeed, lowestHeight / (float)STEPS_TO_PLAYER);
                 currentColumn.add(tempAlien);
-                game.addGameObject(tempAlien);
+                m_game.addGameObject(tempAlien);
                 m_colList.addAlien(tempAlien);
                 yPosition += m_alienSize + (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS);
             }
