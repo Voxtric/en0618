@@ -166,7 +166,7 @@ public class AlienManager
                 Bullet alienBullet = new Bullet(m_game.getActivity(),
                         R.drawable.alien_shot,
                         m_alienColumns.get(alienChoice).get(0).getX(),
-                        m_alienColumns.get(alienChoice).get(0).getY() - 25.0f); // TODO: CHeck this
+                        m_alienColumns.get(alienChoice).get(0).getY());
                 m_game.addGameObject(alienBullet);
                 m_colList.addBullet(alienBullet, false);
                 m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;

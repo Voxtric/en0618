@@ -112,7 +112,7 @@ public class SpaceInvadersActivity extends GameActivity
         game.addGameObject(m_player);
         m_playerShotOffset = m_player.getXSize() * SHOT_OFFSET_MULTIPLIER;
 
-        m_collidableObjects = new CollisionLists(m_player);
+        m_collidableObjects = new CollisionLists(m_player, this);
 
         // Member Variable to store all Collidable Objects for Automated Collision Detection
 
@@ -186,7 +186,7 @@ public class SpaceInvadersActivity extends GameActivity
                     m_levelText.setText(String.format(Locale.getDefault(), "Level: %d", m_currentLevel));
 
                     m_collidableObjects.destroyAll(false);
-                    m_collidableObjects = new CollisionLists(m_player);
+                    m_collidableObjects = new CollisionLists(m_player, this);
 
                     m_alienManager = new AlienManager(m_collidableObjects, game);
                     m_alienManager.incrementBaseAlienSpeed(m_currentLevel);
@@ -201,6 +201,11 @@ public class SpaceInvadersActivity extends GameActivity
         {
             endGame();
         }
+    }
+
+    public int getCurrentLevel()
+    {
+        return m_currentLevel;
     }
 
     private void endGame()
@@ -290,7 +295,7 @@ public class SpaceInvadersActivity extends GameActivity
                         m_scoreText.setText("Score: 0");
 
                         m_collidableObjects.destroyAll(true);
-                        m_collidableObjects = new CollisionLists(m_player);
+                        m_collidableObjects = new CollisionLists(m_player, SpaceInvadersActivity.this);
 
                         m_alienManager = new AlienManager(m_collidableObjects, game);
                         m_alienManager.createAliens();

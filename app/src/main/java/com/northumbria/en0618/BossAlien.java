@@ -6,6 +6,8 @@ import com.northumbria.en0618.engine.Input;
 
 public class BossAlien extends Alien
 {
+    private static final long BASE_SCORE = 50;
+
     BossAlien(Context context, int spriteType, float x, float size, float moveSpeed)
     {
         super(context, spriteType, x, Input.getScreenHeight() * 0.85f, size, moveSpeed, 0.0f);
@@ -19,5 +21,11 @@ public class BossAlien extends Alien
         {
             destroy();
         }
+    }
+
+    @Override
+    public void awardScore(Player player, int currentLevel)
+    {
+        player.addScore(BASE_SCORE * currentLevel);
     }
 }

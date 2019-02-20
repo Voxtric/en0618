@@ -10,7 +10,9 @@ import static java.lang.Math.abs;
 
 public class Alien extends CollidableGameObject
 {
-    protected float m_moveSpeed;
+    private static final long BASE_SCORE = 10;
+
+    float m_moveSpeed;
     private float m_moveDownDistance;
 
     private float m_lastY;
@@ -66,5 +68,10 @@ public class Alien extends CollidableGameObject
     {
         float modifier = abs(m_moveSpeed) / m_moveSpeed;
         m_moveSpeed = moveSpeed * modifier;
+    }
+
+    public void awardScore(Player player, int currentLevel)
+    {
+        player.addScore(BASE_SCORE * currentLevel);
     }
 }

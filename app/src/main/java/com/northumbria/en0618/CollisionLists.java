@@ -3,17 +3,20 @@ package com.northumbria.en0618;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollisionLists {
-
+public class CollisionLists
+{
     private List<Bullet> m_playerBulletList = new ArrayList<>();
     private List<Bullet> m_alienBulletList = new ArrayList<>();
     private List<Alien> m_alienList = new ArrayList<>();
     private List<Asteroid> m_asteroidList = new ArrayList<>();
-    private Player m_player;
 
-    CollisionLists(Player player)
+    private Player m_player;
+    private SpaceInvadersActivity m_activity;
+
+    CollisionLists(Player player, SpaceInvadersActivity activity)
     {
         m_player = player;
+        m_activity = activity;
     }
 
     void checkCollisions()
@@ -104,15 +107,7 @@ public class CollisionLists {
                     Bullet playerBullet = m_playerBulletList.get(k);
                     if(alien.collidesWith(playerBullet))
                     {
-                        if(alien instanceof BossAlien)
-                        {
-                            // TODO: REMOVE LITERALS, REPLACE WITH VARIABLE NUMBER
-                            m_player.addScore(150);
-                        }
-                        else
-                        {
-                            m_player.addScore(50);
-                        }
+                        alien.awardScore(m_player, m_activity.getCurrentLevel());
 
                         // Destroy Bullet
                         playerBullet.destroy();
