@@ -5,12 +5,21 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.view.Gravity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.games.AnnotatedData;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.games.LeaderboardsClient;
+import com.google.android.gms.games.leaderboard.Leaderboard;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
@@ -24,6 +33,8 @@ import java.util.Locale;
 
 public class SpaceInvadersActivity extends GameActivity
 {
+    private static final String PREFERENCE_KEY_HIGH_SCORE = "high_score";
+
     private static final int POWER_SAVER_FRAME_RATE = 30;
 
     private static final float PLAYER_SHOT_SPAWN_WAIT = 0.9f;
@@ -189,63 +200,111 @@ public class SpaceInvadersActivity extends GameActivity
         }
         else
         {
-            // TODO: Change all of this to use a proper UI.
-            game.pause(false);
-            runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SpaceInvadersActivity.this);
-                    if (account != null)
-                    {
-                        Games.getLeaderboardsClient(SpaceInvadersActivity.this, account)
-                                .submitScore(getString(R.string.global_leaderboard_id), m_player.getScore());
-                    }
-
-                    AlertDialog dialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
-                            .setTitle("Game Over")
-                            .setMessage("You suck\nScore:" + m_player.getScore())
-                            .setNegativeButton("Main Menu", new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    finish();
-                                }
-                            })
-                            .setPositiveButton("Restart", new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    Game game = getGame();
-
-                                    m_currentLevel = 1;
-                                    m_levelText.setText("Level: 1");
-
-                                    m_player = new Player(game, m_scoreText);
-                                    game.addGameObject(m_player);
-                                    m_scoreText.setText("Score: 0");
-
-                                    m_collidableObjects.destroyAll(true);
-                                    m_collidableObjects = new CollisionLists(m_player);
-
-                                    m_alienManager = new AlienManager(m_collidableObjects, game);
-                                    m_alienManager.createAliens();
-
-                                    m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
-                                    m_asteroidManager.createAsteroids();
-
-                                    game.unPause();
-                                }
-                            })
-                            .create();
-                    dialog.setCancelable(false);
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
-                }
-            });
+            endGame();
         }
+    }
+
+    private void endGame()
+    {
+        getGame().pause(false);
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SpaceInvadersActivity.this);
+                final int score = m_player.getScore();
+                final long locallySavedHighScore = preferences.getLong(PREFERENCE_KEY_HIGH_SCORE, 0);
+                if (score > locallySavedHighScore)
+                {
+                    preferences.edit().putLong(PREFERENCE_KEY_HIGH_SCORE, score).apply();
+                }
+
+                final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SpaceInvadersActivity.this);
+                if (account == null)
+                {
+                    showGameOverDialog(score, score > locallySavedHighScore);
+                }
+                else
+                {
+                    final LeaderboardsClient leaderboardsClient = Games.getLeaderboardsClient(SpaceInvadersActivity.this, account);
+                    // Always submit the score as google tracks high scores over different periods.
+                    leaderboardsClient.submitScore(getString(R.string.global_leaderboard_id), m_player.getScore());
+
+                    Task<AnnotatedData<LeaderboardScore>> loadScoreTask =
+                            leaderboardsClient.loadCurrentPlayerLeaderboardScore(
+                                    getString(R.string.global_leaderboard_id),
+                                    LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                                    LeaderboardVariant.COLLECTION_PUBLIC);
+                    loadScoreTask.addOnFailureListener(new OnFailureListener()
+                    {
+                        @Override
+                        public void onFailure(@NonNull Exception exception)
+                        {
+                            showGameOverDialog(score, score > locallySavedHighScore);
+                        }
+                    });
+                    loadScoreTask.addOnSuccessListener(new OnSuccessListener<AnnotatedData<LeaderboardScore>>()
+                    {
+                        @Override
+                        public void onSuccess(AnnotatedData<LeaderboardScore> leaderboardScoreAnnotatedData)
+                        {
+                            LeaderboardScore leaderboardScores = leaderboardScoreAnnotatedData.get();
+                            if (leaderboardScores != null)
+                            {
+                                long cloudSavedHighScore = leaderboardScores.getRawScore();
+                                showGameOverDialog(score, score > Math.max(locallySavedHighScore, cloudSavedHighScore));
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void showGameOverDialog(int score, boolean isNewHighScore)
+    {
+        // TODO: Change all of this to use a proper UI.
+        AlertDialog dialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
+                .setTitle("Game Over")
+                .setMessage("You suck\nScore:" + m_player.getScore())
+                .setNegativeButton("Main Menu", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        finish();
+                    }
+                })
+                .setPositiveButton("Restart", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        Game game = getGame();
+
+                        m_currentLevel = 1;
+                        m_levelText.setText("Level: 1");
+
+                        m_player = new Player(game, m_scoreText);
+                        game.addGameObject(m_player);
+                        m_scoreText.setText("Score: 0");
+
+                        m_collidableObjects.destroyAll(true);
+                        m_collidableObjects = new CollisionLists(m_player);
+
+                        m_alienManager = new AlienManager(m_collidableObjects, game);
+                        m_alienManager.createAliens();
+
+                        m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
+                        m_asteroidManager.createAsteroids();
+
+                        game.unPause();
+                    }
+                })
+                .create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 }
