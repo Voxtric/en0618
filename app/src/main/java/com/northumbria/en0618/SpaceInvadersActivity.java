@@ -20,13 +20,13 @@ public class SpaceInvadersActivity extends GameActivity
 {
     private static final int POWER_SAVER_FRAME_RATE = 30;
 
-    private static final float SHOT_SPAWN_WAIT = 0.9f;
+    private static final float PLAYER_SHOT_SPAWN_WAIT = 0.9f;
     private static final float SHOT_OFFSET_MULTIPLIER = 0.45f;
 
     private static final float SCREEN_DISTANCE_FONT_SIZE = 0.05f;
 
     private int m_currentLevel = 1;
-    private float m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+    private float m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
     private float m_playerShotOffset = 0.0f;
 
     Player m_player;
@@ -86,7 +86,7 @@ public class SpaceInvadersActivity extends GameActivity
 
         // Manager class for all ALien Objects
         m_alienManager = new AlienManager(m_collidableObjects, game);
-        m_alienManager.createAliens(m_currentLevel);
+        m_alienManager.createAliens();
 
         m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
         m_asteroidManager.createAsteroids();
@@ -97,10 +97,10 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onGameUpdate(float deltaTime)
     {
-        final Game m_game = getGame();
+        final Game game = getGame();
         if(!m_player.isDead() && !m_alienManager.checkAlienWin())
         {
-            if(m_collidableObjects.alienRemaining())
+            if(m_alienManager.alienRemaining())
             {
                 // Only runs if there is at least 1 alien alive
                 m_collidableObjects.checkCollisions(); // Checks Collisions for all objects
@@ -113,25 +113,31 @@ public class SpaceInvadersActivity extends GameActivity
                     float bulletX = m_player.getX() + m_playerShotOffset;
                     m_playerShotOffset = -m_playerShotOffset;
                     Bullet bullet = new Bullet(
-                            m_game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
-                    m_game.addGameObject(bullet);
+                            game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
+                    game.addGameObject(bullet);
                     m_collidableObjects.addBullet(bullet, true);
-                    m_timeToShotSpawn = SHOT_SPAWN_WAIT;
+                    m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
                 }
                     // m_collidableObjects.newLevel();
             }
             else
             {
-                if(m_player.newLevel())
+                if(m_player.newLevel(deltaTime))
                 {
                     // newLevel will continue to run until the player has made sufficient moves that result
                     // in it being off the screen.
-                    m_collidableObjects.cleanLists();
+
                     m_currentLevel++;
                     m_levelText.setText(String.format(Locale.getDefault(), "Level: %d", m_currentLevel));
-                    m_game.addGameObject(m_player);
-                    m_collidableObjects.newPlayer(m_player);
-                    m_alienManager.createAliens(m_currentLevel);
+
+                    m_collidableObjects.destroyAll(false);
+                    m_collidableObjects = new CollisionLists(m_player);
+
+                    m_alienManager = new AlienManager(m_collidableObjects, game);
+                    m_alienManager.incrementBaseAlienSpeed(m_currentLevel);
+                    m_alienManager.createAliens();
+
+                    m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
                     m_asteroidManager.createAsteroids();
                 }
             }
@@ -139,7 +145,7 @@ public class SpaceInvadersActivity extends GameActivity
         else
         {
             // TODO: Change all of this to use a proper UI.
-            getGame().pause(false);
+            game.pause(false);
             runOnUiThread(new Runnable()
             {
                 @Override
@@ -161,16 +167,25 @@ public class SpaceInvadersActivity extends GameActivity
                                 @Override
                                 public void onClick(DialogInterface dialog, int which)
                                 {
-                                    getGame().unPause();
-                                    // Restart the game here
+                                    Game game = getGame();
+
                                     m_currentLevel = 1;
-                                    m_alienManager.clearAliens();
-                                    m_player = new Player(m_game.getActivity(), m_scoreText);
-                                    m_game.addGameObject(m_player);
-                                    m_collidableObjects.cleanLists();
-                                    m_collidableObjects.newPlayer(m_player);
-                                    m_alienManager.createAliens(m_currentLevel);
+                                    m_levelText.setText("Level: 1");
+
+                                    m_player = new Player(SpaceInvadersActivity.this, m_scoreText);
+                                    game.addGameObject(m_player);
+                                    m_scoreText.setText("Score: 0");
+
+                                    m_collidableObjects.destroyAll(true);
+                                    m_collidableObjects = new CollisionLists(m_player);
+
+                                    m_alienManager = new AlienManager(m_collidableObjects, game);
+                                    m_alienManager.createAliens();
+
+                                    m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
                                     m_asteroidManager.createAsteroids();
+
+                                    game.unPause();
                                 }
                             })
                             .create();

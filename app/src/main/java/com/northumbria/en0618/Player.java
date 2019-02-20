@@ -18,7 +18,7 @@ public class Player extends CollidableGameObject
     private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.05f;
     private static final float SCREEN_DISTANCE_WIDTH = 0.2f;
     private static final float HEIGHT_TO_WIDTH_RATIO = 0.6f;
-    private static final float LEVEL_COMPLETE_SPEED_MODIFIER = 5.0f;
+    private static final float LEVEL_COMPLETE_SPEED_MODIFIER = 3.0f;
 
     private static final int START_LIVES_COUNT = 3;
 
@@ -126,13 +126,13 @@ public class Player extends CollidableGameObject
     public boolean isDead()
     {
         // Returns the players living state based off of lives
-        return m_lives <= 0;
+        return m_lives <= 0 || isDestroyed();
     }
 
-    public boolean newLevel()
+    public boolean newLevel(float deltaTime)
     {
         // Player Moves upwards until they are off the screen. Once they are, returns true.
-        moveBy(0.0f, m_moveSpeed * LEVEL_COMPLETE_SPEED_MODIFIER);
+        moveBy(0.0f, (m_moveSpeed * LEVEL_COMPLETE_SPEED_MODIFIER) * deltaTime);
         boolean newLevel = false;
         if(getY() >= Input.getScreenHeight())
         {

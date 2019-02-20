@@ -113,18 +113,29 @@ public class CollisionLists {
         m_alienList.add(newAlien);
     }
 
-    public boolean alienRemaining()
+    public void destroyAll(boolean destroyPlayer)
     {
-        // Checks that there is at least one living alien
-        return m_alienList.size() > 0;
-    }
+        for (Alien alien : m_alienList)
+        {
+            alien.destroy();
+        }
+        for (Bullet bullet : m_alienBulletList)
+        {
+            bullet.destroy();
+        }
+        for (Bullet bullet : m_playerBulletList)
+        {
+            bullet.destroy();
+        }
+        for (Asteroid asteroid : m_asteroidList)
+        {
+            asteroid.destroy();
+        }
 
-    public void cleanLists()
-    {
-        // Clears lists
-        // Only runs when Alien list is empty.
-        m_alienBulletList.clear();
-        m_playerBulletList.clear();
+        if (destroyPlayer)
+        {
+            m_player.destroy();
+        }
     }
 
     public void newPlayer(Player player)
