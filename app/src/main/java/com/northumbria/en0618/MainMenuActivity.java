@@ -58,7 +58,7 @@ public class MainMenuActivity extends AppCompatActivity
 
         Typeface font = Typeface.createFromAsset(getAssets(), "death_star.ttf");
         ViewGroup root = findViewById(R.id.view_root);
-        setAllFonts(root, font);
+        FontUtils.setAllFonts(root, font);
 
         createNotificationChannel();
 
@@ -218,26 +218,6 @@ public class MainMenuActivity extends AppCompatActivity
                         });
             }
         });
-    }
-
-    private void setAllFonts(ViewGroup viewGroup, Typeface font)
-    {
-        for (int i = 0; i < viewGroup.getChildCount(); i++)
-        {
-            View child = viewGroup.getChildAt(i);
-            if (child instanceof ViewGroup)
-            {
-                setAllFonts((ViewGroup)child, font);
-            }
-            else if (child instanceof Button)
-            {
-                ((Button)child).setTypeface(font);
-            }
-            else if (child instanceof TextView)
-            {
-                ((TextView)child).setTypeface(font);
-            }
-        }
     }
 
     // Updates the app settings and the player with the new input method.

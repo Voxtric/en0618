@@ -3,11 +3,13 @@ package com.northumbria.en0618;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -342,6 +344,10 @@ public class SpaceInvadersActivity extends GameActivity
                       }
                   });
                 }
+
+                Typeface font = Typeface.createFromAsset(getAssets(), "death_star.ttf");
+                ViewGroup root = view.findViewById(R.id.view_root);
+                FontUtils.setAllFonts(root, font);
 
                 m_gameOverDialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
                       .setView(view)
