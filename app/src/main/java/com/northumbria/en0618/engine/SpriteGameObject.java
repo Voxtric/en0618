@@ -7,8 +7,8 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 public class SpriteGameObject extends GameObject
 {
-    private Sprite m_sprite;
-    private float[] m_color = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+    private final Sprite m_sprite;
+    private final float[] m_color = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
 
     public SpriteGameObject(Sprite sprite, float x, float y, float xSize, float ySize)
     {

@@ -7,15 +7,14 @@ import android.support.annotation.DrawableRes;
 import com.northumbria.en0618.engine.opengl.CollisionMask;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.opengl.Texture;
-import com.northumbria.en0618.objectType;
 
 // A game object that has a collision mask that matches its sprite.
 public class CollidableGameObject extends SpriteGameObject
 {
-    private CollisionMask m_collisionMask;
-    private RectF m_boundingRect;
+    private final CollisionMask m_collisionMask;
+    private final RectF m_boundingRect;
 
-    public CollidableGameObject(Context context, Sprite sprite, float x, float y, float xSize, float ySize)
+    protected CollidableGameObject(Context context, Sprite sprite, float x, float y, float xSize, float ySize)
     {
         super(sprite, x, y, xSize, ySize);
 
@@ -28,14 +27,14 @@ public class CollidableGameObject extends SpriteGameObject
     }
 
     @Override
-    public void moveBy(float x, float y)
+    protected void moveBy(float x, float y)
     {
         super.moveBy(x, y);
         m_boundingRect.offset(x, y);
     }
 
     @Override
-    public void setPosition(float x, float y)
+    protected void setPosition(float x, float y)
     {
         super.setPosition(x, y);
         float halfXSize = getXSize() / 2.0f;

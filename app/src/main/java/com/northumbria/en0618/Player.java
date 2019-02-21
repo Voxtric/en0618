@@ -44,11 +44,11 @@ public class Player extends CollidableGameObject
     private int m_lives = START_LIVES_COUNT;
     private long m_score = 0;
 
-    private float m_moveSpeed;
-    private float m_sideBorder;
+    private final float m_moveSpeed;
+    private final float m_sideBorder;
 
-    private TextGameObject m_scoreTracker;
-    private LivesManager m_livesManager;
+    private final TextGameObject m_scoreTracker;
+    private final LivesManager m_livesManager;
 
     Player(Game game, TextGameObject scoreTracker)
     {
@@ -81,61 +81,62 @@ public class Player extends CollidableGameObject
         float x = getX();
         float halfWidth = getXSize() * 0.5f;
 
-        if (s_inputMethod == INPUT_METHOD_SCREEN_TILT)
+        switch (s_inputMethod)
         {
-            float deviceRoll = Input.getDeviceRoll();
-            if (deviceRoll > 0.0f)
-            {
-                if (x < (screenWidth - halfWidth - m_sideBorder))
-                {
-                    moveBy(m_moveSpeed* deltaTime, 0.0f);
-                }
-            }
-            else if ((deviceRoll < 0.0f) && (x > (halfWidth + m_sideBorder)))
-            {
-                moveBy(-m_moveSpeed * deltaTime, 0.0f);
-            }
-        }
-        else if (s_inputMethod == INPUT_METHOD_PLAYER_SIDE)
-        {
-            if (Input.isTouched())
-            {
-                float touchX = Input.getCurrentTouchX();
-                if (touchX > x)
-                {
-                    if (x < (screenWidth - halfWidth - m_sideBorder))
-                    {
-                        float xMove = Math.min(m_moveSpeed * deltaTime, touchX - x);
-                        if (xMove > 1.0f)
-                        {
-                            moveBy(xMove, 0.0f);
-                        }
-                    }
-                }
-                else if ((touchX < x) && (x > (halfWidth + m_sideBorder)))
-                {
-                    float xMove = Math.min(m_moveSpeed * deltaTime, x - touchX);
-                    moveBy(-xMove, 0.0f);
-                }
-            }
-        }
-        else // if (s_inputMethod == INPUT_METHOD_SCREEN_SIDE)
-        {
-            if (Input.isTouched())
-            {
-                float touchX = Input.getCurrentTouchX();
-                if (touchX > (screenWidth * 0.5f))
+            case INPUT_METHOD_SCREEN_TILT:
+                float deviceRoll = Input.getDeviceRoll();
+                if (deviceRoll > 0.0f)
                 {
                     if (x < (screenWidth - halfWidth - m_sideBorder))
                     {
                         moveBy(m_moveSpeed * deltaTime, 0.0f);
                     }
                 }
-                else if (x > (halfWidth + m_sideBorder))
+                else if ((deviceRoll < 0.0f) && (x > (halfWidth + m_sideBorder)))
                 {
                     moveBy(-m_moveSpeed * deltaTime, 0.0f);
                 }
-            }
+                break;
+            case INPUT_METHOD_PLAYER_SIDE:
+                if (Input.isTouched())
+                {
+                    float touchX = Input.getCurrentTouchX();
+                    if (touchX > x)
+                    {
+                        if (x < (screenWidth - halfWidth - m_sideBorder))
+                        {
+                            float xMove = Math.min(m_moveSpeed * deltaTime, touchX - x);
+                            if (xMove > 1.0f)
+                            {
+                                moveBy(xMove, 0.0f);
+                            }
+                        }
+                    }
+                    else if ((touchX < x) && (x > (halfWidth + m_sideBorder)))
+                    {
+                        float xMove = Math.min(m_moveSpeed * deltaTime, x - touchX);
+                        moveBy(-xMove, 0.0f);
+                    }
+                }
+                break;
+            case INPUT_METHOD_SCREEN_SIDE:
+            default:
+                if (Input.isTouched())
+                {
+                    float touchX = Input.getCurrentTouchX();
+                    if (touchX > (screenWidth * 0.5f))
+                    {
+                        if (x < (screenWidth - halfWidth - m_sideBorder))
+                        {
+                            moveBy(m_moveSpeed * deltaTime, 0.0f);
+                        }
+                    }
+                    else if (x > (halfWidth + m_sideBorder))
+                    {
+                        moveBy(-m_moveSpeed * deltaTime, 0.0f);
+                    }
+                }
+                break;
         }
     }
 

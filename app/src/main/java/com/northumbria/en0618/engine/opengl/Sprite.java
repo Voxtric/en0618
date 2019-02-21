@@ -21,7 +21,7 @@ public class Sprite implements IRenderable
             0.5f,  -0.5f, 0.0f,
             0.5f,  0.5f, 0.0f
     };
-    private static final int VERTEX_COORD_STRIDE = COORDS_PER_VERTEX * 4;
+    private static final int VERTEX_COORDS_STRIDE = COORDS_PER_VERTEX * 4;
 
     // Texture co-ordinate data for rendering a sprite.
     private static final int UVS_PER_VERTEX = 2;
@@ -37,7 +37,7 @@ public class Sprite implements IRenderable
     private static final short[] INDICES = { 0, 1, 2, 0, 2, 3 };
 
     // Sprite cache for fast sprite lookup.
-    private static HashMap<Texture, Sprite> s_sprites = new HashMap<>();
+    private static final HashMap<Texture, Sprite> s_sprites = new HashMap<>();
 
     // Gets a sprite using a texture, creating if it it hasn't already been created.
     private static Sprite getSprite(Texture texture)
@@ -73,13 +73,13 @@ public class Sprite implements IRenderable
     }
 
     // Buffers for the different attributes of a vertex
-    private FloatBuffer m_vertexBuffer;
-    private FloatBuffer m_uvBuffer;
-    private ShortBuffer m_indexBuffer;
+    private final FloatBuffer m_vertexBuffer;
+    private final FloatBuffer m_uvBuffer;
+    private final ShortBuffer m_indexBuffer;
 
 
-    private SpriteShader m_shader;
-    private Texture m_texture;
+    private final SpriteShader m_shader;
+    private final Texture m_texture;
     private boolean m_transparent = true;
 
     // Creates a sprite using the specified shader and texture.
@@ -158,7 +158,7 @@ public class Sprite implements IRenderable
         // Upload the vertex position co-ordinates.
         int shaderPositionAttribute = m_shader.getPositionAttribute();
         GLES20.glVertexAttribPointer(shaderPositionAttribute, COORDS_PER_VERTEX, GLES20.GL_FLOAT,
-                                     false, VERTEX_COORD_STRIDE, m_vertexBuffer);
+                                     false, VERTEX_COORDS_STRIDE, m_vertexBuffer);
 
         // Upload the vertex texture co-ordinates.
         int shaderUVAttribute = m_shader.getUVAttribute();

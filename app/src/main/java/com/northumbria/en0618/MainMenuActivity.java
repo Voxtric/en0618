@@ -41,13 +41,13 @@ public class MainMenuActivity extends AppCompatActivity
 
     public static final String PREFERENCE_KEY_POWER_SAVER = "power_saver";
 
-    NotificationCompat.Builder mBuilder;
+    private NotificationCompat.Builder m_builder;
 
-    MediaPlayer mediaPlayer;
-    SoundPool soundPool;
+    private MediaPlayer m_mediaPlayer;
+    private SoundPool m_soundPool;
 
-    int menuSoundId;
-    public static final int MAX_STREAMS = 3;
+    private int m_menuSoundId;
+    private static final int MAX_STREAMS = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,7 +66,7 @@ public class MainMenuActivity extends AppCompatActivity
         intent.setFlags(Intent.FLAG_FROM_BACKGROUND);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        mBuilder = new NotificationCompat.Builder(this, "pie")
+        m_builder = new NotificationCompat.Builder(this, "pie")
                 .setSmallIcon(R.drawable.settings)
                 .setContentTitle("Annoying notification")
                 .setContentText("Hey PLAY OUR GAME NOW!!!!")
@@ -74,12 +74,12 @@ public class MainMenuActivity extends AppCompatActivity
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mainmenu);
-        mediaPlayer.start();
+        m_mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mainmenu);
+        m_mediaPlayer.start();
 
-        soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+        m_soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
 
-        menuSoundId = soundPool.load(this, R.raw.menuselect, 1);
+        m_menuSoundId = m_soundPool.load(this, R.raw.menuselect, 1);
 
         //SoundManager.getInstance().Init(this);
         //SoundManager.getInstance().gPlayMainMenu();
@@ -90,8 +90,8 @@ public class MainMenuActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        mediaPlayer.start();
-        soundPool.autoResume();
+        m_mediaPlayer.start();
+        m_soundPool.autoResume();
     }
 
     @Override
@@ -99,8 +99,8 @@ public class MainMenuActivity extends AppCompatActivity
     {
         super.onPause();
 
-        mediaPlayer.pause();
-        soundPool.autoPause();
+        m_mediaPlayer.pause();
+        m_soundPool.autoPause();
     }
 
     // Updates google_play_games_button UI element based on google sign in status.
@@ -241,6 +241,7 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     // Updates the app settings and the player with the new input method.
+    @SuppressWarnings("unused")
     @SuppressLint("ApplySharedPref")    // We want the data to be available immediately.
     public void changeInputMethod(View view)
     {
@@ -271,6 +272,7 @@ public class MainMenuActivity extends AppCompatActivity
         Player.updateInputMethod(this);
     }
 
+    @SuppressWarnings("unused")
     public void togglePowerSaver(View view)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -309,20 +311,22 @@ public class MainMenuActivity extends AppCompatActivity
         }
     }
 
+    @SuppressWarnings("unused")
     public void startGameActivity(View view)
     {
-        soundPool.play(menuSoundId, 1, 1, 1, 0, 1);
+        m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
 
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
 
         //launch the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(1, mBuilder.build());
+        notificationManager.notify(1, m_builder.build());
 
-        soundPool.release();
+        m_soundPool.release();
     }
 
+    @SuppressWarnings("unused")
     public void toggleSoundEffects(View view) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean currentValue = sp.getBoolean("play_sfx", true);
@@ -331,26 +335,28 @@ public class MainMenuActivity extends AppCompatActivity
 
         if (currentValue)
         {
-            soundPool.play(menuSoundId, 1, 1, 1, 0, 1);
+            m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
         }
 
 //        Button b = (Button) view;
 //        b.setText();
     }
 
-    public void toggleMusic(View view) {
+    @SuppressWarnings("unused")
+    public void toggleMusic(View view)
+    {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean currentValue = sp.getBoolean("play_music", true);
 
 
-        //soundPool.play(menuSoundId, 1, 1, 1, 0, 1);
+        //m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
         if (currentValue)
         {
-            mediaPlayer.pause();
+            m_mediaPlayer.pause();
         }
         else
         {
-            mediaPlayer.start();
+            m_mediaPlayer.start();
         }
 
         sp.edit().putBoolean("play_music", !currentValue).apply();

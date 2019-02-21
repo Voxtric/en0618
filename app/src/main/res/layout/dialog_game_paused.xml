@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:gravity="center"
-        android:text="Game Paused"
+        android:text="@string/game_paused_title"
         tools:layout_editor_absoluteX="149dp"
         tools:layout_editor_absoluteY="164dp"
         android:layout_alignParentStart="true"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/title_text_view"
-        android:text="Resume"
+        android:text="@string/resume_button"
         android:layout_alignParentEnd="true"
         android:onClick="onResumeGame"/>
 
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/title_text_view"
-        android:text="Quit"
+        android:text="@string/main_menu_button"
         android:layout_alignParentStart="true"
-        android:onClick="onQuitGame"/>
+        android:onClick="returnToMainMenu"/>
 </RelativeLayout>

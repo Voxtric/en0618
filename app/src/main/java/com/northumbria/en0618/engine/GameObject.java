@@ -8,11 +8,11 @@ public abstract class GameObject
 {
     private boolean m_destroyed = false;
 
-    private float[] m_matrix = new float[16];
+    private final float[] m_matrix = new float[16];
     private float m_x;
     private float m_y;
-    private float m_xScale;
-    private float m_yScale;
+    private final float m_xScale;
+    private final float m_yScale;
 
     GameObject(float x, float y, float xSize, float ySize)
     {
@@ -27,14 +27,14 @@ public abstract class GameObject
         Matrix.translateM(m_matrix, 0, x / m_xScale, y / m_yScale, 0.0f);
     }
 
-    public void moveBy(float x, float y)
+    protected void moveBy(float x, float y)
     {
         m_x += x;
         m_y += y;
         Matrix.translateM(m_matrix, 0, x / m_xScale, y / m_yScale, 0.0f);
     }
 
-    public void setPosition(float x, float y)
+    void setPosition(float x, float y)
     {
         Matrix.translateM(m_matrix, 0, (x - m_x) / m_xScale, (y - m_y) / m_yScale, 0.0f);
         m_x = x;
@@ -71,7 +71,7 @@ public abstract class GameObject
         return m_xScale;
     }
 
-    public float getYSize()
+    protected float getYSize()
     {
         return m_yScale;
     }

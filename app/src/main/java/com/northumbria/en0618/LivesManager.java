@@ -7,19 +7,19 @@ import com.northumbria.en0618.engine.opengl.Sprite;
 
 import java.util.Stack;
 
-public class LivesManager
+class LivesManager
 {
     private static final float SCREEN_DISTANCE_SIZE = 0.075f;
     private static final float SCREEN_DISTANCE_SIDE_BORDER = 0.01f;
     private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.005f;
     private static final float SIZE_MODIFIER = 1.05f;
 
-    private Game m_game;
-    private Stack<SpriteGameObject> m_lives = new Stack<>();
+    private final Game m_game;
+    private final Stack<SpriteGameObject> m_lives = new Stack<>();
 
-    private float m_size;
-    private float m_startX;
-    private float m_startY;
+    private final float m_size;
+    private final float m_startX;
+    private final float m_startY;
 
     LivesManager(Game game)
     {

@@ -7,9 +7,8 @@ import com.northumbria.en0618.engine.Input;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class AlienManager
+class AlienManager
 {
     private static final @DrawableRes int[] ALIEN_SPRITE_DRAWABLE_IDS = new int[]
     {
@@ -42,15 +41,15 @@ public class AlienManager
     private float m_timeToBossSpawn = BOSS_ALIEN_SPAWN_WAIT;
     private float m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
 
-    private List<List<Alien>> m_alienColumns = new ArrayList<>();
+    private final List<List<Alien>> m_alienColumns = new ArrayList<>();
     private int m_activeAliens;
-    private CollisionLists m_colList;
-    private Game m_game;
+    private final CollisionLists m_colList;
+    private final Game m_game;
     private boolean m_alienWin = false;
 
     private float m_alienMoveSpeed;
-    private float m_alienSize;
-    private float m_sideBorder;
+    private final float m_alienSize;
+    private final float m_sideBorder;
 
     AlienManager(CollisionLists collisionList, Game game)
     {
@@ -159,8 +158,7 @@ public class AlienManager
             m_timeToShotSpawn -= deltaTime;
             if(m_timeToShotSpawn <= 0.0f)
             {
-                Random rand = new Random();
-                int alienChoice = rand.nextInt(m_alienColumns.size());
+                int alienChoice = m_game.getRandom().nextInt(m_alienColumns.size());
                 Bullet alienBullet = new Bullet(m_game.getActivity(),
                         R.drawable.alien_shot,
                         m_alienColumns.get(alienChoice).get(0).getX(),

@@ -9,7 +9,7 @@ public class SettingsButton extends ButtonGameObject
 {
     private static final float SCREEN_DISTANCE_SIZE = 0.1f;
 
-    private Game m_game;
+    private final Game m_game;
 
     public SettingsButton(Game game)
     {

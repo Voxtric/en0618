@@ -32,8 +32,6 @@ import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Sprite;
 
-import java.util.Locale;
-
 public class SpaceInvadersActivity extends GameActivity
 {
     private static final String PREFERENCE_KEY_HIGH_SCORE = "high_score";
@@ -78,7 +76,7 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameReady()
     {
         Game game = getGame();
-        game.setPauseDialogLayoutID(R.layout.dialog_game_pause);
+        game.setPauseDialogLayoutID(R.layout.dialog_game_paused);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.getBoolean(MainMenuActivity.PREFERENCE_KEY_POWER_SAVER, false))
@@ -86,13 +84,13 @@ public class SpaceInvadersActivity extends GameActivity
             ((GameSurfaceView) getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
         }
 
-        Font font = Font.getFont(this, "death_star.ttf", (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);
+        Font font = Font.getFont(this, getString(R.string.app_font), (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);
         // Score
-        m_scoreText = new TextGameObject(font, "Score: 0", 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
+        m_scoreText = new TextGameObject(font, getString(R.string.score_text, 0), 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
         m_scoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
         game.addGameObject(m_scoreText, true);
         // Level
-        m_levelText = new TextGameObject(font, "Level: 1", 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
+        m_levelText = new TextGameObject(font, getString(R.string.level_text, 1), 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
         m_levelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
         game.addGameObject(m_levelText, true);
 
@@ -189,7 +187,7 @@ public class SpaceInvadersActivity extends GameActivity
                     // in it being off the screen.
 
                     m_currentLevel++;
-                    m_levelText.setText(String.format(Locale.getDefault(), "Level: %d", m_currentLevel));
+                    m_levelText.setText(getString(R.string.level_text, m_currentLevel));
 
                     m_collidableObjects.destroyAll(false);
                     m_collidableObjects = new CollisionLists(m_player, this);
@@ -214,16 +212,17 @@ public class SpaceInvadersActivity extends GameActivity
         return m_currentLevel;
     }
 
+    @SuppressWarnings("unused")
     public void restartGame(View view)
     {
         Game game = getGame();
 
         m_currentLevel = 1;
-        m_levelText.setText("Level: 1");
+        m_levelText.setText(getString(R.string.level_text, 1));
 
         m_player = new Player(game, m_scoreText);
         game.addGameObject(m_player);
-        m_scoreText.setText("Score: 0");
+        m_scoreText.setText(getString(R.string.score_text, 0));
 
         m_collidableObjects.destroyAll(true);
         m_collidableObjects = new CollisionLists(m_player, SpaceInvadersActivity.this);
@@ -239,11 +238,15 @@ public class SpaceInvadersActivity extends GameActivity
         m_gameOverDialog.dismiss();
     }
 
+    @SuppressWarnings("unused")
     public void returnToMainMenu(View view)
     {
-        m_gameOverDialog.dismiss();
-        m_gameOverDialog = null;
-        finish();
+        if (m_gameOverDialog != null)
+        {
+            m_gameOverDialog.dismiss();
+            m_gameOverDialog = null;
+        }
+        onQuitGame(view);
     }
 
     private void endGame(final long score)
@@ -257,7 +260,7 @@ public class SpaceInvadersActivity extends GameActivity
             {
                 @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_game_over, null);
                 TextView scoreTextView = view.findViewById(R.id.score_text_view);
-                scoreTextView.setText(String.format(Locale.getDefault(), "Score: %d", score));
+                scoreTextView.setText(getString(R.string.score_text, score));
                 final ProgressBar newHighScoreProgressBar = view.findViewById(R.id.new_high_score_progress_bar);
                 final TextView newHighScoreTextView = view.findViewById(R.id.new_high_score_text_view);
 
@@ -276,7 +279,7 @@ public class SpaceInvadersActivity extends GameActivity
                   newHighScoreTextView.setVisibility(View.VISIBLE);
                   if (score < locallySavedHighScore)
                   {
-                      newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", locallySavedHighScore));
+                      newHighScoreTextView.setText(getString(R.string.current_high_score_message, locallySavedHighScore));
                   }
                 }
                 else
@@ -299,7 +302,7 @@ public class SpaceInvadersActivity extends GameActivity
                           newHighScoreTextView.setVisibility(View.VISIBLE);
                           if (score < locallySavedHighScore)
                           {
-                              newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", locallySavedHighScore));
+                              newHighScoreTextView.setText(getString(R.string.current_high_score_message, locallySavedHighScore));
                           }
                       }
                   });
@@ -317,7 +320,7 @@ public class SpaceInvadersActivity extends GameActivity
                               newHighScoreTextView.setVisibility(View.VISIBLE);
                               if (score < highScore)
                               {
-                                  newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", highScore));
+                                  newHighScoreTextView.setText(getString(R.string.current_high_score_message, highScore));
                               }
                           }
                       }
@@ -333,7 +336,7 @@ public class SpaceInvadersActivity extends GameActivity
                               newHighScoreTextView.setVisibility(View.VISIBLE);
                               if (score < locallySavedHighScore)
                               {
-                                  newHighScoreTextView.setText(String.format(Locale.getDefault(), "Current High Score: %d", locallySavedHighScore));
+                                  newHighScoreTextView.setText(getString(R.string.current_high_score_message, locallySavedHighScore));
                               }
                           }
                       }

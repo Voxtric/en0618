@@ -12,7 +12,7 @@ public class BackgroundTile extends SpriteGameObject
 
     private static final float SCROLL_SPEED = 200.0f;
 
-    private float m_resetHeight;
+    private final float m_resetHeight;
 
     BackgroundTile(Context context, float x, float y, float resetHeight)
     {

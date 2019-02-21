@@ -13,7 +13,7 @@ public class Alien extends CollidableGameObject
     private static final long BASE_SCORE = 10;
 
     float m_moveSpeed;
-    private float m_moveDownDistance;
+    private final float m_moveDownDistance;
 
     private float m_lastY;
     private boolean m_goingDown = false;

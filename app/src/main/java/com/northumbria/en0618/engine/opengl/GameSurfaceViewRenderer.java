@@ -12,10 +12,10 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 // The object that performs that actual rendering to the OpenGL surface.
-public class GameSurfaceViewRenderer implements GLSurfaceView.Renderer
+class GameSurfaceViewRenderer implements GLSurfaceView.Renderer
 {
     // Objects used to manage the lifecycle of the game and the app.
-    private GameActivity m_activity;
+    private final GameActivity m_activity;
     private Game m_game;
 
     private final float[] m_projectionMatrix = new float[16];

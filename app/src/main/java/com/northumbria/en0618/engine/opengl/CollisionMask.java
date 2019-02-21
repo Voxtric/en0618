@@ -9,9 +9,9 @@ import java.util.BitSet;
 // in a bitmap is collidable.
 public class CollisionMask
 {
-    private int m_collisionMaskXSize;
-    private int m_collisionMaskYSize;
-    private BitSet m_collisionMask;
+    private final int m_collisionMaskXSize;
+    private final int m_collisionMaskYSize;
+    private final BitSet m_collisionMask;
 
     // Create the bit array using a bitmap image.
     CollisionMask(Bitmap bitmap)

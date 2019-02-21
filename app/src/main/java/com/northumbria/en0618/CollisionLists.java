@@ -3,15 +3,15 @@ package com.northumbria.en0618;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollisionLists
+class CollisionLists
 {
-    private List<Bullet> m_playerBulletList = new ArrayList<>();
-    private List<Bullet> m_alienBulletList = new ArrayList<>();
-    private List<Alien> m_alienList = new ArrayList<>();
-    private List<Asteroid> m_asteroidList = new ArrayList<>();
+    private final List<Bullet> m_playerBulletList = new ArrayList<>();
+    private final List<Bullet> m_alienBulletList = new ArrayList<>();
+    private final List<Alien> m_alienList = new ArrayList<>();
+    private final List<Asteroid> m_asteroidList = new ArrayList<>();
 
-    private Player m_player;
-    private SpaceInvadersActivity m_activity;
+    private final Player m_player;
+    private final SpaceInvadersActivity m_activity;
 
     CollisionLists(Player player, SpaceInvadersActivity activity)
     {

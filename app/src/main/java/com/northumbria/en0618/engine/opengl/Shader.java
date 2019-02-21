@@ -42,7 +42,7 @@ public abstract class Shader
         FontShader.releaseInstance();
     }
 
-    int m_handle;   // OpenGL shader program identifier.
+    final int m_handle;   // OpenGL shader program identifier.
 
     // Create a shader program using code for the vertex and fragment shader.
     Shader(String vertexShaderCode, String fragmentShaderCode)
@@ -64,6 +64,6 @@ public abstract class Shader
         return m_handle;
     }
 
-    public abstract void use();
-    public abstract void unUse();
+    protected abstract void use();
+    protected abstract void unUse();
 }

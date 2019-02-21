@@ -1,9 +1,26 @@
 <resources>
     <string name="app_name">EN0618</string>
+    <string name="app_font">death_star.ttf</string>
 
     <string name="channel_name">annoyingChannel</string>
     <string name="channel_description">Channel for the annoying notification.</string>
 
+    <!-- Main Menu -->
+
+    <!-- Game Paused Menu -->
+    <string name="game_paused_title">Game Paused</string>
+    <string name="resume_button">Resume</string>
+    <string name="main_menu_button">Main Menu</string>
+
+    <!-- Game -->
+    <string name="score_text">Score: %1$d</string>
+    <string name="level_text">Level: %1$d</string>
+
+    <!-- Game Over Menu -->
+    <string name="game_over_title">Game Over</string>
+    <string name="new_high_score_message">New High Score!</string>
+    <string name="current_high_score_message">Current High Score: %1$d</string>
+    <string name="restart_button">Restart</string>
 
     <!-- Google Play Games Services -->
     <string name="app_id">975469447331</string>

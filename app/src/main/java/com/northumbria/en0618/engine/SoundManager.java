@@ -3,16 +3,18 @@ package com.northumbria.en0618.engine;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 import com.northumbria.en0618.R;
 
-public class SoundManager {
+// TODO: Figure out what all the unused stuff is doing here.
+public class SoundManager
+{
     //MediaPlayer menuMediaPlayer;
     //MediaPlayer gameMediaPlayer;
     //MediaPlayer gameOverMediaPlayer;
 
+    // TODO: This is a major no no and needs to be fixed.
     private static final SoundManager getInstance = new SoundManager();
 
     public static SoundManager getInstance() {
@@ -27,24 +29,26 @@ public class SoundManager {
     AudioAttributes.Builder globalAttributesBuilder;
 
     // Stored sound int for use within the game
-    int gSoundID_menuSelect;
-    int gSoundID_playerFire;
-    int gSoundID_enemyFire;
-    int gSoundID_playerHit;
-    int gSoundID_enemyHit;
-    int gSoundID_barrierHit;
+    private int gSoundID_menuSelect;
+    private int gSoundID_playerFire;
+    private int gSoundID_enemyFire;
+    private int gSoundID_playerHit;
+    private int gSoundID_enemyHit;
+    private int gSoundID_barrierHit;
 
     int scenePlaying = -1;
 
-    Context context;
-    boolean loaded = false; // sets is loaded to false
-    public static final int MAX_STREAMS = 10; // sets max streams playing to 10
+    private Context context;
+    private boolean loaded = false; // sets is loaded to false
+    private static final int MAX_STREAMS = 10; // sets max streams playing to 10
 
-    public SoundManager() {
+    private SoundManager()
+    {
 
     }
 
-    public void Init(Context context) {
+    public void Init(Context context)
+    {
         this.context = context;
 
         // checks if sounds are not loaded
@@ -55,7 +59,8 @@ public class SoundManager {
         }
     }
 
-    protected void gLoadSounds() {
+    private void gLoadSounds()
+    {
         // loads sound effects
         gSoundID_menuSelect = globalSoundPool.load(context, R.raw.menuselect, 1);
         gSoundID_playerFire = globalSoundPool.load(context, R.raw.playerfire, 1);
@@ -76,32 +81,39 @@ public class SoundManager {
 
     }
 
-    public void gCreateSoundPool() {
+    private void gCreateSoundPool()
+    {
         globalSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
     }
 
     // method to play game SFX
-    public void gPlaySoundMenu() {
+    public void gPlaySoundMenu()
+    {
         globalSoundPool.play(gSoundID_menuSelect, 1, 1, 1, 0, 1);
     }
 
-    public void gPlaySoundEnemyHit() {
+    public void gPlaySoundEnemyHit()
+    {
         globalSoundPool.play(gSoundID_enemyHit, 1, 1, 1, 0, 1);
     }
 
-    public void gPlaySoundPlayerHit() {
+    public void gPlaySoundPlayerHit()
+    {
         globalSoundPool.play(gSoundID_playerHit, 1, 1, 1, 0, 1);
     }
 
-    public void gPlaySoundBarrierHit() {
+    public void gPlaySoundBarrierHit()
+    {
         globalSoundPool.play(gSoundID_barrierHit, 1, 1, 1, 0, 1);
     }
 
-    public void gPlaySoundEnemyFiring() {
+    public void gPlaySoundEnemyFiring()
+    {
         globalSoundPool.play(gSoundID_enemyFire, 1, 1, 1, 0, 1);
     }
 
-    public void gPlaySoundPlayerFiring() {
+    public void gPlaySoundPlayerFiring()
+    {
         globalSoundPool.play(gSoundID_playerFire, 1, 1, 1, 0, 1);
     }
 

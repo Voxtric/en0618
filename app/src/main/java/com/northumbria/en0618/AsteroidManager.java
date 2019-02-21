@@ -8,7 +8,7 @@ import com.northumbria.en0618.engine.Input;
 
 import java.util.Random;
 
-public class AsteroidManager
+class AsteroidManager
 {
     private static final @DrawableRes int[] ASTEROID_SPRITE_DRAWABLE_IDS = new int[]
     {
@@ -29,13 +29,13 @@ public class AsteroidManager
     private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.17f;
     private static final float SCREEN_DISTANCE_Y_OFFSET = -0.01f;
 
-    private CollisionLists m_collisionList;
-    private Game m_game;
+    private final CollisionLists m_collisionList;
+    private final Game m_game;
 
-    private float m_size;
-    private float m_distanceBetweenBarrierCenters;
-    private float m_barrierWidth;
-    private float m_startY;
+    private final float m_size;
+    private final float m_distanceBetweenBarrierCenters;
+    private final float m_barrierWidth;
+    private final float m_startY;
 
     AsteroidManager(CollisionLists collisionList, Game game)
     {

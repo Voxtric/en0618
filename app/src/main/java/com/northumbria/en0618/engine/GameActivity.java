@@ -26,16 +26,17 @@ public abstract class GameActivity extends AppCompatActivity
     private GLSurfaceView m_glSurfaceView;
     private boolean m_pauseOnResume = false;
 
-    MediaPlayer m_mediaPlayer;
-    SoundPool soundPool;
+    private MediaPlayer m_mediaPlayer;
+    private SoundPool m_soundPool;
 
-    int enemyHitID;
-    int enemyFiringID;
-    int playerHitID;
-    int playerFiringID;
-    int barrierHitID;
+    // TODO: Move this into sound manager and use a dictionary.
+    private int enemyHitID;
+    private int enemyFiringID;
+    private int playerHitID;
+    private int playerFiringID;
+    private int barrierHitID;
 
-    public static final int MAX_STREAMS = 10;
+    private static final int MAX_STREAMS = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -80,13 +81,13 @@ public abstract class GameActivity extends AppCompatActivity
 
         m_mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gamemusic);
         m_mediaPlayer.pause();
-        soundPool = new SoundPool(MAX_STREAMS, AudioManager.USE_DEFAULT_STREAM_TYPE, 0);
+        m_soundPool = new SoundPool(MAX_STREAMS, AudioManager.USE_DEFAULT_STREAM_TYPE, 0);
 
-        enemyHitID = soundPool.load(this, R.raw.enemyhit, 1);
-        enemyFiringID = soundPool.load(this, R.raw.enemyfire, 1);
-        playerHitID = soundPool.load(this, R.raw.playerhit, 1);
-        playerFiringID = soundPool.load(this, R.raw.playerfire, 1);
-        barrierHitID = soundPool.load(this, R.raw.barrierhit, 1);
+        enemyHitID = m_soundPool.load(this, R.raw.enemyhit, 1);
+        enemyFiringID = m_soundPool.load(this, R.raw.enemyfire, 1);
+        playerHitID = m_soundPool.load(this, R.raw.playerhit, 1);
+        playerFiringID = m_soundPool.load(this, R.raw.playerfire, 1);
+        barrierHitID = m_soundPool.load(this, R.raw.barrierhit, 1);
     }
 
     @Override
@@ -99,7 +100,7 @@ public abstract class GameActivity extends AppCompatActivity
         Shader.clearCache();
         m_mediaPlayer.stop();
         m_mediaPlayer.release();
-        soundPool.release();
+        m_soundPool.release();
         super.onDestroy();
 
     }
@@ -111,7 +112,7 @@ public abstract class GameActivity extends AppCompatActivity
         super.onPause();
 
         m_mediaPlayer.pause();
-        soundPool.autoPause();
+        m_soundPool.autoPause();
 
         m_pauseOnResume = true;
     }
@@ -123,7 +124,7 @@ public abstract class GameActivity extends AppCompatActivity
         m_glSurfaceView.onResume();
 
         m_mediaPlayer.start();
-        soundPool.autoResume();
+        m_soundPool.autoResume();
 
         if (m_pauseOnResume)
         {
@@ -148,11 +149,13 @@ public abstract class GameActivity extends AppCompatActivity
         return m_glSurfaceView;
     }
 
+    @SuppressWarnings("unused")
     public void onResumeGame(View view)
     {
         getGame().unPause();
     }
 
+    @SuppressWarnings("unused")
     public void onQuitGame(View view)
     {
         AlertDialog pauseMenu = m_game.getPauseDialog();

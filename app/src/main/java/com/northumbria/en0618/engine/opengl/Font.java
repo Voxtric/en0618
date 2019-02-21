@@ -28,7 +28,7 @@ public class Font implements IRenderable
     private final static int FONT_SIZE_MAX = 180;
 
     // Font cache for fast font lookup.
-    private static HashMap<String, Font> s_fonts = new HashMap<>();
+    private static final HashMap<String, Font> s_fonts = new HashMap<>();
 
     public static Font getFont(Context context, String fontName, int fontSize, int fontPadding)
     {
@@ -60,12 +60,12 @@ public class Font implements IRenderable
         s_fonts.clear();
     }
 
-    private int m_cellWidth;
-    private int m_cellHeight;
-    private float[] m_charWidths = new float[CHAR_COUNT];   // Width of each individual character.
-    private Sprite[] m_characterSprites = new Sprite[CHAR_COUNT];   // Sprites for each character.
+    private final int m_cellWidth;
+    private final int m_cellHeight;
+    private final float[] m_charWidths = new float[CHAR_COUNT];   // Width of each individual character.
+    private final Sprite[] m_characterSprites = new Sprite[CHAR_COUNT];   // Sprites for each character.
     private Texture m_texture;
-    private int m_padding;
+    private final int m_padding;
 
     private Font(Typeface typeface, int size, int padding)
     {

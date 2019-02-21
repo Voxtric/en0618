@@ -57,6 +57,7 @@ public class SpriteShader extends Shader
 
     // Creates the shader using the specified vertex and fragment shader code from
     // an inheriting shader.
+    @SuppressWarnings("SameParameterValue")
     SpriteShader(String vertexShaderCode, String fragmentShaderCode)
     {
         super(vertexShaderCode, fragmentShaderCode);

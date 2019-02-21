@@ -16,8 +16,8 @@ public class Texture
     {
         final float u;
         final float v;
-        public final float width;
-        public final float height;
+        final float width;
+        final float height;
 
         Region(float texWidth, float texHeight, float x, float y, float width, float height)
         {
@@ -34,9 +34,9 @@ public class Texture
     }
 
     // Texture cache for fast texture lookup.
-    private static SparseArray<Texture> s_textures = new SparseArray<>();
+    private static final SparseArray<Texture> s_textures = new SparseArray<>();
     // Collision mask cache for fast collision mask lookup.
-    private static SparseArray<CollisionMask> s_collisionMasks = new SparseArray<>();
+    private static final SparseArray<CollisionMask> s_collisionMasks = new SparseArray<>();
 
     private static int s_activeTexture = -1;    // The handle of the currently active texture.
     // Indicates whether transparency blending is currently enabled.
@@ -135,9 +135,10 @@ public class Texture
         s_transparencyActive = false;
     }
 
-    private int m_handle;   // The OpenGL handle pointing to the texture.
+    private final int m_handle;   // The OpenGL handle pointing to the texture.
     // The ID of the drawable that the texture was created from.
-    private @DrawableRes int m_drawableID;
+    private @DrawableRes
+    final int m_drawableID;
 
     private Texture(int handle, @DrawableRes int drawableID)
     {

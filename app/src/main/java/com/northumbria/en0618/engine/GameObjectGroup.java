@@ -7,16 +7,16 @@ import com.northumbria.en0618.engine.opengl.Texture;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameObjectGroup
+class GameObjectGroup
 {
     public static final int FULL_MATCH_LEVEL = 100 + 3 + 2 + 1;
 
-    private List<GameObject> m_gameObjects = new ArrayList<>();
+    private final List<GameObject> m_gameObjects = new ArrayList<>();
 
-    private boolean m_isHUD;
-    private Shader m_shader;
-    private Texture m_texture;
-    private boolean m_transparent;
+    private final boolean m_isHUD;
+    private final Shader m_shader;
+    private final Texture m_texture;
+    private final boolean m_transparent;
 
     public GameObjectGroup(boolean isHUD, GameObject gameObject)
     {

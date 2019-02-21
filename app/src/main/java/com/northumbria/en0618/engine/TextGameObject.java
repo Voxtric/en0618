@@ -5,10 +5,10 @@ import com.northumbria.en0618.engine.opengl.IRenderable;
 
 public class TextGameObject extends GameObject
 {
-    private Font m_font;
+    private final Font m_font;
     private String m_text;
     private float m_width;
-    private float[] m_color = new float[] { 0.0f, 1.0f, 0.0f, 1.0f };
+    private final float[] m_color = new float[] { 0.0f, 1.0f, 0.0f, 1.0f };
 
     public TextGameObject(Font font, String text, float x, float y)
     {

@@ -13,16 +13,16 @@ import java.util.Random;
 
 public class Game
 {
-    private GameActivity m_activity;
+    private final GameActivity m_activity;
     private AlertDialog m_pauseDialog = null;
     private @LayoutRes int m_pauseDialogLayoutID = 0;
-    private boolean m_supressPauseDialog = false;
+    private boolean m_suppressPauseDialog = false;
 
-    private List<GameObjectGroup> m_gameObjectGroups = new ArrayList<>();
+    private final List<GameObjectGroup> m_gameObjectGroups = new ArrayList<>();
     private long m_currentFrameBegin = 0L;
     private boolean m_launched = false;
     private boolean m_paused = false;
-    private Random m_random = new Random(System.currentTimeMillis());
+    private final Random m_random = new Random(System.currentTimeMillis());
 
     Game(GameActivity context)
     {
@@ -52,7 +52,7 @@ public class Game
 
     public void setSuppressPauseDialog(boolean suppressPauseDialog)
     {
-        m_supressPauseDialog = suppressPauseDialog;
+        m_suppressPauseDialog = suppressPauseDialog;
     }
 
     public void pause(final boolean displayDialog)
@@ -65,7 +65,7 @@ public class Game
             {
                 m_activity.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
-                if (displayDialog && m_pauseDialog == null && !m_supressPauseDialog)
+                if (displayDialog && m_pauseDialog == null && !m_suppressPauseDialog)
                 {
                     if (m_pauseDialogLayoutID != 0)
                     {
