@@ -234,6 +234,7 @@ public class SpaceInvadersActivity extends GameActivity
         m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
         m_asteroidManager.createAsteroids();
 
+        game.setSuppressPauseDialog(false);
         game.unPause();
         m_gameOverDialog.dismiss();
     }
@@ -248,6 +249,7 @@ public class SpaceInvadersActivity extends GameActivity
     private void endGame(final long score)
     {
         getGame().pause(false);
+        getGame().setSuppressPauseDialog(true);
         runOnUiThread(new Runnable()
         {
             @Override

@@ -16,6 +16,7 @@ public class Game
     private GameActivity m_activity;
     private AlertDialog m_pauseDialog = null;
     private @LayoutRes int m_pauseDialogLayoutID = 0;
+    private boolean m_supressPauseDialog = false;
 
     private List<GameObjectGroup> m_gameObjectGroups = new ArrayList<>();
     private long m_currentFrameBegin = 0L;
@@ -49,6 +50,11 @@ public class Game
         return m_launched;
     }
 
+    public void setSuppressPauseDialog(boolean suppressPauseDialog)
+    {
+        m_supressPauseDialog = suppressPauseDialog;
+    }
+
     public void pause(final boolean displayDialog)
     {
         m_paused = true;
@@ -59,7 +65,7 @@ public class Game
             {
                 m_activity.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
-                if (displayDialog)
+                if (displayDialog && m_pauseDialog == null && !m_supressPauseDialog)
                 {
                     if (m_pauseDialogLayoutID != 0)
                     {
