@@ -2,8 +2,6 @@ package com.northumbria.en0618;
 
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.Input;
-import com.northumbria.en0618.engine.SpriteGameObject;
-import com.northumbria.en0618.engine.opengl.Sprite;
 
 import java.util.Stack;
 
@@ -15,7 +13,7 @@ class LivesManager
     private static final float SIZE_MODIFIER = 1.05f;
 
     private final Game m_game;
-    private final Stack<SpriteGameObject> m_lives = new Stack<>();
+    private final Stack<Life> m_lives = new Stack<>();
 
     private final float m_size;
     private final float m_startX;
@@ -34,17 +32,20 @@ class LivesManager
     {
         while (lives < m_lives.size())
         {
-            SpriteGameObject life = m_lives.pop();
-            life.destroy();
+            Life life = m_lives.pop();
+            if (m_lives.isEmpty())
+            {
+                life.destroy();
+            }
+            else
+            {
+                life.lose();
+            }
         }
         while (lives > m_lives.size())
         {
-            SpriteGameObject life = new SpriteGameObject(
-                    Sprite.getSprite(m_game.getActivity(), R.drawable.player, false),
-                    m_startX + (m_lives.size() * m_size * SIZE_MODIFIER),
-                    m_startY,
-                    m_size,
-                    m_size * Player.HEIGHT_TO_WIDTH_RATIO);
+            Life life = new Life(m_game.getActivity(),
+                    m_startX + (m_lives.size() * m_size * SIZE_MODIFIER), m_startY, m_size);
             m_game.addGameObject(life);
             m_lives.push(life);
         }
