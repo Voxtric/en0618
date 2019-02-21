@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -186,6 +187,9 @@ public class MainMenuActivity extends AppCompatActivity
     // leaderboard for the game.
     private void initialiseGooglePlayGamesButtonForLeaderboard(final GoogleSignInAccount account)
     {
+        GamesClient gamesClient = Games.getGamesClient(this, account);
+        gamesClient.setViewForPopups(findViewById(R.id.view_root));
+
         Button button = findViewById(R.id.google_play_games_button);
         button.setText(R.string.leaderboard_button);
         button.setOnClickListener(new View.OnClickListener()
