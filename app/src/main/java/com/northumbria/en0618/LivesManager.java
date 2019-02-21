@@ -12,6 +12,7 @@ public class LivesManager
     private static final float SCREEN_DISTANCE_SIZE = 0.075f;
     private static final float SCREEN_DISTANCE_SIDE_BORDER = 0.01f;
     private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.005f;
+    private static final float SIZE_MODIFIER = 1.05f;
 
     private Game m_game;
     private Stack<SpriteGameObject> m_lives = new Stack<>();
@@ -40,7 +41,7 @@ public class LivesManager
         {
             SpriteGameObject life = new SpriteGameObject(
                     Sprite.getSprite(m_game.getActivity(), R.drawable.player, false),
-                    m_startX + (m_lives.size() * m_size),
+                    m_startX + (m_lives.size() * m_size * SIZE_MODIFIER),
                     m_startY,
                     m_size,
                     m_size * Player.HEIGHT_TO_WIDTH_RATIO);
