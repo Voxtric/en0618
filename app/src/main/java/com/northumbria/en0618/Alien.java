@@ -28,7 +28,6 @@ public class Alien extends CollidableGameObject
     @Override
     public void update(float frameTime)
     {
-
         if(m_goingDown)
         {
             // If Alien is Moving down

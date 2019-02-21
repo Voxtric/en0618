@@ -100,7 +100,7 @@ class AlienManager
         {
             for (Alien tempAlien : tempList)
             {
-                if(tempAlien.getY() <= 0.0f)
+                if(tempAlien.getY() < Player.getStartHeight())
                 {
                     m_alienWin = true;
                     break;
