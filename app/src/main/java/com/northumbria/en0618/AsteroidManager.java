@@ -5,6 +5,8 @@ import android.support.annotation.DrawableRes;
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.Input;
 
+import java.util.Random;
+
 public class AsteroidManager
 {
     private static final @DrawableRes int[] ASTEROID_SPRITE_DRAWABLE_IDS = new int[]
@@ -16,6 +18,7 @@ public class AsteroidManager
             R.drawable.asteroid_5,
             R.drawable.asteroid_6
     };
+    private static final int SWAP_COUNT = 6;
 
     private static final int ASTEROIDS_PER_BARRIER = 3;
     private static final int BARRIER_COUNT = 2;
@@ -46,6 +49,17 @@ public class AsteroidManager
 
     void createAsteroids()
     {
+        Random random = m_game.getRandom();
+        for (int i = 0; i < SWAP_COUNT; i++)
+        {
+            int swapFrom = random.nextInt(ASTEROID_SPRITE_DRAWABLE_IDS.length);
+            int swapTo = random.nextInt(ASTEROID_SPRITE_DRAWABLE_IDS.length);
+            ASTEROID_SPRITE_DRAWABLE_IDS[swapFrom] ^= ASTEROID_SPRITE_DRAWABLE_IDS[swapTo];
+            ASTEROID_SPRITE_DRAWABLE_IDS[swapTo] ^= ASTEROID_SPRITE_DRAWABLE_IDS[swapFrom];
+            ASTEROID_SPRITE_DRAWABLE_IDS[swapFrom] ^= ASTEROID_SPRITE_DRAWABLE_IDS[swapTo];
+        }
+
+        int drawableIDIndex = 0;
         float barrierXCenter = m_distanceBetweenBarrierCenters;
         for (int i = 0; i < BARRIER_COUNT; i++)
         {
@@ -54,13 +68,14 @@ public class AsteroidManager
             for (int j = 0; j < ASTEROIDS_PER_BARRIER; j++)
             {
                 Asteroid asteroid = new Asteroid(m_game.getActivity(),
-                        ASTEROID_SPRITE_DRAWABLE_IDS[j],
+                        ASTEROID_SPRITE_DRAWABLE_IDS[drawableIDIndex % ASTEROID_SPRITE_DRAWABLE_IDS.length],
                         xPosition, m_startY + asteroidYModifier, m_size);
                 m_game.addGameObject(asteroid);
                 m_collisionList.addAsteroid(asteroid);
 
                 asteroidYModifier = -asteroidYModifier; // Flips so that asteroids spawn down, Up, down, Up
                 xPosition += m_barrierWidth / (float)ASTEROIDS_PER_BARRIER;
+                drawableIDIndex++;
             }
 
             barrierXCenter += m_distanceBetweenBarrierCenters;

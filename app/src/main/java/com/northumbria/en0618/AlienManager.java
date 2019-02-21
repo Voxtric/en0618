@@ -48,8 +48,6 @@ public class AlienManager
     private Game m_game;
     private boolean m_alienWin = false;
 
-    private Random m_random = new Random(System.currentTimeMillis());
-
     private float m_alienMoveSpeed;
     private float m_alienSize;
     private float m_sideBorder;
@@ -140,7 +138,7 @@ public class AlienManager
             {
                 float bossAlienSize = m_alienSize * BOSS_ALIEN_SIZE_MULTIPLIER;
                 Alien bossAlien;
-                if (m_random.nextBoolean())
+                if (m_game.getRandom().nextBoolean())
                 {
                     bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_right,
                             -bossAlienSize * 0.5f, bossAlienSize,

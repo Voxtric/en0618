@@ -9,6 +9,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Game
 {
@@ -20,10 +21,16 @@ public class Game
     private long m_currentFrameBegin = 0L;
     private boolean m_launched = false;
     private boolean m_paused = false;
+    private Random m_random = new Random(System.currentTimeMillis());
 
     Game(GameActivity context)
     {
         m_activity = context;
+    }
+
+    public Random getRandom()
+    {
+        return m_random;
     }
 
     public void setPauseDialogLayoutID(@LayoutRes int pauseDialogLayoutID)
