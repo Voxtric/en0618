@@ -73,7 +73,7 @@ public class SpriteShader extends Shader
     }
 
     // Assigns handles for all the uniforms of the shader.
-    private void assignUniformHandles()
+    void assignUniformHandles()
     {
         m_mvpMatrixHandle = GLES20.glGetUniformLocation(m_handle, "uMVPMatrix");
         m_textureHandle = GLES20.glGetUniformLocation(m_handle, "uTexture");

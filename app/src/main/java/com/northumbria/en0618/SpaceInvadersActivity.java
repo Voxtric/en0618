@@ -29,7 +29,9 @@ import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
 import com.northumbria.en0618.engine.Input;
+import com.northumbria.en0618.engine.SpriteGameObject;
 import com.northumbria.en0618.engine.TextGameObject;
+import com.northumbria.en0618.engine.opengl.AnimatedSprite;
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Sprite;
@@ -128,7 +130,6 @@ public class SpaceInvadersActivity extends GameActivity
 
         m_asteroidManager = new AsteroidManager(m_collidableObjects, game);
         m_asteroidManager.createAsteroids();
-
 
         super.onGameReady();
     }

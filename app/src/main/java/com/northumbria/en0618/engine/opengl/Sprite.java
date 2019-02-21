@@ -14,27 +14,27 @@ import java.util.HashMap;
 public class Sprite implements IRenderable
 {
     // Position co-ordinate data for rendering a sprite.
-    private static final int COORDS_PER_VERTEX = 3;
+    static final int COORDS_PER_VERTEX = 3;
     private static final float VERTEX_COORDS[] = {
             -0.5f,  0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
             0.5f,  -0.5f, 0.0f,
             0.5f,  0.5f, 0.0f
     };
-    private static final int VERTEX_COORDS_STRIDE = COORDS_PER_VERTEX * 4;
+    static final int VERTEX_COORDS_STRIDE = COORDS_PER_VERTEX * 4;
 
     // Texture co-ordinate data for rendering a sprite.
-    private static final int UVS_PER_VERTEX = 2;
+    static final int UVS_PER_VERTEX = 2;
     private static final float VERTEX_UVS[] = {
             0.0f, 0.0f,
             0.0f, 1.0f,
             1.0f, 1.0f,
             1.0f, 0.0f,
     };
-    private static final int VERTEX_UV_STRIDE = UVS_PER_VERTEX * 4;
+    static final int VERTEX_UV_STRIDE = UVS_PER_VERTEX * 4;
 
     // Draw order for drawing the vertices of the sprite.
-    private static final short[] INDICES = { 0, 1, 2, 0, 2, 3 };
+    static final short[] INDICES = { 0, 1, 2, 0, 2, 3 };
 
     // Sprite cache for fast sprite lookup.
     private static final HashMap<Texture, Sprite> s_sprites = new HashMap<>();
@@ -73,14 +73,14 @@ public class Sprite implements IRenderable
     }
 
     // Buffers for the different attributes of a vertex
-    private final FloatBuffer m_vertexBuffer;
-    private final FloatBuffer m_uvBuffer;
-    private final ShortBuffer m_indexBuffer;
+    final FloatBuffer m_vertexBuffer;
+    final FloatBuffer m_uvBuffer;
+    final ShortBuffer m_indexBuffer;
 
 
-    private final SpriteShader m_shader;
+    final SpriteShader m_shader;
     private final Texture m_texture;
-    private boolean m_transparent = true;
+    boolean m_transparent = true;
 
     // Creates a sprite using the specified shader and texture.
     private Sprite(SpriteShader shader, Texture texture)

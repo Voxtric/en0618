@@ -27,6 +27,14 @@ public class Texture
             this.height = height / texHeight;
         }
 
+        Region(float x, float y, float width, float height)
+        {
+            u = x;
+            v = y;
+            this.width = width;
+            this.height = height;
+        }
+
         public float[] uvs()
         {
             return new float[] { u, v, u, v + height, u + width, v + height, u + width, v};

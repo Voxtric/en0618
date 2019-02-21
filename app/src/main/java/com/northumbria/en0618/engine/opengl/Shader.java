@@ -40,6 +40,7 @@ public abstract class Shader
 
         SpriteShader.releaseInstance();
         FontShader.releaseInstance();
+        AnimatedSpriteShader.releaseInstance();
     }
 
     final int m_handle;   // OpenGL shader program identifier.
