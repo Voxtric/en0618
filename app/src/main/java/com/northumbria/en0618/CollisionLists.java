@@ -1,22 +1,29 @@
 package com.northumbria.en0618;
 
+import com.northumbria.en0618.engine.CollidableGameObject;
+import com.northumbria.en0618.engine.Game;
+
 import java.util.ArrayList;
 import java.util.List;
 
 class CollisionLists
 {
+    private static final float EXPLOSION_SIZE = 64.0f;
+
     private final List<Bullet> m_playerBulletList = new ArrayList<>();
     private final List<Bullet> m_alienBulletList = new ArrayList<>();
     private final List<Alien> m_alienList = new ArrayList<>();
     private final List<Asteroid> m_asteroidList = new ArrayList<>();
 
-    private final Player m_player;
     private final SpaceInvadersActivity m_activity;
+    private final Game m_game;
+    private final Player m_player;
 
-    CollisionLists(Player player, SpaceInvadersActivity activity)
+    CollisionLists(SpaceInvadersActivity activity, Player player)
     {
-        m_player = player;
         m_activity = activity;
+        m_game = activity.getGame();
+        m_player = player;
     }
 
     void checkCollisions()
@@ -31,7 +38,8 @@ class CollisionLists
             for(int i = 0; i < alienBulletCount; i++)
             {
                 Bullet bullet = m_alienBulletList.get(i);
-                if(m_player.collidesWith(bullet))
+                CollidableGameObject.CollisionInfo collisionInfo = m_player.collidesWith(bullet);
+                if(collisionInfo != null)
                 {
                     // If Player and Bullet collide, lower payer health and
                     // destroy bullet
@@ -39,6 +47,9 @@ class CollisionLists
                     m_alienBulletList.remove(i);
                     alienBulletCount--;
                     i--;
+
+                    Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                    m_game.addGameObject(explosion);
 
                     if (m_player.consumeLife())
                     {
@@ -52,7 +63,8 @@ class CollisionLists
                     for (int j = 0; j < asteroidCount; j++)
                     {
                         Asteroid asteroid = m_asteroidList.get(j);
-                        if (bullet.collidesWith(asteroid))
+                        collisionInfo = bullet.collidesWith(asteroid);
+                        if (collisionInfo != null)
                         {
                             bullet.destroy();
                             m_alienBulletList.remove(i);
@@ -63,6 +75,9 @@ class CollisionLists
                             m_asteroidList.remove(j);
                             asteroidCount--;
                             j--;
+
+                            Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                            m_game.addGameObject(explosion);
                         }
                     }
                 }
@@ -79,11 +94,14 @@ class CollisionLists
                 // Loops through each Player Bullet to check for
                 // Collision with Aliens or Asteroids
                 Alien alien = m_alienList.get(i);
-
-                if(m_player.collidesWith(alien))
+                CollidableGameObject.CollisionInfo collisionInfo = m_player.collidesWith(alien);
+                if(collisionInfo != null)
                 {
                     // Player vs Alien? Kill player.
                     m_player.destroy();
+
+                    Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                    m_game.addGameObject(explosion);
                 }
 
                 if(asteroidCount > 0)
@@ -91,12 +109,16 @@ class CollisionLists
                     for (int j = 0; j < asteroidCount; j++)
                     {
                         Asteroid asteroid = m_asteroidList.get(j);
-                        if (alien.collidesWith(asteroid))
+                        collisionInfo = alien.collidesWith(asteroid);
+                        if (collisionInfo != null)
                         {
                             asteroid.destroy();
                             m_asteroidList.remove(j);
                             asteroidCount--;
                             j--;
+
+                            Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                            m_game.addGameObject(explosion);
                         }
                     }
                 }
@@ -105,7 +127,8 @@ class CollisionLists
                 {
                     // Alien vs Bullet? Destroy both, award Points.
                     Bullet playerBullet = m_playerBulletList.get(k);
-                    if(alien.collidesWith(playerBullet))
+                    collisionInfo = alien.collidesWith(playerBullet);
+                    if(collisionInfo != null)
                     {
                         alien.awardScore(m_player, m_activity.getCurrentLevel());
 
@@ -120,6 +143,9 @@ class CollisionLists
                         m_alienList.remove(i);
                         alienCount--;
                         i--;
+
+                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                        m_game.addGameObject(explosion);
                     }
                 }
             }
@@ -131,7 +157,8 @@ class CollisionLists
                 for(int i = 0; i < playerBulletCount; i++)
                 {
                     Bullet bullet = m_playerBulletList.get(i);
-                    if(bullet.collidesWith(asteroid))
+                    CollidableGameObject.CollisionInfo collisionInfo = bullet.collidesWith(asteroid);
+                    if(collisionInfo != null)
                     {
                         bullet.destroy();
                         m_playerBulletList.remove(i);
@@ -142,6 +169,9 @@ class CollisionLists
                         m_asteroidList.remove(j);
                         asteroidCount--;
                         j--;
+
+                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                        m_game.addGameObject(explosion);
                     }
                 }
             }

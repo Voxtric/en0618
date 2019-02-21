@@ -11,6 +11,18 @@ import com.northumbria.en0618.engine.opengl.Texture;
 // A game object that has a collision mask that matches its sprite.
 public class CollidableGameObject extends SpriteGameObject
 {
+    public class CollisionInfo
+    {
+        public final float x;
+        public final float y;
+
+        CollisionInfo(float xPosition, float yPosition)
+        {
+            x = xPosition;
+            y = yPosition;
+        }
+    }
+
     private final CollisionMask m_collisionMask;
     private final RectF m_boundingRect;
 
@@ -42,7 +54,7 @@ public class CollidableGameObject extends SpriteGameObject
         m_boundingRect.set(x - halfXSize, y - halfYSize, x + halfXSize, y + halfYSize);
     }
 
-    public boolean collidesWith(CollidableGameObject other)
+    public CollisionInfo collidesWith(CollidableGameObject other)
     {
         if (m_boundingRect.intersects(other.m_boundingRect.left, other.m_boundingRect.top, other.m_boundingRect.right, other.m_boundingRect.bottom))
         {
@@ -57,12 +69,12 @@ public class CollidableGameObject extends SpriteGameObject
                 {
                     if (getMaskValue(i, j) && other.getMaskValue(i, j))
                     {
-                        return true;
+                        return new CollisionInfo(i, j);
                     }
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private boolean getMaskValue(int i, int j)

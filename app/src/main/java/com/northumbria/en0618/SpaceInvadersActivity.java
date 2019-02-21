@@ -29,9 +29,7 @@ import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
 import com.northumbria.en0618.engine.Input;
-import com.northumbria.en0618.engine.SpriteGameObject;
 import com.northumbria.en0618.engine.TextGameObject;
-import com.northumbria.en0618.engine.opengl.AnimatedSprite;
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Sprite;
@@ -85,7 +83,7 @@ public class SpaceInvadersActivity extends GameActivity
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.getBoolean(MainMenuActivity.PREFERENCE_KEY_POWER_SAVER, false))
         {
-            ((GameSurfaceView) getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
+            ((GameSurfaceView)getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
         }
 
         Font font = Font.getFont(this, getString(R.string.app_font), (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);
@@ -120,7 +118,7 @@ public class SpaceInvadersActivity extends GameActivity
         game.addGameObject(m_player);
         m_playerShotOffset = m_player.getXSize() * SHOT_OFFSET_MULTIPLIER;
 
-        m_collidableObjects = new CollisionLists(m_player, this);
+        m_collidableObjects = new CollisionLists(this, m_player);
 
         // Member Variable to store all Collidable Objects for Automated Collision Detection
 
@@ -193,7 +191,7 @@ public class SpaceInvadersActivity extends GameActivity
                     m_levelText.setText(getString(R.string.level_text, m_currentLevel));
 
                     m_collidableObjects.destroyAll(false);
-                    m_collidableObjects = new CollisionLists(m_player, this);
+                    m_collidableObjects = new CollisionLists(this, m_player);
 
                     m_alienManager = new AlienManager(m_collidableObjects, game);
                     m_alienManager.incrementBaseAlienSpeed(m_currentLevel);
@@ -228,7 +226,7 @@ public class SpaceInvadersActivity extends GameActivity
         m_scoreText.setText(getString(R.string.score_text, 0));
 
         m_collidableObjects.destroyAll(true);
-        m_collidableObjects = new CollisionLists(m_player, SpaceInvadersActivity.this);
+        m_collidableObjects = new CollisionLists(this, m_player);
 
         m_alienManager = new AlienManager(m_collidableObjects, game);
         m_alienManager.createAliens();

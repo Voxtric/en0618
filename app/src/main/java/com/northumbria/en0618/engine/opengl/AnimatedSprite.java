@@ -41,8 +41,8 @@ public class AnimatedSprite extends Sprite
         while (m_secondsInFrame > m_secondsPerFrame)
         {
             m_secondsInFrame -= m_secondsPerFrame;
-            m_frame += 1;
-            if (m_frame > m_totalFrames)
+            m_frame++;
+            if (m_frame >= m_totalFrames)
             {
                 if (m_repeating)
                 {
@@ -50,7 +50,6 @@ public class AnimatedSprite extends Sprite
                 }
                 else
                 {
-                    m_frame--;
                     m_finished = true;
                 }
             }
@@ -67,34 +66,37 @@ public class AnimatedSprite extends Sprite
 
     public void draw(float[] mvpMatrix, float[] color)
     {
-        Shader.useShader(m_shader);
+        if (!m_finished)
+        {
+            Shader.useShader(m_shader);
 
-        // Upload the world position matrix.
-        int shaderMVPMatrixUniform = m_shader.getMVPMatrixUniform();
-        GLES20.glUniformMatrix4fv(shaderMVPMatrixUniform, 1, false, mvpMatrix, 0);
+            // Upload the world position matrix.
+            int shaderMVPMatrixUniform = m_shader.getMVPMatrixUniform();
+            GLES20.glUniformMatrix4fv(shaderMVPMatrixUniform, 1, false, mvpMatrix, 0);
 
-        int shaderUVOffsetUniform = ((AnimatedSpriteShader)m_shader).getUVOffsetUniform();
-        GLES20.glUniform2f(shaderUVOffsetUniform, m_xOffset, m_yOffset);
+            int shaderUVOffsetUniform = ((AnimatedSpriteShader) m_shader).getUVOffsetUniform();
+            GLES20.glUniform2f(shaderUVOffsetUniform, m_xOffset, m_yOffset);
 
-        // Upload the vertex position co-ordinates.
-        int shaderPositionAttribute = m_shader.getPositionAttribute();
-        GLES20.glVertexAttribPointer(shaderPositionAttribute, COORDS_PER_VERTEX, GLES20.GL_FLOAT,
-                false, VERTEX_COORDS_STRIDE, m_vertexBuffer);
+            // Upload the vertex position co-ordinates.
+            int shaderPositionAttribute = m_shader.getPositionAttribute();
+            GLES20.glVertexAttribPointer(shaderPositionAttribute, COORDS_PER_VERTEX, GLES20.GL_FLOAT,
+                    false, VERTEX_COORDS_STRIDE, m_vertexBuffer);
 
-        // Upload the vertex texture co-ordinates.
-        int shaderUVAttribute = m_shader.getUVAttribute();
-        GLES20.glVertexAttribPointer(shaderUVAttribute, UVS_PER_VERTEX, GLES20.GL_FLOAT,
-                false, VERTEX_UV_STRIDE, m_uvBuffer);
+            // Upload the vertex texture co-ordinates.
+            int shaderUVAttribute = m_shader.getUVAttribute();
+            GLES20.glVertexAttribPointer(shaderUVAttribute, UVS_PER_VERTEX, GLES20.GL_FLOAT,
+                    false, VERTEX_UV_STRIDE, m_uvBuffer);
 
-        // Use the current texture.
-        int shaderTextureUniform = m_shader.getTextureUniform();
-        getTexture().use(shaderTextureUniform, m_transparent);
+            // Use the current texture.
+            int shaderTextureUniform = m_shader.getTextureUniform();
+            getTexture().use(shaderTextureUniform, m_transparent);
 
-        // Upload the sprite color.
-        int shaderColorUniform = m_shader.getColorUniform();
-        GLES20.glUniform4fv(shaderColorUniform, 1, color, 0);
+            // Upload the sprite color.
+            int shaderColorUniform = m_shader.getColorUniform();
+            GLES20.glUniform4fv(shaderColorUniform, 1, color, 0);
 
-        // Draw the sprite.
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, INDICES.length, GLES20.GL_UNSIGNED_SHORT, m_indexBuffer);
+            // Draw the sprite.
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES, INDICES.length, GLES20.GL_UNSIGNED_SHORT, m_indexBuffer);
+        }
     }
 }
