@@ -2,10 +2,14 @@
     <string name="app_name">EN0618</string>
     <string name="app_font">death_star.ttf</string>
 
-    <string name="channel_name">annoyingChannel</string>
-    <string name="channel_description">Channel for the annoying notification.</string>
+    <string name="game_name">Best Space Game</string>
 
     <!-- Main Menu -->
+    <string name="play_button">Play</string>
+    <string name="sfx_button">Sound Effects: %1$s</string>
+    <string name="music_button">Music: %1$s</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 
     <!-- Game Paused Menu -->
     <string name="game_paused_title">Game Paused</string>

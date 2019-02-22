@@ -41,8 +41,6 @@ public class MainMenuActivity extends AppCompatActivity
 
     public static final String PREFERENCE_KEY_POWER_SAVER = "power_saver";
 
-    private NotificationCompat.Builder m_builder;
-
     private MediaPlayer m_mediaPlayer;
     private SoundPool m_soundPool;
 
@@ -60,20 +58,6 @@ public class MainMenuActivity extends AppCompatActivity
         ViewGroup root = findViewById(R.id.view_root);
         FontUtils.setAllFonts(root, font);
 
-        createNotificationChannel();
-
-        Intent intent = new Intent(this, MainMenuActivity.class);
-        intent.setFlags(Intent.FLAG_FROM_BACKGROUND);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        m_builder = new NotificationCompat.Builder(this, "pie")
-                .setSmallIcon(R.drawable.settings)
-                .setContentTitle("Annoying notification")
-                .setContentText("Hey PLAY OUR GAME NOW!!!!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-
         m_mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mainmenu);
         m_mediaPlayer.start();
 
@@ -83,7 +67,6 @@ public class MainMenuActivity extends AppCompatActivity
 
         //SoundManager.getInstance().Init(this);
         //SoundManager.getInstance().gPlayMainMenu();
-
     }
 
     @Override
@@ -269,29 +252,6 @@ public class MainMenuActivity extends AppCompatActivity
         preferences.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, newPowerSaverOn).apply();
     }
 
-    private void createNotificationChannel()
-    {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null)
-            {
-                CharSequence name = getString(R.string.channel_name);
-                String description = getString(R.string.channel_description);
-                int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                NotificationChannel channel = new NotificationChannel("pie", name, importance);
-
-                channel.setDescription(description);
-                // Register the channel with the system; you can't change the importance
-                // or other notification behaviors after this
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
     public void startGameActivity(View view)
     {
         m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
@@ -299,38 +259,46 @@ public class MainMenuActivity extends AppCompatActivity
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
 
-        //launch the notification
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(1, m_builder.build());
-
         m_soundPool.release();
     }
 
-    @SuppressWarnings("unused")
     public void toggleSoundEffects(View view) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean currentValue = sp.getBoolean("play_sfx", true);
+        Boolean newValue = !sp.getBoolean("play_sfx", true);
 
-        sp.edit().putBoolean("play_sfx", !currentValue).apply();
+        //set the property
+        sp.edit().putBoolean("play_sfx", newValue).apply();
 
-        if (currentValue)
+        //update button text
+        String newValueStr = getString(newValue ? R.string.on : R.string.off);
+        Button b = findViewById(R.id.sfx_button);
+
+        b.setText(getString(R.string.sfx_button, newValueStr));
+
+        //start music
+        if (newValue)
         {
             m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
         }
-
-//        Button b = (Button) view;
-//        b.setText();
     }
 
-    @SuppressWarnings("unused")
     public void toggleMusic(View view)
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean currentValue = sp.getBoolean("play_music", true);
+        Boolean newValue = !sp.getBoolean("play_music", true);
 
+        //set the property
+        sp.edit().putBoolean("play_music", newValue).apply();
 
+        //update button text
+        String newValueStr = getString(newValue ? R.string.on : R.string.off);
+        Button b = findViewById(R.id.music_button);
+
+        b.setText(getString(R.string.music_button, newValueStr));
+
+        //toggle the music
         //m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
-        if (currentValue)
+        if (!newValue)
         {
             m_mediaPlayer.pause();
         }
@@ -338,11 +306,6 @@ public class MainMenuActivity extends AppCompatActivity
         {
             m_mediaPlayer.start();
         }
-
-        sp.edit().putBoolean("play_music", !currentValue).apply();
-
-//        Button b = (Button) view;
-//        b.setText();
     }
 
 
