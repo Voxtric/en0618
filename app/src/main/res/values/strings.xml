@@ -24,7 +24,7 @@
     <string name="input_button_screen_tilt">Input Method: Screen Tilt</string>
 
     <!-- Game Paused Menu -->
-    <string name="game_paused_title">Game Paused</string>
+    <string name="game_paused_title">Paused</string>
     <string name="resume_button">Resume</string>
     <string name="main_menu_button">Main Menu</string>
 

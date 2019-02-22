@@ -9,33 +9,62 @@
         android:id="@+id/title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/game_paused_title"
+        android:textColor="@color/common_google_signin_btn_text_dark"
+        android:textSize="30sp"
         tools:layout_editor_absoluteX="149dp"
-        tools:layout_editor_absoluteY="164dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        tools:layout_editor_absoluteY="164dp" />
 
     <Button
         android:id="@+id/resume_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        style="@style/button_style"
+        android:layout_width="150dp"
+        android:layout_height="48dp"
         android:layout_below="@id/title_text_view"
-        android:text="@string/resume_button"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="45dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="20dp"
+        android:onClick="onResumeGame"
+        android:text="@string/resume_button" />
+
+    <Button
+        android:id="@+id/resume_button2"
+        style="@style/button_style"
+        android:layout_width="150dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/title_text_view"
         android:layout_alignParentEnd="true"
-        android:onClick="onResumeGame"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginRight="45dp"
+        android:onClick="onResumeGame"
+        android:text="@string/settings_header" />
 
     <Button
         android:id="@+id/quit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/title_text_view"
-        android:text="@string/main_menu_button"
+        style="@style/button_style"
+        android:layout_width="150dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/resume_button"
         android:layout_alignParentStart="true"
-        android:onClick="returnToMainMenu"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="130dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="131dp"
+        android:layout_marginRight="131dp"
+        android:onClick="returnToMainMenu"
+        android:text="@string/main_menu_button" />
 </RelativeLayout>
