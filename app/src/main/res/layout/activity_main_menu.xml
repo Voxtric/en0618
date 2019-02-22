@@ -28,56 +28,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView" />
 
-    <Button
-        android:id="@+id/sfx_button"
-        style="@style/button_style"
-        android:layout_width="300dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@drawable/ic_button"
-        android:onClick="toggleSoundEffects"
-        android:paddingLeft="60dp"
-        android:paddingRight="60dp"
-        android:text="@string/sfx_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/play_button" />
-
-    <Button
-        android:id="@+id/music_button"
-        style="@style/button_style"
-        android:layout_width="300dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@drawable/ic_button"
-        android:onClick="toggleMusic"
-        android:paddingLeft="60dp"
-        android:paddingRight="60dp"
-        android:text="@string/music_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sfx_button" />
-
     <!-- Text hardcoded to show developer intent, will be set using string resources from code. -->
+
     <Button
-        tools:ignore="HardcodedText"
         android:id="@+id/google_play_games_button"
         style="@style/button_style"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="@drawable/ic_button"
@@ -85,9 +45,9 @@
         android:paddingRight="60dp"
         android:text="Google Sign In / Leaderboard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/music_button"/>
+        app:layout_constraintTop_toBottomOf="@+id/play_button"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textView"
@@ -106,5 +66,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@android:color/transparent"
+        android:onClick="startSettingsActivity"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/settings" />
 
 </android.support.constraint.ConstraintLayout>

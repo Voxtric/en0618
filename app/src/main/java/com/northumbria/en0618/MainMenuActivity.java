@@ -1,27 +1,17 @@
 package com.northumbria.en0618;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,8 +28,6 @@ public class MainMenuActivity extends AppCompatActivity
 {
     private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
     private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
-
-    public static final String PREFERENCE_KEY_POWER_SAVER = "power_saver";
 
     private MediaPlayer m_mediaPlayer;
     private SoundPool m_soundPool;
@@ -64,13 +52,6 @@ public class MainMenuActivity extends AppCompatActivity
         m_soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
 
         m_menuSoundId = m_soundPool.load(this, R.raw.menuselect, 1);
-
-        Button musicButton = findViewById(R.id.music_button);
-        Button sfxButton = findViewById(R.id.sfx_button);
-        String onString = getString(R.string.on);
-
-        musicButton.setText(getString(R.string.music_button, onString));
-        sfxButton.setText(getString(R.string.sfx_button, onString));
 
         //SoundManager.getInstance().Init(this);
         //SoundManager.getInstance().gPlayMainMenu();
@@ -210,55 +191,6 @@ public class MainMenuActivity extends AppCompatActivity
         });
     }
 
-    // Updates the app settings and the player with the new input method.
-    @SuppressWarnings("unused")
-    @SuppressLint("ApplySharedPref")    // We want the data to be available immediately.
-    public void changeInputMethod(View view)
-    {
-        // Find the current input method.
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int inputMethod = preferences.getInt(Player.PREFERENCE_KEY_INPUT_METHOD, Player.INPUT_METHOD_SCREEN_SIDE);
-        int newInputMethod = inputMethod;
-
-        // Determine the new input method and update the UI.
-        switch (inputMethod)
-        {
-            case Player.INPUT_METHOD_SCREEN_SIDE:
-                newInputMethod = Player.INPUT_METHOD_PLAYER_SIDE;
-                // TODO: Update button text here.
-                break;
-            case Player.INPUT_METHOD_PLAYER_SIDE:
-                newInputMethod = Player.INPUT_METHOD_SCREEN_TILT;
-                // TODO: Update button text here.
-                break;
-            case Player.INPUT_METHOD_SCREEN_TILT:
-                newInputMethod = Player.INPUT_METHOD_SCREEN_SIDE;
-                // TODO: Update button text here.
-                break;
-        }
-
-        // Update the settings and the player.
-        preferences.edit().putInt(Player.PREFERENCE_KEY_INPUT_METHOD, newInputMethod).commit();
-        Player.updateInputMethod(this);
-    }
-
-    @SuppressWarnings("unused")
-    public void togglePowerSaver(View view)
-    {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean powerSaverOn = preferences.getBoolean(PREFERENCE_KEY_POWER_SAVER, false);
-        boolean newPowerSaverOn = !powerSaverOn;
-        if (newPowerSaverOn)
-        {
-            // TODO: Update button text here.
-        }
-        else
-        {
-            // TODO: Update button text here.
-        }
-        preferences.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, newPowerSaverOn).apply();
-    }
-
     public void startGameActivity(View view)
     {
         m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
@@ -269,51 +201,55 @@ public class MainMenuActivity extends AppCompatActivity
         m_soundPool.release();
     }
 
-    public void toggleSoundEffects(View view) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean newValue = !sp.getBoolean("play_sfx", true);
-
-        //set the property
-        sp.edit().putBoolean("play_sfx", newValue).apply();
-
-        //update button text
-        String newValueStr = getString(newValue ? R.string.on : R.string.off);
-        Button b = findViewById(R.id.sfx_button);
-
-        b.setText(getString(R.string.sfx_button, newValueStr));
-
-        //start music
-        if (newValue)
-        {
-            m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
-        }
-    }
-
-    public void toggleMusic(View view)
+    public void startSettingsActivity(View view)
     {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean newValue = !sp.getBoolean("play_music", true);
-
-        //set the property
-        sp.edit().putBoolean("play_music", newValue).apply();
-
-        //update button text
-        String newValueStr = getString(newValue ? R.string.on : R.string.off);
-        Button b = findViewById(R.id.music_button);
-
-        b.setText(getString(R.string.music_button, newValueStr));
-
-        //toggle the music
-        //m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
-        if (!newValue)
-        {
-            m_mediaPlayer.pause();
-        }
-        else
-        {
-            m_mediaPlayer.start();
-        }
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
-
+//    public void toggleSoundEffects(View view) {
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//        Boolean newValue = !sp.getBoolean("play_sfx", true);
+//
+//        //set the property
+//        sp.edit().putBoolean("play_sfx", newValue).apply();
+//
+//        //update button text
+//        String newValueStr = getString(newValue ? R.string.on : R.string.off);
+//        Button b = findViewById(R.id.sfx_button);
+//
+//        b.setText(getString(R.string.sfx_button, newValueStr));
+//
+//        //start music
+//        if (newValue)
+//        {
+//            m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
+//        }
+//    }
+//
+//    public void toggleMusic(View view)
+//    {
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+//        Boolean newValue = !sp.getBoolean("play_music", true);
+//
+//        //set the property
+//        sp.edit().putBoolean("play_music", newValue).apply();
+//
+//        //update button text
+//        String newValueStr = getString(newValue ? R.string.on : R.string.off);
+//        Button b = findViewById(R.id.music_button);
+//
+//        b.setText(getString(R.string.music_button, newValueStr));
+//
+//        //toggle the music
+//        //m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
+//        if (!newValue)
+//        {
+//            m_mediaPlayer.pause();
+//        }
+//        else
+//        {
+//            m_mediaPlayer.start();
+//        }
+//    }
 }
