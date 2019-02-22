@@ -67,19 +67,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/settingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/button_style"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:background="@android:color/transparent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="startSettingsActivity"
-        android:scaleX="1.5"
-        android:scaleY="1.5"
+        android:text="@string/settings_header"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/google_play_games_button"
         app:srcCompat="@drawable/settings" />
 
 </android.support.constraint.ConstraintLayout>
