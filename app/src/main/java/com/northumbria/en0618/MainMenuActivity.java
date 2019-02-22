@@ -65,6 +65,13 @@ public class MainMenuActivity extends AppCompatActivity
 
         m_menuSoundId = m_soundPool.load(this, R.raw.menuselect, 1);
 
+        Button musicButton = findViewById(R.id.music_button);
+        Button sfxButton = findViewById(R.id.sfx_button);
+        String onString = getString(R.string.on);
+
+        musicButton.setText(getString(R.string.music_button, onString));
+        sfxButton.setText(getString(R.string.sfx_button, onString));
+
         //SoundManager.getInstance().Init(this);
         //SoundManager.getInstance().gPlayMainMenu();
     }
