@@ -81,7 +81,7 @@ public class SpaceInvadersActivity extends GameActivity
         game.setPauseDialogLayoutID(R.layout.dialog_game_paused);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.getBoolean(MainMenuActivity.PREFERENCE_KEY_POWER_SAVER, false))
+        if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_POWER_SAVER, false))
         {
             ((GameSurfaceView)getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
         }
