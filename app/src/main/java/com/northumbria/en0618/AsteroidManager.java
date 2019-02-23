@@ -1,7 +1,6 @@
 package com.northumbria.en0618;
 
 import android.support.annotation.DrawableRes;
-import android.util.Log;
 
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.Input;
@@ -55,7 +54,6 @@ class AsteroidManager
         {
             int swapFrom = random.nextInt(ASTEROID_SPRITE_DRAWABLE_IDS.length);
             int swapTo = random.nextInt(ASTEROID_SPRITE_DRAWABLE_IDS.length);
-            Log.e(String.valueOf(swapFrom), String.valueOf(swapTo));
             @DrawableRes int tempDrawableID = ASTEROID_SPRITE_DRAWABLE_IDS[swapTo];
             ASTEROID_SPRITE_DRAWABLE_IDS[swapTo] = ASTEROID_SPRITE_DRAWABLE_IDS[swapFrom];
             ASTEROID_SPRITE_DRAWABLE_IDS[swapFrom] = tempDrawableID;
