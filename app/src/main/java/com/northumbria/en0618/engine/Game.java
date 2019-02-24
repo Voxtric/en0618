@@ -191,13 +191,7 @@ public class Game
             for (int i = 0; i < gameObjectGroupCount; i++)
             {
                 GameObjectGroup group = m_gameObjectGroups.get(i);
-                if (group.size() == 0)
-                {
-                    m_gameObjectGroups.remove(i);
-                    i--;
-                    gameObjectGroupCount--;
-                }
-                else
+                if (group.size() > 0)
                 {
                     group.update(deltaTime);
                 }
