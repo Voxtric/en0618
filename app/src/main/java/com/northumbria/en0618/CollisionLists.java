@@ -148,7 +148,7 @@ class CollisionLists
                         alienCount--;
                         i--;
 
-                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
+                        Explosion explosion = new Explosion(m_activity, alien.getX(), alien.getY(), alien.getXSize());
                         m_game.addGameObject(explosion);
                     }
                 }
