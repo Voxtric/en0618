@@ -55,8 +55,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="ToggleButton"
-        android:textOff="@string/frame_button_off"
-        android:textOn="@string/frame_button_on"
+        android:textOff="@string/power_saver_off"
+        android:textOn="@string/power_saver_on"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sfx_button" />
@@ -85,7 +85,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="64dp"
         android:onClick="backButtonClick"
-        android:text="Back"
+        android:text="@string/main_menu_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

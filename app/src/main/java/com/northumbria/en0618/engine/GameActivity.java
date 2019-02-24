@@ -174,6 +174,10 @@ public abstract class GameActivity extends AppCompatActivity
     {
     }
 
+    public void onGamePause(AlertDialog pauseDialog)
+    {
+    }
+
     public void playSound(GameSound sound)
     {
         switch (sound)

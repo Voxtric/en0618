@@ -109,6 +109,8 @@ public class Game
                     });
                     m_pauseDialog.show();
                 }
+
+                m_activity.onGamePause(m_pauseDialog);
             }
         });
     }

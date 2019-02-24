@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -89,11 +88,11 @@ public class SpaceInvadersActivity extends GameActivity
 
         Font font = Font.getFont(this, getString(R.string.app_font), (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);
         // Score
-        m_scoreText = new TextGameObject(font, getString(R.string.score_text, 0), 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
+        m_scoreText = new TextGameObject(font, getString(R.string.score_text_label, 0), 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
         m_scoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
         game.addGameObject(m_scoreText, true);
         // Level
-        m_levelText = new TextGameObject(font, getString(R.string.level_text, 1), 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
+        m_levelText = new TextGameObject(font, getString(R.string.level_text_label, 1), 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
         m_levelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
         game.addGameObject(m_levelText, true);
 
@@ -189,7 +188,7 @@ public class SpaceInvadersActivity extends GameActivity
                     // in it being off the screen.
 
                     m_currentLevel++;
-                    m_levelText.setText(getString(R.string.level_text, m_currentLevel));
+                    m_levelText.setText(getString(R.string.level_text_label, m_currentLevel));
 
                     m_collidableObjects.destroyAll(false);
                     m_collidableObjects = new CollisionLists(this, m_player);
@@ -209,6 +208,16 @@ public class SpaceInvadersActivity extends GameActivity
         }
     }
 
+    @Override
+    public void onGamePause(AlertDialog pauseDialog)
+    {
+        if (pauseDialog != null)
+        {
+            ViewGroup root = pauseDialog.findViewById(R.id.view_root);
+            FontUtils.setFont(root, getString(R.string.app_font));
+        }
+    }
+
     public int getCurrentLevel()
     {
         return m_currentLevel;
@@ -220,11 +229,11 @@ public class SpaceInvadersActivity extends GameActivity
         Game game = getGame();
 
         m_currentLevel = 1;
-        m_levelText.setText(getString(R.string.level_text, 1));
+        m_levelText.setText(getString(R.string.level_text_label, 1));
 
         m_player = new Player(game, m_scoreText);
         game.addGameObject(m_player);
-        m_scoreText.setText(getString(R.string.score_text, 0));
+        m_scoreText.setText(getString(R.string.score_text_label, 0));
 
         m_collidableObjects.destroyAll(true);
         m_collidableObjects = new CollisionLists(this, m_player);
@@ -260,11 +269,11 @@ public class SpaceInvadersActivity extends GameActivity
             @Override
             public void run()
             {
-                @SuppressLint("InflateParams") final View view = getLayoutInflater().inflate(R.layout.dialog_game_over, null);
-                TextView scoreTextView = view.findViewById(R.id.score_text_view);
-                scoreTextView.setText(getString(R.string.score_text, score));
-                final ProgressBar newHighScoreProgressBar = view.findViewById(R.id.new_high_score_progress_bar);
-                final TextView newHighScoreTextView = view.findViewById(R.id.new_high_score_text_view);
+                @SuppressLint("InflateParams") final View root = getLayoutInflater().inflate(R.layout.dialog_game_over, null);
+                TextView scoreTextView = root.findViewById(R.id.score_text_view);
+                scoreTextView.setText(getString(R.string.score_message, score));
+                final ProgressBar newHighScoreProgressBar = root.findViewById(R.id.new_high_score_progress_bar);
+                final TextView newHighScoreTextView = root.findViewById(R.id.new_high_score_text_view);
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SpaceInvadersActivity.this);
                 final long score = m_player.getScore();
@@ -345,12 +354,10 @@ public class SpaceInvadersActivity extends GameActivity
                   });
                 }
 
-                Typeface font = Typeface.createFromAsset(getAssets(), "death_star.ttf");
-                ViewGroup root = view.findViewById(R.id.view_root);
-                FontUtils.setAllFonts(root, font);
+                FontUtils.setFont((ViewGroup)root, getString(R.string.app_font));
 
                 m_gameOverDialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
-                        .setView(view)
+                        .setView(root)
                         .setOnCancelListener(new DialogInterface.OnCancelListener()
                         {
                             @Override

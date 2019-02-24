@@ -2,7 +2,6 @@ package com.northumbria.en0618;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -42,9 +41,8 @@ public class MainMenuActivity extends AppCompatActivity
         setContentView(R.layout.activity_main_menu);
         determineGooglePlayGamesButton();
 
-        Typeface font = Typeface.createFromAsset(getAssets(), "death_star.ttf");
         ViewGroup root = findViewById(R.id.view_root);
-        FontUtils.setAllFonts(root, font);
+        FontUtils.setFont(root, getString(R.string.app_font));
 
         m_mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mainmenu);
         m_mediaPlayer.start();

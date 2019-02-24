@@ -2,7 +2,6 @@ package com.northumbria.en0618;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,9 +22,8 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         //set font for view root
-        Typeface font = Typeface.createFromAsset(getAssets(), "death_star.ttf");
         ViewGroup root = findViewById(R.id.settings_root);
-        FontUtils.setAllFonts(root, font);
+        FontUtils.setFont(root, getString(R.string.app_font));
 
         //setup toggle buttons
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);

@@ -1,49 +1,51 @@
 <resources>
     <string name="app_name">EN0618</string>
-    <string name="app_font">death_star.ttf</string>
+    <string name="app_font">SFOuterLimits.ttf</string>
 
     <string name="game_name">Not Space Invaders</string>
 
     <!-- Main Menu -->
-    <string name="play_button">Play</string>
+    <string name="play_button">play</string>
+    <string name="settings_button">settings</string>
 
     <!-- Settings -->
     <string name="settings_header">Settings</string>
 
-    <string name="sfx_button_on">Sound Effects: On</string>
-    <string name="sfx_button_off">Sound Effects: Off</string>
+    <string name="sfx_button_on">sound effects: nn</string>
+    <string name="sfx_button_off">sound effects: off</string>
 
-    <string name="music_button_on">Music: On</string>
-    <string name="music_button_off">Music: Off</string>
+    <string name="music_button_on">music: on</string>
+    <string name="music_button_off">music: off</string>
 
-    <string name="frame_button_on">Frame Limit: On</string>
-    <string name="frame_button_off">Frame Limit: Off</string>
+    <string name="power_saver_on">power saver: on</string>
+    <string name="power_saver_off">power saver: off</string>
 
-    <string name="input_button_screen_side">Input Method: Screen Side</string>
-    <string name="input_button_player_side">Input Method: Player Side</string>
-    <string name="input_button_screen_tilt">Input Method: Screen Tilt</string>
+    <string name="input_button_screen_side">input method: screen side</string>
+    <string name="input_button_player_side">input method: player side</string>
+    <string name="input_button_screen_tilt">input method: screen tilt</string>
 
     <!-- Game Paused Menu -->
     <string name="game_paused_title">Paused</string>
-    <string name="resume_button">Resume</string>
-    <string name="main_menu_button">Main Menu</string>
+    <string name="resume_button">resume</string>
+    <string name="main_menu_button">main menu</string>
 
     <!-- Game -->
-    <string name="score_text">Score: %1$d</string>
-    <string name="level_text">Level: %1$d</string>
+    <string name="score_text_label">Score: %1$d</string>
+    <string name="level_text_label">Level: %1$d</string>
 
     <!-- Game Over Menu -->
     <string name="game_over_title">Game Over</string>
-    <string name="new_high_score_message">New High Score!</string>
-    <string name="current_high_score_message">Current High Score: %1$d</string>
-    <string name="restart_button">Restart</string>
+    <string name="score_message">score: %1$d</string>
+    <string name="new_high_score_message">new high score!</string>
+    <string name="current_high_score_message">current high score: %1$d</string>
+    <string name="restart_button">restart</string>
 
     <!-- Google Play Games Services -->
     <string name="app_id">975469447331</string>
     <string name="global_leaderboard_id">CgkIo5GK9LEcEAIQAw</string>
 
-    <string name="google_sign_in_button">Google Sign In</string>
-    <string name="leaderboard_button">Leaderboard</string>
+    <string name="google_sign_in_button">google sign in</string>
+    <string name="leaderboard_button">leaderboard</string>
 
     <string name="google_sign_in_fail_title">Google Sign In Failed</string>
     <string name="google_sign_in_fail_message">
@@ -58,76 +60,4 @@
         <item>CgkIo5GK9LEcEAIQCg</item>
     </string-array>
     <string name="title_activity_settings">Settings</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
 </resources>
