@@ -2,6 +2,7 @@ package com.northumbria.en0618;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -349,9 +350,16 @@ public class SpaceInvadersActivity extends GameActivity
                 FontUtils.setAllFonts(root, font);
 
                 m_gameOverDialog = new AlertDialog.Builder(SpaceInvadersActivity.this)
-                      .setView(view)
-                      .create();
-                m_gameOverDialog.setCancelable(false);
+                        .setView(view)
+                        .setOnCancelListener(new DialogInterface.OnCancelListener()
+                        {
+                            @Override
+                            public void onCancel(DialogInterface dialog)
+                            {
+                                finish();
+                            }
+                        })
+                        .create();
                 m_gameOverDialog.setCanceledOnTouchOutside(false);
                 m_gameOverDialog.show();
             }
