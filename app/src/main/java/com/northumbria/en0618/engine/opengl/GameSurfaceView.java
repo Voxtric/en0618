@@ -3,6 +3,7 @@ package com.northumbria.en0618.engine.opengl;
 import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.MotionEvent;
 
 import com.northumbria.en0618.engine.GameActivity;
@@ -11,7 +12,6 @@ import com.northumbria.en0618.engine.Input;
 @SuppressLint("ViewConstructor")    // Multi-view constructors are not needed due to limited use.
 public class GameSurfaceView extends GLSurfaceView
 {
-
     @SuppressWarnings("FieldCanBeLocal")    // Field cannot be local or it will be garbage collected.
     private Handler m_handler = null;       // Timing mechanism for non-standard frame-rate.
     private long m_targetFrameTime = 0L;    // Measured in milliseconds.

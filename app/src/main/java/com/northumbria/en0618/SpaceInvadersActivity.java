@@ -83,7 +83,14 @@ public class SpaceInvadersActivity extends GameActivity
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_POWER_SAVER, false))
         {
-            ((GameSurfaceView)getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    ((GameSurfaceView)getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
+                }
+            });
         }
 
         Font font = Font.getFont(this, getString(R.string.app_font), (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);

@@ -11,7 +11,7 @@
     <!-- Settings -->
     <string name="settings_header">Settings</string>
 
-    <string name="sfx_button_on">sound effects: nn</string>
+    <string name="sfx_button_on">sound effects: on</string>
     <string name="sfx_button_off">sound effects: off</string>
 
     <string name="music_button_on">music: on</string>
