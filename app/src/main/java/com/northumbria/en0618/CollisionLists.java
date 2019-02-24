@@ -2,13 +2,14 @@ package com.northumbria.en0618;
 
 import com.northumbria.en0618.engine.CollidableGameObject;
 import com.northumbria.en0618.engine.Game;
+import com.northumbria.en0618.engine.Input;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class CollisionLists
 {
-    private static final float EXPLOSION_SIZE = 64.0f;
+    private static final float SCREEN_DISTANCE_EXPLOSION_SIZE = 0.06f;
 
     private final List<Bullet> m_playerBulletList = new ArrayList<>();
     private final List<Bullet> m_alienBulletList = new ArrayList<>();
@@ -19,11 +20,14 @@ class CollisionLists
     private final Game m_game;
     private final Player m_player;
 
+    private final float m_explosionSize;
+
     CollisionLists(SpaceInvadersActivity activity, Player player)
     {
         m_activity = activity;
         m_game = activity.getGame();
         m_player = player;
+        m_explosionSize = Input.getScreenWidth() * SCREEN_DISTANCE_EXPLOSION_SIZE;
     }
 
     void checkCollisions()
@@ -48,7 +52,7 @@ class CollisionLists
                     alienBulletCount--;
                     i--;
 
-                    Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                    Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                     m_game.addGameObject(explosion);
 
                     if (m_player.consumeLife())
@@ -76,7 +80,7 @@ class CollisionLists
                             asteroidCount--;
                             j--;
 
-                            Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                            Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                             m_game.addGameObject(explosion);
                         }
                     }
@@ -100,7 +104,7 @@ class CollisionLists
                     // Player vs Alien? Kill player.
                     m_player.destroy();
 
-                    Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                    Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                     m_game.addGameObject(explosion);
                 }
 
@@ -117,7 +121,7 @@ class CollisionLists
                             asteroidCount--;
                             j--;
 
-                            Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                            Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                             m_game.addGameObject(explosion);
                         }
                     }
@@ -144,7 +148,7 @@ class CollisionLists
                         alienCount--;
                         i--;
 
-                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                         m_game.addGameObject(explosion);
                     }
                 }
@@ -170,7 +174,7 @@ class CollisionLists
                         asteroidCount--;
                         j--;
 
-                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, EXPLOSION_SIZE, EXPLOSION_SIZE);
+                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                         m_game.addGameObject(explosion);
                     }
                 }

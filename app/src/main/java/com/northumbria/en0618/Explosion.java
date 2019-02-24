@@ -14,12 +14,11 @@ public class Explosion extends SpriteGameObject
 
     private AnimatedSprite m_sprite;
 
-    Explosion(Context context, float x, float y, float xSize, float ySize)
+    Explosion(Context context, float x, float y, float size)
     {
-        super(new AnimatedSprite(
-                Texture.getTexture(context, R.drawable.explosion_frames, false),
+        super(new AnimatedSprite(context, R.drawable.explosion_frames,
                         ANIMATION_X_FRAMES, ANIMATION_Y_FRAMES, ANIMATION_FRAME_DURATION, false),
-                x, y, xSize, ySize);
+                x, y, size, size);
         m_sprite = (AnimatedSprite)getRenderable();
     }
 

@@ -1,6 +1,8 @@
 package com.northumbria.en0618.engine.opengl;
 
+import android.content.Context;
 import android.opengl.GLES20;
+import android.support.annotation.DrawableRes;
 
 public class AnimatedSprite extends Sprite
 {
@@ -19,10 +21,10 @@ public class AnimatedSprite extends Sprite
     private float m_xOffset = 0.0f;
     private float m_yOffset = 0.0f;
 
-    public AnimatedSprite(Texture texture, int xFrames, int yFrames, float secondsPerFrame, boolean repeating)
+    public AnimatedSprite(Context context, @DrawableRes int drawableID, int xFrames, int yFrames, float secondsPerFrame, boolean repeating)
     {
         super(AnimatedSpriteShader.getInstance(),
-                texture,
+                Texture.getTexture(context, drawableID, false),
                 new Texture.Region(0.0f, 0.0f, 1.0f / (float)xFrames, 1.0f / (float)yFrames));
 
         m_xFrames = xFrames;
