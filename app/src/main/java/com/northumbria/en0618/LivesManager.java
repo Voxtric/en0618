@@ -28,12 +28,12 @@ class LivesManager
         m_startY = (Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER) + (m_size * 0.5f);
     }
 
-    public void updateLivesDisplay(int lives)
+    public void updateLivesDisplay(int lives, boolean forceDestroy)
     {
         while (lives < m_lives.size())
         {
             Life life = m_lives.pop();
-            if (m_lives.isEmpty())
+            if (forceDestroy || m_lives.isEmpty())
             {
                 life.destroy();
             }

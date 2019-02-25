@@ -64,14 +64,14 @@ public class Player extends CollidableGameObject
         m_sideBorder = Input.getScreenHeight() * SCREEN_DISTANCE_SIDE_BORDER;
         m_scoreTracker = scoreTracker;
         m_livesManager = new LivesManager(game);
-        m_livesManager.updateLivesDisplay(m_lives);
+        m_livesManager.updateLivesDisplay(m_lives, false);
     }
 
     @Override
     public void destroy()
     {
         super.destroy();
-        m_livesManager.updateLivesDisplay(0);
+        m_livesManager.updateLivesDisplay(0, true);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class Player extends CollidableGameObject
     public boolean consumeLife()
     {
         m_lives--;
-        m_livesManager.updateLivesDisplay(m_lives);
+        m_livesManager.updateLivesDisplay(m_lives, false);
         return m_lives == 0;
     }
 }
