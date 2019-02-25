@@ -135,7 +135,6 @@ public class Input
         return s_lastTouchLocationY;
     }
 
-    // TODO: Use this to decide whether the input method is allowed.
     public static boolean rotationSensorAvailable()
     {
         return s_rotationSensor != null;
