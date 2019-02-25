@@ -194,11 +194,11 @@ public class Input
         s_pitch = orientation[1] * FROM_RADS_TO_DEGREES;
         s_roll = orientation[2] * -FROM_RADS_TO_DEGREES;
 
-        if (s_pitch < DEAD_ZONE)
+        if (Math.abs(s_pitch) < DEAD_ZONE)
         {
             s_pitch = 0.0f;
         }
-        if (s_roll < DEAD_ZONE)
+        if (Math.abs(s_roll) < DEAD_ZONE)
         {
             s_roll = 0.0f;
         }
