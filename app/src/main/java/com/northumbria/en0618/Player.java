@@ -10,8 +10,6 @@ import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.Input;
 
-import java.util.Locale;
-
 public class Player extends CollidableGameObject
 {
     private static final float SCREEN_DISTANCE_PER_SECOND = 0.6f;
@@ -50,6 +48,8 @@ public class Player extends CollidableGameObject
     private final TextGameObject m_scoreTracker;
     private final LivesManager m_livesManager;
 
+    private final Context m_context;
+
     Player(Game game, TextGameObject scoreTracker)
     {
         super(game.getActivity(),
@@ -65,6 +65,7 @@ public class Player extends CollidableGameObject
         m_scoreTracker = scoreTracker;
         m_livesManager = new LivesManager(game);
         m_livesManager.updateLivesDisplay(m_lives, false);
+        m_context = game.getActivity();
     }
 
     @Override
@@ -162,7 +163,7 @@ public class Player extends CollidableGameObject
     public void addScore(long score)
     {
         m_score += score;
-        m_scoreTracker.setText(String.format(Locale.getDefault(), "Score: %d", m_score));
+        m_scoreTracker.setText(m_context.getString(R.string.score_text_label, m_score));
     }
 
     public long getScore()

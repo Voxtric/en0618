@@ -18,6 +18,7 @@ import com.northumbria.en0618.engine.opengl.Shader;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.opengl.Texture;
 
+// TODO: Can't use enums because Android is dumb.
 enum GameSound {PLAYER_HIT, ENEMY_HIT, BARRIER_HIT, PLAYER_FIRE, ENEMY_FIRE}
 
 public abstract class GameActivity extends AppCompatActivity
