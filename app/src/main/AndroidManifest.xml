@@ -36,7 +36,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SettingsActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name=".SpaceInvadersActivity"
