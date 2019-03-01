@@ -42,9 +42,9 @@
         android:layout_width="250dp"
         android:layout_height="48dp"
         android:layout_below="@+id/resume_button"
-        android:layout_marginTop="24dp"
         android:layout_centerHorizontal="true"
-        android:onClick="onResumeGame"
+        android:layout_marginTop="24dp"
+        android:onClick="openSettings"
         android:text="@string/settings_button" />
 
     <Button
