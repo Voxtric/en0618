@@ -10,6 +10,7 @@
 
     <!-- Settings -->
     <string name="settings_header">Settings</string>
+    <string name="back_button">Back</string>
 
     <string name="sfx_button_on">sound effects: on</string>
     <string name="sfx_button_off">sound effects: off</string>
