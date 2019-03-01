@@ -85,7 +85,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="64dp"
         android:onClick="backButtonClick"
-        android:text="@string/main_menu_button"
+        android:text="@string/back_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
