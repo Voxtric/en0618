@@ -3,6 +3,7 @@ package com.northumbria.en0618;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -33,6 +34,8 @@ import com.northumbria.en0618.engine.TextGameObject;
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Sprite;
+
+import java.util.Set;
 
 public class SpaceInvadersActivity extends GameActivity
 {
@@ -254,6 +257,11 @@ public class SpaceInvadersActivity extends GameActivity
         game.setSuppressPauseDialog(false);
         game.unPause();
         m_gameOverDialog.dismiss();
+    }
+
+    public void openSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @SuppressWarnings("unused")
