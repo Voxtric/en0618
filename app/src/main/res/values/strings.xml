@@ -21,9 +21,9 @@
     <string name="power_saver_on">power saver: on</string>
     <string name="power_saver_off">power saver: off</string>
 
-    <string name="input_button_screen_side">input method: screen side</string>
-    <string name="input_button_player_side">input method: player side</string>
-    <string name="input_button_screen_tilt">input method: screen tilt</string>
+    <string name="input_button_screen_side">input: screen side</string>
+    <string name="input_button_player_side">input: player side</string>
+    <string name="input_button_screen_tilt">input: screen tilt</string>
 
     <!-- Game Paused Menu -->
     <string name="game_paused_title">Paused</string>
