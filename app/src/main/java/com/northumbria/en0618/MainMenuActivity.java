@@ -41,6 +41,7 @@ public class MainMenuActivity extends AppCompatActivity
         setContentView(R.layout.activity_main_menu);
         determineGooglePlayGamesButton();
 
+        //set the font for the root view
         ViewGroup root = findViewById(R.id.view_root);
         FontUtils.setFont(root, getString(R.string.app_font));
 

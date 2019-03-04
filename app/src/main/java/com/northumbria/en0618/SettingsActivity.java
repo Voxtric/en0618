@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity
         FontUtils.setFont(root, getString(R.string.app_font));
 
         //setup toggle buttons
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         ToggleButton musicToggle = findViewById(R.id.music_button);
         ToggleButton sfxToggle = findViewById(R.id.sfx_button);
@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                sp.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
+                sharedPrefs.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
             }
         });
 
@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                sp.edit().putBoolean(PREFERENCE_KEY_SFX, isChecked).apply();
+                sharedPrefs.edit().putBoolean(PREFERENCE_KEY_SFX, isChecked).apply();
             }
         });
 
@@ -56,18 +56,18 @@ public class SettingsActivity extends AppCompatActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                sp.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, isChecked).apply();
+                sharedPrefs.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, isChecked).apply();
             }
         });
 
         //set button values to be the correct settings
         Button b = findViewById(R.id.input_button);
-        int inputMethod = sp.getInt(Player.PREFERENCE_KEY_INPUT_METHOD, Player.INPUT_METHOD_SCREEN_SIDE);
+        int inputMethod = sharedPrefs.getInt(Player.PREFERENCE_KEY_INPUT_METHOD, Player.INPUT_METHOD_SCREEN_SIDE);
         b.setText(getInputStringFromPreference(inputMethod));
 
-        boolean isMusicOn = sp.getBoolean(PREFERENCE_KEY_MUSIC, true);
-        boolean isSFXOn = sp.getBoolean(PREFERENCE_KEY_SFX, true);
-        boolean isPowerSaverOn = sp.getBoolean(PREFERENCE_KEY_POWER_SAVER, false);
+        boolean isMusicOn = sharedPrefs.getBoolean(PREFERENCE_KEY_MUSIC, true);
+        boolean isSFXOn = sharedPrefs.getBoolean(PREFERENCE_KEY_SFX, true);
+        boolean isPowerSaverOn = sharedPrefs.getBoolean(PREFERENCE_KEY_POWER_SAVER, false);
 
         musicToggle.setChecked(isMusicOn);
         sfxToggle.setChecked(isSFXOn);
@@ -87,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int inputMethod = preferences.getInt(Player.PREFERENCE_KEY_INPUT_METHOD, Player.INPUT_METHOD_SCREEN_SIDE);
         int newInputMethod = inputMethod;
-        Button b = (Button) view;
+        Button button = (Button) view;
 
         // Determine the new input method and update the UI.
         switch (inputMethod)
@@ -107,7 +107,7 @@ public class SettingsActivity extends AppCompatActivity
         }
 
         //update the button text
-        b.setText(getInputStringFromPreference(newInputMethod));
+        button.setText(getInputStringFromPreference(newInputMethod));
 
         // Update the settings and the player.
         preferences.edit().putInt(Player.PREFERENCE_KEY_INPUT_METHOD, newInputMethod).apply();
