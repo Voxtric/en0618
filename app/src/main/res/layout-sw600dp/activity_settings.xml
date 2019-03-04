@@ -8,6 +8,19 @@
     android:background="@color/menu_background"
     tools:context=".SettingsActivity">
 
+    <TextView
+        android:id="@+id/header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/settings_header"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textSize="48sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ToggleButton
         android:id="@+id/music_button"
         style="@style/button_style"
@@ -45,6 +58,20 @@
         app:layout_constraintStart_toStartOf="@+id/music_button"
         app:layout_constraintTop_toBottomOf="@+id/music_button" />
 
+    <Button
+        android:id="@+id/input_button"
+        style="@style/button_style"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="changeInputMethod"
+        android:text="@string/input_button_screen_side"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/frame_button"
+        app:layout_constraintEnd_toEndOf="@+id/sfx_button"
+        app:layout_constraintStart_toStartOf="@+id/sfx_button"
+        app:layout_constraintTop_toBottomOf="@+id/sfx_button" />
+
     <ToggleButton
         android:id="@+id/frame_button"
         style="@style/button_style"
@@ -59,33 +86,6 @@
         app:layout_constraintEnd_toEndOf="@+id/input_button"
         app:layout_constraintStart_toStartOf="@+id/input_button"
         app:layout_constraintTop_toBottomOf="@+id/input_button" />
-
-    <TextView
-        android:id="@+id/header_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="50dp"
-        android:text="@string/settings_header"
-        android:textColor="@color/common_google_signin_btn_text_dark_default"
-        android:textSize="48sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/input_button"
-        style="@style/button_style"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="24dp"
-        android:onClick="changeInputMethod"
-        android:text="@string/input_button_screen_side"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/frame_button"
-        app:layout_constraintEnd_toEndOf="@+id/sfx_button"
-        app:layout_constraintStart_toStartOf="@+id/sfx_button"
-        app:layout_constraintTop_toBottomOf="@+id/sfx_button" />
 
     <Button
         android:id="@+id/back_button"
