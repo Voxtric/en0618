@@ -39,6 +39,7 @@ import java.util.Set;
 
 public class SpaceInvadersActivity extends GameActivity
 {
+    // CONSTANTS
     private static final String PREFERENCE_KEY_HIGH_SCORE = "high_score";
 
     private static final int POWER_SAVER_FRAME_RATE = 30;
@@ -48,10 +49,12 @@ public class SpaceInvadersActivity extends GameActivity
 
     private static final float SCREEN_DISTANCE_FONT_SIZE = 0.05f;
 
+    // Initialised Values
     private int m_currentLevel = 1;
     private float m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
     private float m_playerShotOffset = 0.0f;
 
+    // References
     private Player m_player;
     private TextGameObject m_scoreText;
     private TextGameObject m_levelText;
@@ -66,6 +69,7 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        // Signs into Google Account when Login Provided
         super.onCreate(savedInstanceState);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -80,6 +84,7 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onGameReady()
     {
+        // Initialises game start state and variables
         Game game = getGame();
         game.setPauseDialogLayoutID(R.layout.dialog_game_paused);
 

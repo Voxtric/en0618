@@ -17,7 +17,9 @@ class AsteroidManager
             R.drawable.asteroid_4,
             R.drawable.asteroid_5,
             R.drawable.asteroid_6
-    };
+    }; // Stores the six asteroid sprites in an Array to be looped through later
+
+    // CONSTANT VARIABLES
     private static final int SWAP_COUNT = 6;
 
     private static final int ASTEROIDS_PER_BARRIER = 3;
@@ -28,9 +30,11 @@ class AsteroidManager
     private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.17f;
     private static final float SCREEN_DISTANCE_Y_OFFSET = -0.01f;
 
+    // Object References
     private final CollisionLists m_collisionList;
     private final Game m_game;
 
+    // Uninitialised Values
     private final float m_size;
     private final float m_distanceBetweenBarrierCenters;
     private final float m_barrierWidth;
@@ -38,6 +42,7 @@ class AsteroidManager
 
     AsteroidManager(CollisionLists collisionList, Game game)
     {
+        // Initialises values
         m_collisionList = collisionList;
         m_game = game;
 
@@ -49,6 +54,7 @@ class AsteroidManager
 
     void createAsteroids()
     {
+        // Creates asteroids with random sprites.
         Random random = m_game.getRandom();
         for (int i = 0; i < SWAP_COUNT; i++)
         {
@@ -59,6 +65,7 @@ class AsteroidManager
             ASTEROID_SPRITE_DRAWABLE_IDS[swapFrom] = tempDrawableID;
         }
 
+        // Creates Asteroids within specific constraints per 'Shield'.
         int drawableIDIndex = 0;
         float barrierXCenter = m_distanceBetweenBarrierCenters;
         for (int i = 0; i < BARRIER_COUNT; i++)

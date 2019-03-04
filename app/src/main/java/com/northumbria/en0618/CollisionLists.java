@@ -9,6 +9,7 @@ import java.util.List;
 
 class CollisionLists
 {
+    // CONSTANTS
     private static final float SCREEN_DISTANCE_EXPLOSION_SIZE = 0.06f;
 
     private final List<Bullet> m_playerBulletList = new ArrayList<>();
@@ -24,6 +25,7 @@ class CollisionLists
 
     CollisionLists(SpaceInvadersActivity activity, Player player)
     {
+        // Sets References
         m_activity = activity;
         m_game = activity.getGame();
         m_player = player;
@@ -32,6 +34,7 @@ class CollisionLists
 
     void checkCollisions()
     {
+        // Checks through every list for collisions
         int alienBulletCount = m_alienBulletList.size();
         int asteroidCount = m_asteroidList.size();
         if(alienBulletCount > 0)
@@ -64,6 +67,7 @@ class CollisionLists
                 }
                 if(asteroidCount > 0 && i >= 0)
                 {
+                    // Loops through asteroids for collisions
                     for (int j = 0; j < asteroidCount; j++)
                     {
                         Asteroid asteroid = m_asteroidList.get(j);
@@ -110,6 +114,7 @@ class CollisionLists
 
                 if(asteroidCount > 0)
                 {
+                    // Loops through asteroids for collisions
                     for (int j = 0; j < asteroidCount; j++)
                     {
                         Asteroid asteroid = m_asteroidList.get(j);
@@ -160,6 +165,7 @@ class CollisionLists
                 Asteroid asteroid = m_asteroidList.get(j);
                 for(int i = 0; i < playerBulletCount; i++)
                 {
+                    // Loops through asteroids for collisions
                     Bullet bullet = m_playerBulletList.get(i);
                     CollidableGameObject.CollisionInfo collisionInfo = bullet.collidesWith(asteroid);
                     if(collisionInfo != null)
@@ -208,6 +214,7 @@ class CollisionLists
 
     public void destroyAll(boolean destroyPlayer)
     {
+        // Destroys the references to all objects
         for (Alien alien : m_alienList)
         {
             alien.destroy();

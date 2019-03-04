@@ -16,8 +16,10 @@ class AlienManager
             R.drawable.alien_2,
             R.drawable.alien_3,
             R.drawable.alien_4
-    };
+    }; // Stores the four alien sprites in an Array to be looped through later
 
+
+    // CONSTANTS
     private static final float BOSS_ALIEN_SPAWN_WAIT = 10.0f; // In seconds
     private static final float ALIEN_SHOT_SPAWN_WAIT = 2.5f;  // In seconds
 
@@ -41,21 +43,24 @@ class AlienManager
     private float m_timeToBossSpawn = BOSS_ALIEN_SPAWN_WAIT;
     private float m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
 
-    private final List<List<Alien>> m_alienColumns = new ArrayList<>();
-    private int m_activeAliens;
-    private final CollisionLists m_colList;
-    private final Game m_game;
-    private boolean m_alienWin = false;
+    private final List<List<Alien>> m_alienColumns = new ArrayList<>(); // List of Alien Columns
+                                                                        // Each Column is a list
+    private int m_activeAliens; // Number of Aliens alive
+    private final CollisionLists m_colList; // Reference to Collision List Class
+    private final Game m_game; // Reference to Game
+    private boolean m_alienWin = false; // Sets true if Aliens hit the bottom
 
-    private float m_alienMoveSpeed;
-    private final float m_alienSize;
-    private final float m_sideBorder;
+    private float m_alienMoveSpeed; // Alien Move Speed, calculated below.
+    private final float m_alienSize; // Alien Sprite Size, calculated below.
+    private final float m_sideBorder; // Side Borders
 
     AlienManager(CollisionLists collisionList, Game game)
     {
+        // Game and Collision List references set in constructor
         m_colList = collisionList;
         m_game = game;
 
+        // Default values calculated
         m_alienMoveSpeed = Input.getScreenWidth() * SCREEN_DISTANCE_PER_SECOND;
         float spaceForAliens = 1.0f - (SCREEN_DISTANCE_GAP_BETWEEN_ALIENS * (COLUMNS - 1)) - SCREEN_DISTANCE_SPACE_UNTIL_EDGE;
         m_alienSize = Input.getScreenWidth() * (spaceForAliens / (float)COLUMNS);
@@ -64,29 +69,37 @@ class AlienManager
 
     public void incrementBaseAlienSpeed(int level)
     {
+        // Increments alien sped based on level.
         m_alienMoveSpeed *= (ALIEN_SPEEDUP_PER_LEVEL * level);
     }
 
     void createAliens()
     {
+        // Creates the aliens.
         m_alienWin = false;
 
+        // Sets Initial Values
         float lowestHeight = (Input.getScreenHeight() * SCREEN_DISTANCE_START_HEIGHT) -
                 (ROWS * m_alienSize) - ((ROWS - 1) * (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS));
         float xPosition = m_sideBorder + (m_alienSize * 0.5f);
         for(int i = 0; i < COLUMNS; i++)
         {
+            // Loops through Column count and Row count to create the correct number of aliens
             float yPosition = lowestHeight;
             List<Alien> currentColumn = new ArrayList<>();
             for(int j = 0; j < ROWS; j++)
             {
+                // Each alien is given the universal values, with a unique location that changes each iteration
+                // Sprits are set based on Row number, returning to the first sprite if there are more rows then sprites available
                 Alien tempAlien = new Alien(m_game.getActivity(), ALIEN_SPRITE_DRAWABLE_IDS[j % ALIEN_SPRITE_DRAWABLE_IDS.length],
                         xPosition, yPosition, m_alienSize, m_alienMoveSpeed, (lowestHeight - Player.getStartHeight()) / (float)STEPS_TO_PLAYER);
+                // Aliens are added to the column, Game and Collision List before the Position is updated.
                 currentColumn.add(tempAlien);
                 m_game.addGameObject(tempAlien);
                 m_colList.addAlien(tempAlien);
                 yPosition += m_alienSize + (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS);
             }
+            // Column stored in Manager and Position updated for next column
             m_alienColumns.add(currentColumn);
             xPosition += m_alienSize + (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS);
         }
@@ -95,11 +108,15 @@ class AlienManager
 
     private void checkSides(float deltaTime)
     {
+        // This function checks the aliens positions in order to determine if any alien has hit a border
+        // If this returns true, aliens are told to go through the change direction process
         boolean changeDir = false;
         for (List<Alien> tempList : m_alienColumns)
         {
             for (Alien tempAlien : tempList)
             {
+                // Either condition breaks from the loop, as so long as there is 1 successful
+                // use case, it applies to all aliens.
                 if(tempAlien.getY() < Player.getStartHeight())
                 {
                     m_alienWin = true;
@@ -116,6 +133,7 @@ class AlienManager
 
         if(changeDir)
         {
+            // Runs if an alien has hit a border.
             for (List<Alien> tempList : m_alienColumns)
             {
                 for (Alien tempAlien : tempList)
@@ -128,6 +146,9 @@ class AlienManager
 
     public void update(float deltaTime)
     {
+        // Runs on every frame.
+        // Checks that there are aliens still existing, if so, bosses are spawned and bullets
+        // are fired from any alien at the bottom of it's column
         if(m_alienColumns.size() > 0)
         {
             checkSides(deltaTime);
@@ -137,6 +158,7 @@ class AlienManager
             {
                 float bossAlienSize = m_alienSize * BOSS_ALIEN_SIZE_MULTIPLIER;
                 Alien bossAlien;
+                // Spawns Boss
                 if (m_game.getRandom().nextBoolean())
                 {
                     bossAlien = new BossAlien(m_game.getActivity(), R.drawable.alien_large_right,
@@ -158,6 +180,7 @@ class AlienManager
             m_timeToShotSpawn -= deltaTime;
             if(m_timeToShotSpawn <= 0.0f)
             {
+                // randomly selects which column to choose from
                 int alienChoice = m_game.getRandom().nextInt(m_alienColumns.size());
                 Bullet alienBullet = new Bullet(m_game.getActivity(),
                         R.drawable.alien_shot,
@@ -172,6 +195,8 @@ class AlienManager
             checkSurvivingAliens();
             if (alienCount != m_activeAliens)
             {
+                // Increases speed for each alien until the number of aliens alive
+                // is equal to how many were alive last frame.
                 for (List<Alien> tempList : m_alienColumns)
                 {
                     for (Alien tempAlien : tempList)
@@ -187,6 +212,8 @@ class AlienManager
 
     private void checkSurvivingAliens()
     {
+        // Determines how many Aliens are currently alive
+        // Before removing references of aliens that are dead.
         for(int i = 0; i < m_alienColumns.size(); i++)
         {
             List<Alien> alienColumn = m_alienColumns.get(i);
@@ -210,11 +237,13 @@ class AlienManager
 
     public boolean checkAlienWin()
     {
+        // Returns true if Aliens have hit the bottom
         return m_alienWin;
     }
 
     public boolean alienRemaining()
     {
+        // Returns true if all aliens are dead.
         return !m_alienColumns.isEmpty();
     }
 }

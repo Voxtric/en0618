@@ -12,6 +12,7 @@ import com.northumbria.en0618.engine.Input;
 
 public class Player extends CollidableGameObject
 {
+    // CONSTANTS
     private static final float SCREEN_DISTANCE_PER_SECOND = 0.6f;
     private static final float SCREEN_DISTANCE_SIDE_BORDER = 0.02f;
     private static final float SCREEN_DISTANCE_BOTTOM_BORDER = 0.1f;
@@ -26,19 +27,23 @@ public class Player extends CollidableGameObject
     public static final int INPUT_METHOD_PLAYER_SIDE = 1;
     public static final int INPUT_METHOD_SCREEN_TILT = 3;
 
+    // Uninitialised Values
     private static int s_inputMethod;
 
     public static void updateInputMethod(Context context)
     {
+        // Changes Input method for moving the player
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         s_inputMethod = preferences.getInt(PREFERENCE_KEY_INPUT_METHOD, INPUT_METHOD_SCREEN_SIDE);
     }
 
     public static float getStartHeight()
     {
+        // Gets screen height and calculates against border
         return Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER;
     }
 
+    // Uninitialised Values
     private int m_lives = START_LIVES_COUNT;
     private long m_score = 0;
 
@@ -60,6 +65,7 @@ public class Player extends CollidableGameObject
                 (Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH) * HEIGHT_TO_WIDTH_RATIO);
         updateInputMethod(game.getActivity());
 
+        // Initialises Values
         m_moveSpeed = Input.getScreenWidth() * SCREEN_DISTANCE_PER_SECOND;
         m_sideBorder = Input.getScreenHeight() * SCREEN_DISTANCE_SIDE_BORDER;
         m_scoreTracker = scoreTracker;
@@ -71,6 +77,7 @@ public class Player extends CollidableGameObject
     @Override
     public void destroy()
     {
+        // Destroys Player Object and Updates Live display.
         super.destroy();
         m_livesManager.updateLivesDisplay(0, true);
     }
@@ -78,6 +85,7 @@ public class Player extends CollidableGameObject
     @Override
     public void update(float deltaTime)
     {
+        // Runs every frame. Moves player when input is supplied
         float screenWidth = Input.getScreenWidth();
         float x = getX();
         float halfWidth = getXSize() * 0.5f;
@@ -162,17 +170,20 @@ public class Player extends CollidableGameObject
 
     public void addScore(long score)
     {
+        // Adds to Score
         m_score += score;
         m_scoreTracker.setText(m_context.getString(R.string.score_text_label, m_score));
     }
 
     public long getScore()
     {
+        // Returns current Score
         return m_score;
     }
 
     public boolean consumeLife()
     {
+        // Loses Life
         m_lives--;
         m_livesManager.updateLivesDisplay(m_lives, false);
         return m_lives == 0;
