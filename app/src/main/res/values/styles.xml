@@ -15,6 +15,7 @@
     </style>
 
     <style name="button_style">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/button_height</item>
         <item name="android:background">@drawable/ic_button</item>
         <item name="android:textColor">@android:color/white</item>

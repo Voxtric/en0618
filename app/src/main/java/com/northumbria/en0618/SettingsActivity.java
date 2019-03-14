@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity
         setContentView(R.layout.activity_settings);
 
         //set font for view root
-        ViewGroup root = findViewById(R.id.settings_root);
+        ViewGroup root = findViewById(R.id.view_root);
         FontUtils.setFont(root, getString(R.string.app_font));
 
         //setup toggle buttons

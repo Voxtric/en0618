@@ -2,9 +2,10 @@
     <string name="app_name">EN0618</string>
     <string name="app_font">SFOuterLimits.ttf</string>
 
-    <string name="game_name">Not Space Invaders</string>
 
     <!-- Main Menu -->
+    <string name="game_name">Not Space Invaders</string>
+    <string name="game_icon_description">A Star Wars Tie Fighter.</string>
     <string name="play_button">play</string>
     <string name="settings_button">settings</string>
 
