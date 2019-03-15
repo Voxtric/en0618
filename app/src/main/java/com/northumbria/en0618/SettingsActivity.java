@@ -3,7 +3,9 @@ package com.northumbria.en0618;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.preference.PreferenceManager;
+import android.support.annotation.RawRes;
 import android.support.annotation.StringRes;
 import android.os.Bundle;
 import android.view.View;
@@ -14,12 +16,17 @@ import android.widget.ToggleButton;
 
 import com.northumbria.en0618.engine.BackgroundSoundAccessingActivity;
 import com.northumbria.en0618.engine.BackgroundSoundService;
+import com.northumbria.en0618.engine.SoundPool;
 
 public class SettingsActivity extends BackgroundSoundAccessingActivity
 {
     public static final String PREFERENCE_KEY_MUSIC = "play_music";
     public static final String PREFERENCE_KEY_SFX = "play_sfx";
     public static final String PREFERENCE_KEY_POWER_SAVER = "power_saver";
+
+    private static final int MAX_SOUND_STREAMS = 1;
+
+    private SoundPool m_soundPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,6 +49,11 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
+                if (m_soundPool != null)
+                {
+                    m_soundPool.playSound(R.raw.button_click);
+                }
+
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
                 BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
                 if (backgroundSoundService != null)
@@ -62,6 +74,11 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
+                if (m_soundPool != null)
+                {
+                    m_soundPool.playSound(R.raw.button_click);
+                }
+
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_SFX, isChecked).apply();
             }
         });
@@ -70,14 +87,19 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
+                if (m_soundPool != null)
+                {
+                    m_soundPool.playSound(R.raw.button_click);
+                }
+
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, isChecked).apply();
             }
         });
 
         //set button values to be the correct settings
-        Button b = findViewById(R.id.input_button);
+        Button button = findViewById(R.id.input_button);
         int inputMethod = sharedPrefs.getInt(Player.PREFERENCE_KEY_INPUT_METHOD, Player.INPUT_METHOD_SCREEN_SIDE);
-        b.setText(getInputStringFromPreference(inputMethod));
+        button.setText(getInputStringFromPreference(inputMethod));
 
         boolean isMusicOn = sharedPrefs.getBoolean(PREFERENCE_KEY_MUSIC, true);
         boolean isSFXOn = sharedPrefs.getBoolean(PREFERENCE_KEY_SFX, true);
@@ -95,6 +117,23 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
     }
 
     @Override
+    protected void onStart()
+    {
+        super.onStart();
+        @RawRes int[] activitySounds = new int[] { R.raw.button_click };
+        m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, activitySounds);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        m_soundPool.release();
+        m_soundPool = null;
+    }
+
+    @Override
     public void onBackPressed()
     {
         notifyActivityChanging();
@@ -103,6 +142,7 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
 
     public void backButtonClick(View view)
     {
+        m_soundPool.playSound(R.raw.button_click);
         notifyActivityChanging();
         finish();
     }
@@ -111,6 +151,11 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
     @SuppressLint("ApplySharedPref")    // We want the data to be available immediately.
     public void changeInputMethod(View view)
     {
+        if (m_soundPool != null)
+        {
+            m_soundPool.playSound(R.raw.button_click);
+        }
+
         // Find the current input method.
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int inputMethod = preferences.getInt(Player.PREFERENCE_KEY_INPUT_METHOD, Player.INPUT_METHOD_SCREEN_SIDE);
@@ -141,7 +186,6 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
         preferences.edit().putInt(Player.PREFERENCE_KEY_INPUT_METHOD, newInputMethod).apply();
         Player.updateInputMethod(this);
     }
-
 
     private String getInputStringFromPreference(int inputMethod)
     {

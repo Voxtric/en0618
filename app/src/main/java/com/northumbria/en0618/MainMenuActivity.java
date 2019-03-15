@@ -3,9 +3,9 @@ package com.northumbria.en0618;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.SoundPool;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.RawRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,16 +22,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.northumbria.en0618.engine.BackgroundSoundAccessingActivity;
 import com.northumbria.en0618.engine.BackgroundSoundService;
+import com.northumbria.en0618.engine.SoundPool;
 
 public class MainMenuActivity extends BackgroundSoundAccessingActivity
 {
     private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
     private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
 
-    private SoundPool m_soundPool;
+    private static final int MAX_SOUND_STREAMS = 1;
 
-    private int m_menuSoundId;
-    private static final int MAX_STREAMS = 3;
+    private SoundPool m_soundPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,14 +44,6 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
         //set the font for the root view
         ViewGroup root = findViewById(R.id.view_root);
         FontUtils.setFont(root, getString(R.string.app_font));
-
-
-        m_soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
-
-        m_menuSoundId = m_soundPool.load(this, R.raw.menuselect, 1);
-
-        //SoundManager.getInstance().Init(this);
-        //SoundManager.getInstance().gPlayMainMenu();
     }
 
     @Override
@@ -70,26 +62,27 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
     }
 
     @Override
+    protected void onStart()
+    {
+        super.onStart();
+        @RawRes int[] activitySounds = new int[] { R.raw.button_click };
+        m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, activitySounds);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        m_soundPool.release();
+        m_soundPool = null;
+    }
+
+    @Override
     protected void onDestroy()
     {
         super.onDestroy();
         stopBackgroundSoundService();
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-
-        m_soundPool.autoResume();
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-
-        m_soundPool.autoPause();
     }
 
     // Updates google_play_games_button UI element based on google sign in status.
@@ -159,6 +152,8 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
             @Override
             public void onClick(View view)
             {
+                m_soundPool.playSound(R.raw.button_click);
+
                 // Create an activity to sign into google for the explicit purpose of using
                 // google play game services.
                 GoogleSignInOptions googleSignIn =
@@ -186,6 +181,8 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
             @Override
             public void onClick(View view)
             {
+                m_soundPool.playSound(R.raw.button_click);
+
                 // Create an activity to view the global leaderboard for the game.
                 Games.getLeaderboardsClient(MainMenuActivity.this, account)
                         .getLeaderboardIntent(getString(R.string.global_leaderboard_id))
@@ -211,65 +208,17 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
 
     public void startGameActivity(View view)
     {
-        m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
-
+        m_soundPool.playSound(R.raw.button_click);
         notifyActivityChanging();
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
-
-        m_soundPool.release();
     }
 
     public void startSettingsActivity(View view)
     {
+        m_soundPool.playSound(R.raw.button_click);
         notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
-
-//    public void toggleSoundEffects(View view) {
-//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//        Boolean newValue = !sp.getBoolean("play_sfx", true);
-//
-//        //set the property
-//        sp.edit().putBoolean("play_sfx", newValue).apply();
-//
-//        //update button text
-//        String newValueStr = getString(newValue ? R.string.on : R.string.off);
-//        Button b = findViewById(R.id.sfx_button);
-//
-//        b.setText(getString(R.string.sfx_button, newValueStr));
-//
-//        //start music
-//        if (newValue)
-//        {
-//            m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
-//        }
-//    }
-//
-//    public void toggleMusic(View view)
-//    {
-//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-//        Boolean newValue = !sp.getBoolean("play_music", true);
-//
-//        //set the property
-//        sp.edit().putBoolean("play_music", newValue).apply();
-//
-//        //update button text
-//        String newValueStr = getString(newValue ? R.string.on : R.string.off);
-//        Button b = findViewById(R.id.music_button);
-//
-//        b.setText(getString(R.string.music_button, newValueStr));
-//
-//        //toggle the music
-//        //m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
-//        if (!newValue)
-//        {
-//            m_mediaPlayer.pause();
-//        }
-//        else
-//        {
-//            m_mediaPlayer.start();
-//        }
-//    }
 }

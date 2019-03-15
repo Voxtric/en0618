@@ -62,7 +62,7 @@ public class SoundManager
     private void gLoadSounds()
     {
         // loads sound effects
-        gSoundID_menuSelect = globalSoundPool.load(context, R.raw.menuselect, 1);
+        gSoundID_menuSelect = globalSoundPool.load(context, R.raw.button_click, 1);
         gSoundID_playerFire = globalSoundPool.load(context, R.raw.playerfire, 1);
         gSoundID_enemyFire = globalSoundPool.load(context, R.raw.enemyfire, 1);
         gSoundID_playerHit = globalSoundPool.load(context, R.raw.playerhit, 1);
