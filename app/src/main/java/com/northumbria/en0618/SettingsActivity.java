@@ -51,7 +51,7 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
             {
                 if (m_soundPool != null)
                 {
-                    m_soundPool.playSound(R.raw.button_click);
+                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
@@ -76,7 +76,7 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
             {
                 if (m_soundPool != null)
                 {
-                    m_soundPool.playSound(R.raw.button_click);
+                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_SFX, isChecked).apply();
@@ -89,7 +89,7 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
             {
                 if (m_soundPool != null)
                 {
-                    m_soundPool.playSound(R.raw.button_click);
+                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, isChecked).apply();
@@ -142,7 +142,7 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
 
     public void backButtonClick(View view)
     {
-        m_soundPool.playSound(R.raw.button_click);
+        m_soundPool.playSound(this, R.raw.button_click);
         notifyActivityChanging();
         finish();
     }
@@ -153,7 +153,7 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
     {
         if (m_soundPool != null)
         {
-            m_soundPool.playSound(R.raw.button_click);
+            m_soundPool.playSound(this, R.raw.button_click);
         }
 
         // Find the current input method.

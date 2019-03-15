@@ -19,8 +19,8 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
 {
     private static final String TAG = "BackgroundSoundService";
 
-    private static final float FULL_VOLUME = 100.0f;
-    private static final float DUCKED_VOLUME = 30.0f;
+    private static final float FULL_VOLUME = 1.0f;
+    private static final float DUCKED_VOLUME = 0.03f;
 
     public class LocalBinder extends Binder
     {

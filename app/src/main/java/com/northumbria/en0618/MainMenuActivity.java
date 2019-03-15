@@ -152,7 +152,7 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
             @Override
             public void onClick(View view)
             {
-                m_soundPool.playSound(R.raw.button_click);
+                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click);
 
                 // Create an activity to sign into google for the explicit purpose of using
                 // google play game services.
@@ -181,7 +181,7 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
             @Override
             public void onClick(View view)
             {
-                m_soundPool.playSound(R.raw.button_click);
+                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click);
 
                 // Create an activity to view the global leaderboard for the game.
                 Games.getLeaderboardsClient(MainMenuActivity.this, account)
@@ -208,7 +208,7 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
 
     public void startGameActivity(View view)
     {
-        m_soundPool.playSound(R.raw.button_click);
+        m_soundPool.playSound(this, R.raw.button_click);
         notifyActivityChanging();
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
@@ -216,7 +216,7 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
 
     public void startSettingsActivity(View view)
     {
-        m_soundPool.playSound(R.raw.button_click);
+        m_soundPool.playSound(this, R.raw.button_click);
         notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
