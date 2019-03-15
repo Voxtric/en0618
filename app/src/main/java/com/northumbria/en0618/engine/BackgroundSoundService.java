@@ -27,7 +27,8 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
     }
 
     private LocalBinder m_binder = new LocalBinder();
-    private MediaPlayer m_mediaPlayer;
+    private MediaPlayer m_mediaPlayer = null;
+    @RawRes private int m_musicID = -1;
 
     @Nullable
     @Override
@@ -42,9 +43,23 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
         switch (focusChange)
         {
         case AudioManager.AUDIOFOCUS_GAIN:
-            unpauseMusic();
+            if (m_mediaPlayer == null)
+            {
+                if (m_musicID != -1)
+                {
+                    startMusic(m_musicID);
+                }
+            }
+            else
+            {
+                unpauseMusic();
+            }
             break;
         case AudioManager.AUDIOFOCUS_LOSS:
+            m_mediaPlayer.stop();
+            m_mediaPlayer.release();
+            m_mediaPlayer = null;
+            break;
         case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
             pauseMusic();
             break;
@@ -82,6 +97,7 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
         {
             stopMusic();
         }
+        m_musicID = musicID;
         m_mediaPlayer = MediaPlayer.create(this, musicID);
         m_mediaPlayer.setLooping(true);
         requestAudioFocus();
@@ -90,24 +106,38 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
 
     public void stopMusic()
     {
-        m_mediaPlayer.stop();
-        m_mediaPlayer.release();
-        m_mediaPlayer = null;
+        if (m_mediaPlayer != null)
+        {
+            m_mediaPlayer.stop();
+            m_mediaPlayer.release();
+            m_musicID = -1;
+            m_mediaPlayer = null;
+        }
         releaseAudioFocus();
     }
 
     public void pauseMusic()
     {
-        m_mediaPlayer.pause();
+        if (m_mediaPlayer != null)
+        {
+            m_mediaPlayer.pause();
+        }
     }
 
     public void unpauseMusic()
     {
-        m_mediaPlayer.setVolume(FULL_VOLUMNE, FULL_VOLUMNE);
-        m_mediaPlayer.start();
+        if (m_mediaPlayer != null)
+        {
+            m_mediaPlayer.setVolume(FULL_VOLUMNE, FULL_VOLUMNE);
+            m_mediaPlayer.start();
+        }
+        else if (m_musicID != -1)
+        {
+            startMusic(m_musicID);
+        }
     }
 
-    public boolean hasMusic()
+    public boolean musicStarted()
     {
         return m_mediaPlayer != null;
     }

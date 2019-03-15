@@ -58,7 +58,7 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
     protected void onBackgroundSoundServiceBound()
     {
         BackgroundSoundService service = getBackgroundSoundService();
-        if (service.hasMusic())
+        if (service.musicStarted())
         {
             service.unpauseMusic();
         }
