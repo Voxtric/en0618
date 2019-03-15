@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import com.northumbria.en0618.engine.BackgroundSoundAccessingActivity;
+import com.northumbria.en0618.engine.BackgroundSoundService;
 
 public class SettingsActivity extends BackgroundSoundAccessingActivity
 {
@@ -42,6 +43,18 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
+                BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+                if (backgroundSoundService != null)
+                {
+                    if (isChecked)
+                    {
+                        backgroundSoundService.startMusic(R.raw.background_music);
+                    }
+                    else
+                    {
+                        backgroundSoundService.stopMusic();
+                    }
+                }
             }
         });
 

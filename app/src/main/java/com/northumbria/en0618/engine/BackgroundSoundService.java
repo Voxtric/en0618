@@ -3,13 +3,17 @@ package com.northumbria.en0618.engine;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.util.Log;
+
+import com.northumbria.en0618.SettingsActivity;
 
 public class BackgroundSoundService extends Service implements AudioManager.OnAudioFocusChangeListener
 {
@@ -110,13 +114,17 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
 
     private void initialiseMediaPlayer(@RawRes int musicID)
     {
-        m_mediaPlayer = MediaPlayer.create(this, musicID);
-        m_mediaPlayer.setLooping(true);
-        requestAudioFocus();
-        m_mediaPlayer.start();
-        if (m_musicPosition != -1)
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_MUSIC, true))
         {
-            m_mediaPlayer.seekTo(m_musicPosition);
+            m_mediaPlayer = MediaPlayer.create(this, musicID);
+            m_mediaPlayer.setLooping(true);
+            requestAudioFocus();
+            m_mediaPlayer.start();
+            if (m_musicPosition != -1)
+            {
+                m_mediaPlayer.seekTo(m_musicPosition);
+            }
         }
     }
 
