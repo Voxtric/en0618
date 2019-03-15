@@ -14,7 +14,7 @@ import com.northumbria.en0618.engine.opengl.Shader;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.opengl.Texture;
 
-public abstract class GameActivity extends BackgroundSoundAccessingActivity
+public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
 {
     private static final int MAX_SOUND_STREAMS = 10;
 

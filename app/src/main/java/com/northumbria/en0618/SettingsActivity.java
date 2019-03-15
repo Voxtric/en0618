@@ -14,11 +14,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import com.northumbria.en0618.engine.BackgroundSoundAccessingActivity;
-import com.northumbria.en0618.engine.BackgroundSoundService;
+import com.northumbria.en0618.engine.BackgroundMusicService;
+import com.northumbria.en0618.engine.BackgroundMusicServiceLinkedActivity;
 import com.northumbria.en0618.engine.SoundPool;
 
-public class SettingsActivity extends BackgroundSoundAccessingActivity
+public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
 {
     public static final String PREFERENCE_KEY_MUSIC = "play_music";
     public static final String PREFERENCE_KEY_SFX = "play_sfx";
@@ -55,16 +55,16 @@ public class SettingsActivity extends BackgroundSoundAccessingActivity
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
-                BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
-                if (backgroundSoundService != null)
+                BackgroundMusicService backgroundMusicService = getBackgroundSoundService();
+                if (backgroundMusicService != null)
                 {
                     if (isChecked)
                     {
-                        backgroundSoundService.startMusic(R.raw.background_music);
+                        backgroundMusicService.startMusic(R.raw.background_music);
                     }
                     else
                     {
-                        backgroundSoundService.stopMusic();
+                        backgroundMusicService.stopMusic();
                     }
                 }
             }

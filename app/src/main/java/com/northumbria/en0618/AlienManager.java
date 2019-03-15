@@ -3,6 +3,7 @@ package com.northumbria.en0618;
 import android.support.annotation.DrawableRes;
 
 import com.northumbria.en0618.engine.Game;
+import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.Input;
 
 import java.util.ArrayList;
@@ -188,6 +189,7 @@ class AlienManager
                         m_alienColumns.get(alienChoice).get(0).getY());
                 m_game.addGameObject(alienBullet);
                 m_colList.addBullet(alienBullet, false);
+                m_game.getActivity().getSoundPool().playSound(m_game.getActivity(), R.raw.alien_fire);
                 m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
             }
 

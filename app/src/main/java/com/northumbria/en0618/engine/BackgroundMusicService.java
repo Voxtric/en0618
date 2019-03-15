@@ -15,18 +15,18 @@ import android.util.Log;
 
 import com.northumbria.en0618.SettingsActivity;
 
-public class BackgroundSoundService extends Service implements AudioManager.OnAudioFocusChangeListener
+public class BackgroundMusicService extends Service implements AudioManager.OnAudioFocusChangeListener
 {
-    private static final String TAG = "BackgroundSoundService";
+    private static final String TAG = "BackgroundMusicService";
 
     private static final float FULL_VOLUME = 1.0f;
     private static final float DUCKED_VOLUME = 0.03f;
 
     public class LocalBinder extends Binder
     {
-        public BackgroundSoundService getBackgroundSoundServiceInstance()
+        public BackgroundMusicService getBackgroundSoundServiceInstance()
         {
-            return BackgroundSoundService.this;
+            return BackgroundMusicService.this;
         }
     }
 

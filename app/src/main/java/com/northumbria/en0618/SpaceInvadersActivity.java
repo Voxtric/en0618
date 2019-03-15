@@ -177,6 +177,7 @@ public class SpaceInvadersActivity extends GameActivity
                             game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
                     game.addGameObject(bullet);
                     m_collidableObjects.addBullet(bullet, true);
+                    getSoundPool().playSound(this, R.raw.player_fire);
                     m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
                 }
             }

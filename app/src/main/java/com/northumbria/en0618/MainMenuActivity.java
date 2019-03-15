@@ -20,11 +20,11 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.northumbria.en0618.engine.BackgroundSoundAccessingActivity;
-import com.northumbria.en0618.engine.BackgroundSoundService;
+import com.northumbria.en0618.engine.BackgroundMusicServiceLinkedActivity;
+import com.northumbria.en0618.engine.BackgroundMusicService;
 import com.northumbria.en0618.engine.SoundPool;
 
-public class MainMenuActivity extends BackgroundSoundAccessingActivity
+public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
 {
     private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
     private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
@@ -50,7 +50,7 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
     protected void onBackgroundSoundServiceBound()
     {
         super.onBackgroundSoundServiceBound();
-        BackgroundSoundService service = getBackgroundSoundService();
+        BackgroundMusicService service = getBackgroundSoundService();
         if (service.musicStarted())
         {
             service.unpauseMusic();

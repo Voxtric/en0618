@@ -64,6 +64,7 @@ class CollisionLists
 
                         Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                         m_game.addGameObject(explosion);
+                        m_activity.getSoundPool().playSound(m_activity, R.raw.player_damaged);
 
                         if (m_player.consumeLife())
                         {
@@ -93,6 +94,7 @@ class CollisionLists
 
                                 Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                                 m_game.addGameObject(explosion);
+                                m_activity.getSoundPool().playSound(m_activity, R.raw.asteroid_damaged);
                             }
                         }
                     }
@@ -116,6 +118,7 @@ class CollisionLists
 
                     Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                     m_game.addGameObject(explosion);
+                    m_activity.getSoundPool().playSound(m_activity, R.raw.player_damaged);
                 }
 
                 if (asteroidCount > 0)
@@ -134,6 +137,7 @@ class CollisionLists
 
                             Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                             m_game.addGameObject(explosion);
+                            m_activity.getSoundPool().playSound(m_activity, R.raw.asteroid_damaged);
                         }
                     }
                 }
@@ -169,6 +173,7 @@ class CollisionLists
 
                             Explosion explosion = new Explosion(m_activity, alien.getX(), alien.getY(), alien.getXSize());
                             m_game.addGameObject(explosion);
+                            m_activity.getSoundPool().playSound(m_activity, R.raw.alien_damaged);
                         }
                     }
                 }
@@ -197,6 +202,7 @@ class CollisionLists
 
                         Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                         m_game.addGameObject(explosion);
+                        m_activity.getSoundPool().playSound(m_activity, R.raw.asteroid_damaged);
                     }
                 }
             }
