@@ -24,7 +24,6 @@ public abstract class BackgroundSoundAccessingActivity extends AppCompatActivity
         public void onServiceDisconnected(ComponentName name)
         {
             m_backgroundSoundService = null;
-            onBackgroundSoundServiceUnbound();
         }
     };
 
@@ -45,15 +44,18 @@ public abstract class BackgroundSoundAccessingActivity extends AppCompatActivity
             m_backgroundSoundService.pauseMusic();
         }
         unbindService(m_serviceConnection);
+        onBackgroundSoundServiceUnbound();
         m_navigatingInApp = false;
     }
 
     protected void onBackgroundSoundServiceBound()
     {
+        m_backgroundSoundService.clientBound();
     }
 
     protected void onBackgroundSoundServiceUnbound()
     {
+        m_backgroundSoundService.clientUnBound();
     }
 
     protected BackgroundSoundService getBackgroundSoundService()

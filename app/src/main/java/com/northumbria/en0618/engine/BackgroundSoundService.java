@@ -15,7 +15,7 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
 {
     private static final String TAG = "BackgroundSoundService";
 
-    private static final float FULL_VOLUMNE = 100.0f;
+    private static final float FULL_VOLUME = 100.0f;
     private static final float DUCKED_VOLUME = 30.0f;
 
     public class LocalBinder extends Binder
@@ -27,8 +27,11 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
     }
 
     private LocalBinder m_binder = new LocalBinder();
+    private int m_clientsBound = 0;
+
     private MediaPlayer m_mediaPlayer = null;
     @RawRes private int m_musicID = -1;
+    private int m_musicPosition = -1;
 
     @Nullable
     @Override
@@ -43,19 +46,23 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
         switch (focusChange)
         {
         case AudioManager.AUDIOFOCUS_GAIN:
-            if (m_mediaPlayer == null)
+            if (m_clientsBound > 0)
             {
-                if (m_musicID != -1)
+                if (m_mediaPlayer == null)
                 {
-                    startMusic(m_musicID);
+                    if (m_musicID != -1)
+                    {
+                        initialiseMediaPlayer(m_musicID);
+                    }
                 }
-            }
-            else
-            {
-                unpauseMusic();
+                else
+                {
+                    unpauseMusic();
+                }
             }
             break;
         case AudioManager.AUDIOFOCUS_LOSS:
+            m_musicPosition = m_mediaPlayer.getCurrentPosition();
             m_mediaPlayer.stop();
             m_mediaPlayer.release();
             m_mediaPlayer = null;
@@ -67,6 +74,16 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
             m_mediaPlayer.setVolume(DUCKED_VOLUME, DUCKED_VOLUME);
             break;
         }
+    }
+
+    public void clientBound()
+    {
+        m_clientsBound++;
+    }
+
+    public void clientUnBound()
+    {
+        m_clientsBound--;
     }
 
     private void requestAudioFocus()
@@ -91,17 +108,37 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
         }
     }
 
-    public void startMusic(@RawRes int musicID)
+    private void initialiseMediaPlayer(@RawRes int musicID)
     {
-        if (m_mediaPlayer != null)
-        {
-            stopMusic();
-        }
-        m_musicID = musicID;
         m_mediaPlayer = MediaPlayer.create(this, musicID);
         m_mediaPlayer.setLooping(true);
         requestAudioFocus();
         m_mediaPlayer.start();
+        if (m_musicPosition != -1)
+        {
+            m_mediaPlayer.seekTo(m_musicPosition);
+        }
+    }
+
+    public void startMusic(@RawRes int musicID)
+    {
+        if (m_mediaPlayer != null)
+        {
+            if (m_musicID == musicID)
+            {
+                m_mediaPlayer.seekTo(0);
+            }
+            else
+            {
+                stopMusic();
+                initialiseMediaPlayer(musicID);
+            }
+        }
+        else
+        {
+            initialiseMediaPlayer(musicID);
+        }
+        m_musicID = musicID;
     }
 
     public void stopMusic()
@@ -110,8 +147,9 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
         {
             m_mediaPlayer.stop();
             m_mediaPlayer.release();
-            m_musicID = -1;
             m_mediaPlayer = null;
+            m_musicID = -1;
+            m_musicPosition = -1;
         }
         releaseAudioFocus();
     }
@@ -128,7 +166,7 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
     {
         if (m_mediaPlayer != null)
         {
-            m_mediaPlayer.setVolume(FULL_VOLUMNE, FULL_VOLUMNE);
+            m_mediaPlayer.setVolume(FULL_VOLUME, FULL_VOLUME);
             m_mediaPlayer.start();
         }
         else if (m_musicID != -1)

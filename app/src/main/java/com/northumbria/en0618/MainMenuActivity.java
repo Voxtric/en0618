@@ -57,6 +57,7 @@ public class MainMenuActivity extends BackgroundSoundAccessingActivity
     @Override
     protected void onBackgroundSoundServiceBound()
     {
+        super.onBackgroundSoundServiceBound();
         BackgroundSoundService service = getBackgroundSoundService();
         if (service.musicStarted())
         {
