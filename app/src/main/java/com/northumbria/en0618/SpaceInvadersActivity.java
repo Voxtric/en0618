@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.RawRes;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,15 @@ public class SpaceInvadersActivity extends GameActivity
             gamesClient.setViewForPopups(getSurfaceView());
             gamesClient.setGravityForPopups(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         }
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        setPauseDialogButtonSoundID(R.raw.button_click);
+        @RawRes int[] activitySounds = new int[] { R.raw.button_click };
+        getSoundPool().loadSounds(this, activitySounds);
     }
 
     @Override
@@ -224,18 +234,12 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onGamePause(AlertDialog pauseDialog)
     {
+        super.onGamePause(pauseDialog);
         if (pauseDialog != null)
         {
             ViewGroup root = pauseDialog.findViewById(R.id.view_root);
             FontUtils.setFont(root, getString(R.string.app_font));
         }
-        getBackgroundSoundService().pauseMusic();
-    }
-
-    @Override
-    public void onGameUnpause()
-    {
-        getBackgroundSoundService().unpauseMusic();
     }
 
     public int getCurrentLevel()
@@ -246,6 +250,7 @@ public class SpaceInvadersActivity extends GameActivity
     @SuppressWarnings("unused")
     public void restartGame(View view)
     {
+        playPauseDialogButtonSound();
         Game game = getGame();
 
         m_currentLevel = 1;
@@ -271,6 +276,7 @@ public class SpaceInvadersActivity extends GameActivity
 
     public void openSettings(View view)
     {
+        playPauseDialogButtonSound();
         notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);

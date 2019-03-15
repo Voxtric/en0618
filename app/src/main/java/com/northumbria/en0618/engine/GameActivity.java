@@ -1,20 +1,12 @@
 package com.northumbria.en0618.engine;
 
 import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.opengl.GLSurfaceView;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
-import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.RawRes;
 import android.view.View;
-
-import com.northumbria.en0618.R;
 
 import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
@@ -22,42 +14,16 @@ import com.northumbria.en0618.engine.opengl.Shader;
 import com.northumbria.en0618.engine.opengl.Sprite;
 import com.northumbria.en0618.engine.opengl.Texture;
 
-// TODO: Can't use enums because Android is dumb.
-enum GameSound {PLAYER_HIT, ENEMY_HIT, BARRIER_HIT, PLAYER_FIRE, ENEMY_FIRE}
-
 public abstract class GameActivity extends BackgroundSoundAccessingActivity
 {
-    private BackgroundSoundService m_backgroundSoundService = null;
-    ServiceConnection m_serviceConnection = new ServiceConnection()
-    {
-        @Override
-        public void onServiceDisconnected(ComponentName name)
-        {
-            m_backgroundSoundService = null;
-        }
+    private static final int MAX_SOUND_STREAMS = 10;
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service)
-        {
-            BackgroundSoundService.LocalBinder binder = (BackgroundSoundService.LocalBinder)service;
-            m_backgroundSoundService = binder.getBackgroundSoundServiceInstance();
-        }
-    };
+    private SoundPool m_soundPool;
+    private @RawRes int m_pauseDialogButtonSoundID = 0;
 
     private Game m_game;
     private GLSurfaceView m_glSurfaceView;
     private boolean m_pauseOnResume = false;
-
-    private SoundPool m_soundPool;
-
-    // TODO: Move this into sound manager and use a dictionary.
-    private int enemyHitID;
-    private int enemyFiringID;
-    private int playerHitID;
-    private int playerFiringID;
-    private int barrierHitID;
-
-    private static final int MAX_STREAMS = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -99,29 +65,22 @@ public abstract class GameActivity extends BackgroundSoundAccessingActivity
         //gameSurfaceView.setTargetFrameRate(30);
         setContentView(gameSurfaceView);
         m_glSurfaceView = gameSurfaceView;
-
-        m_soundPool = new SoundPool(MAX_STREAMS, AudioManager.USE_DEFAULT_STREAM_TYPE, 0);
-
-        enemyHitID = m_soundPool.load(this, R.raw.enemyhit, 1);
-        enemyFiringID = m_soundPool.load(this, R.raw.enemyfire, 1);
-        playerHitID = m_soundPool.load(this, R.raw.playerhit, 1);
-        playerFiringID = m_soundPool.load(this, R.raw.playerfire, 1);
-        barrierHitID = m_soundPool.load(this, R.raw.barrierhit, 1);
     }
 
     @Override
     protected void onStart()
     {
         super.onStart();
-        Intent serviceIntent = new Intent(this, BackgroundSoundService.class);
-        bindService(serviceIntent, m_serviceConnection, BIND_IMPORTANT);
+        m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, null);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-        unbindService(m_serviceConnection);
+        m_soundPool.release();
+        m_soundPool = null;
     }
 
     @Override
@@ -132,9 +91,7 @@ public abstract class GameActivity extends BackgroundSoundAccessingActivity
         Sprite.clearCache();
         Texture.clearCache();
         Shader.clearCache();
-        m_soundPool.release();
         super.onDestroy();
-
     }
 
     @Override
@@ -142,9 +99,6 @@ public abstract class GameActivity extends BackgroundSoundAccessingActivity
     {
         m_game.pause(false);
         super.onPause();
-
-        m_soundPool.autoPause();
-
         m_pauseOnResume = true;
     }
 
@@ -153,8 +107,6 @@ public abstract class GameActivity extends BackgroundSoundAccessingActivity
     {
         super.onResume();
         m_glSurfaceView.onResume();
-
-        m_soundPool.autoResume();
 
         if (m_pauseOnResume)
         {
@@ -183,6 +135,9 @@ public abstract class GameActivity extends BackgroundSoundAccessingActivity
     public void onResumeGame(View view)
     {
         getGame().unPause();
+        getBackgroundSoundService().unpauseMusic();
+        m_soundPool.resumeAll();
+        playPauseDialogButtonSound();
     }
 
     @SuppressWarnings("unused")
@@ -193,6 +148,7 @@ public abstract class GameActivity extends BackgroundSoundAccessingActivity
         {
             pauseMenu.cancel();
         }
+        playPauseDialogButtonSound();
         notifyActivityChanging();
         finish();
     }
@@ -207,31 +163,25 @@ public abstract class GameActivity extends BackgroundSoundAccessingActivity
 
     public void onGamePause(AlertDialog pauseDialog)
     {
+        getBackgroundSoundService().pauseMusic();
+        m_soundPool.pauseAll();
     }
 
-    public void onGameUnpause()
+    public SoundPool getSoundPool()
     {
+        return m_soundPool;
     }
 
-    public void playSound(GameSound sound)
+    protected void setPauseDialogButtonSoundID(@RawRes int pauseDialogSoundID)
     {
-        switch (sound)
+        m_pauseDialogButtonSoundID = pauseDialogSoundID;
+    }
+
+    public void playPauseDialogButtonSound()
+    {
+        if (m_pauseDialogButtonSoundID != 0)
         {
-            case PLAYER_HIT:
-                SoundManager.getInstance().gPlaySoundPlayerHit();
-                break;
-            case ENEMY_HIT:
-                SoundManager.getInstance().gPlaySoundEnemyHit();
-                break;
-            case BARRIER_HIT:
-                SoundManager.getInstance().gPlaySoundBarrierHit();
-                break;
-            case PLAYER_FIRE:
-                SoundManager.getInstance().gPlaySoundPlayerFiring();
-                break;
-            case ENEMY_FIRE:
-                SoundManager.getInstance().gPlaySoundEnemyFiring();
-                break;
+            m_soundPool.playSound(this, m_pauseDialogButtonSoundID);
         }
     }
 }

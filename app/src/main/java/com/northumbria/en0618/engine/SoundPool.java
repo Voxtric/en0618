@@ -29,11 +29,7 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
         m_soundPool.setOnLoadCompleteListener(this);
         if (soundResourceIDs != null)
         {
-            for (int soundResourceID : soundResourceIDs)
-            {
-                int soundID = m_soundPool.load(context, soundResourceID, PRIORITY);
-                m_soundIDs.append(soundResourceID, soundID);
-            }
+            loadSounds(context, soundResourceIDs);
         }
     }
 
@@ -45,6 +41,21 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
             m_soundsToPlayOnLoad.remove(soundID);
             playSound(soundID, null, -1);
         }
+    }
+
+    public void loadSounds(Context context, @RawRes int[] soundResourceIDs)
+    {
+        for (int soundResourceID : soundResourceIDs)
+        {
+            loadSound(context, soundResourceID);
+        }
+    }
+
+    public @RawRes int loadSound(Context context, @RawRes int soundResourceID)
+    {
+        int soundID = m_soundPool.load(context, soundResourceID, PRIORITY);
+        m_soundIDs.append(soundResourceID, soundID);
+        return soundID;
     }
 
     private void playSound(int soundID, Context context, @RawRes int soundResourceID)
@@ -67,14 +78,23 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
         if (soundID == -1)
         {
             Log.e(TAG, String.format("Sound asset \"%s\" not pre-loaded.", context.getResources().getResourceName(soundResourceID)));
-            soundID = m_soundPool.load(context, soundResourceID, PRIORITY);
+            soundID = loadSound(context, soundResourceID);
             m_soundsToPlayOnLoad.add(soundID);
-            m_soundIDs.append(soundResourceID, soundID);
         }
         else
         {
             playSound(soundID, context, soundResourceID);
         }
+    }
+
+    public void pauseAll()
+    {
+        m_soundPool.autoPause();
+    }
+
+    public void resumeAll()
+    {
+        m_soundPool.autoResume();
     }
 
     public void release()
