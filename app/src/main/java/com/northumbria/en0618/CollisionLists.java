@@ -41,51 +41,59 @@ class CollisionLists
         {
             // Loops through each Alien Bullet to check for
             // Collision with Player or Asteroids
-
             for (int i = 0; i < alienBulletCount; i++)
             {
                 Bullet bullet = m_alienBulletList.get(i);
-                CollidableGameObject.CollisionInfo collisionInfo = m_player.collidesWith(bullet);
-                if (collisionInfo != null)
+                if (bullet.isDestroyed())
                 {
-                    // If Player and Bullet collide, lower payer health and
-                    // destroy bullet
-                    bullet.destroy();
                     m_alienBulletList.remove(i);
                     alienBulletCount--;
                     i--;
-
-                    Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
-                    m_game.addGameObject(explosion);
-
-                    if (m_player.consumeLife())
-                    {
-                        // Destroy player if lives = 0
-                        m_player.destroy();
-                        break;
-                    }
                 }
-                if (asteroidCount > 0 && i >= 0)
+                else
                 {
-                    // Loops through asteroids for collisions
-                    for (int j = 0; j < asteroidCount; j++)
+                    CollidableGameObject.CollisionInfo collisionInfo = m_player.collidesWith(bullet);
+                    if (collisionInfo != null)
                     {
-                        Asteroid asteroid = m_asteroidList.get(j);
-                        collisionInfo = bullet.collidesWith(asteroid);
-                        if (collisionInfo != null)
+                        // If Player and Bullet collide, lower payer health and
+                        // destroy bullet
+                        bullet.destroy();
+                        m_alienBulletList.remove(i);
+                        alienBulletCount--;
+                        i--;
+
+                        Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
+                        m_game.addGameObject(explosion);
+
+                        if (m_player.consumeLife())
                         {
-                            bullet.destroy();
-                            m_alienBulletList.remove(i);
-                            alienBulletCount--;
-                            i--;
+                            // Destroy player if lives = 0
+                            m_player.destroy();
+                            break;
+                        }
+                    }
+                    if (asteroidCount > 0 && i >= 0)
+                    {
+                        // Loops through asteroids for collisions
+                        for (int j = 0; j < asteroidCount; j++)
+                        {
+                            Asteroid asteroid = m_asteroidList.get(j);
+                            collisionInfo = bullet.collidesWith(asteroid);
+                            if (collisionInfo != null)
+                            {
+                                bullet.destroy();
+                                m_alienBulletList.remove(i);
+                                alienBulletCount--;
+                                i--;
 
-                            asteroid.destroy();
-                            m_asteroidList.remove(j);
-                            asteroidCount--;
-                            j--;
+                                asteroid.destroy();
+                                m_asteroidList.remove(j);
+                                asteroidCount--;
+                                j--;
 
-                            Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
-                            m_game.addGameObject(explosion);
+                                Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
+                                m_game.addGameObject(explosion);
+                            }
                         }
                     }
                 }
@@ -99,8 +107,6 @@ class CollisionLists
         {
             for (int i = 0; i < alienCount; i++)
             {
-                // Loops through each Player Bullet to check for
-                // Collision with Aliens or Asteroids
                 Alien alien = m_alienList.get(i);
                 CollidableGameObject.CollisionInfo collisionInfo = m_player.collidesWith(alien);
                 if (collisionInfo != null)
@@ -114,7 +120,7 @@ class CollisionLists
 
                 if (asteroidCount > 0)
                 {
-                    // Loops through asteroids for collisions
+                    // Loops through asteroids for collisions with aliens
                     for (int j = 0; j < asteroidCount; j++)
                     {
                         Asteroid asteroid = m_asteroidList.get(j);
@@ -136,25 +142,34 @@ class CollisionLists
                 {
                     // Alien vs Bullet? Destroy both, award Points.
                     Bullet playerBullet = m_playerBulletList.get(k);
-                    collisionInfo = alien.collidesWith(playerBullet);
-                    if (collisionInfo != null)
+                    if (playerBullet.isDestroyed())
                     {
-                        alien.awardScore(m_player, m_activity.getCurrentLevel());
-
-                        // Destroy Bullet
-                        playerBullet.destroy();
                         m_playerBulletList.remove(k);
                         playerBulletCount--;
                         k--;
+                    }
+                    else
+                    {
+                        collisionInfo = alien.collidesWith(playerBullet);
+                        if (collisionInfo != null)
+                        {
+                            alien.awardScore(m_player, m_activity.getCurrentLevel());
 
-                        // Destroy Alien
-                        alien.destroy();
-                        m_alienList.remove(i);
-                        alienCount--;
-                        i--;
+                            // Destroy Bullet
+                            playerBullet.destroy();
+                            m_playerBulletList.remove(k);
+                            playerBulletCount--;
+                            k--;
 
-                        Explosion explosion = new Explosion(m_activity, alien.getX(), alien.getY(), alien.getXSize());
-                        m_game.addGameObject(explosion);
+                            // Destroy Alien
+                            alien.destroy();
+                            m_alienList.remove(i);
+                            alienCount--;
+                            i--;
+
+                            Explosion explosion = new Explosion(m_activity, alien.getX(), alien.getY(), alien.getXSize());
+                            m_game.addGameObject(explosion);
+                        }
                     }
                 }
             }
@@ -165,7 +180,7 @@ class CollisionLists
                 Asteroid asteroid = m_asteroidList.get(j);
                 for (int i = 0; i < playerBulletCount; i++)
                 {
-                    // Loops through asteroids for collisions
+                    // Loops through asteroids for collisions with player bullets
                     Bullet bullet = m_playerBulletList.get(i);
                     CollidableGameObject.CollisionInfo collisionInfo = bullet.collidesWith(asteroid);
                     if (collisionInfo != null)
