@@ -229,6 +229,13 @@ public class SpaceInvadersActivity extends GameActivity
             ViewGroup root = pauseDialog.findViewById(R.id.view_root);
             FontUtils.setFont(root, getString(R.string.app_font));
         }
+        getBackgroundSoundService().pauseMusic();
+    }
+
+    @Override
+    public void onGameUnpause()
+    {
+        getBackgroundSoundService().unpauseMusic();
     }
 
     public int getCurrentLevel()
@@ -264,6 +271,7 @@ public class SpaceInvadersActivity extends GameActivity
 
     public void openSettings(View view)
     {
+        notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }

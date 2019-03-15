@@ -1,11 +1,15 @@
 package com.northumbria.en0618.engine;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.opengl.GLSurfaceView;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,13 +25,29 @@ import com.northumbria.en0618.engine.opengl.Texture;
 // TODO: Can't use enums because Android is dumb.
 enum GameSound {PLAYER_HIT, ENEMY_HIT, BARRIER_HIT, PLAYER_FIRE, ENEMY_FIRE}
 
-public abstract class GameActivity extends AppCompatActivity
+public abstract class GameActivity extends BackgroundSoundAccessingActivity
 {
+    private BackgroundSoundService m_backgroundSoundService = null;
+    ServiceConnection m_serviceConnection = new ServiceConnection()
+    {
+        @Override
+        public void onServiceDisconnected(ComponentName name)
+        {
+            m_backgroundSoundService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service)
+        {
+            BackgroundSoundService.LocalBinder binder = (BackgroundSoundService.LocalBinder)service;
+            m_backgroundSoundService = binder.getBackgroundSoundServiceInstance();
+        }
+    };
+
     private Game m_game;
     private GLSurfaceView m_glSurfaceView;
     private boolean m_pauseOnResume = false;
 
-    private MediaPlayer m_mediaPlayer;
     private SoundPool m_soundPool;
 
     // TODO: Move this into sound manager and use a dictionary.
@@ -80,8 +100,6 @@ public abstract class GameActivity extends AppCompatActivity
         setContentView(gameSurfaceView);
         m_glSurfaceView = gameSurfaceView;
 
-        m_mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gamemusic);
-        m_mediaPlayer.pause();
         m_soundPool = new SoundPool(MAX_STREAMS, AudioManager.USE_DEFAULT_STREAM_TYPE, 0);
 
         enemyHitID = m_soundPool.load(this, R.raw.enemyhit, 1);
@@ -92,6 +110,21 @@ public abstract class GameActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Intent serviceIntent = new Intent(this, BackgroundSoundService.class);
+        bindService(serviceIntent, m_serviceConnection, BIND_IMPORTANT);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        unbindService(m_serviceConnection);
+    }
+
+    @Override
     protected void onDestroy()
     {
         m_game.destroyAll();
@@ -99,8 +132,6 @@ public abstract class GameActivity extends AppCompatActivity
         Sprite.clearCache();
         Texture.clearCache();
         Shader.clearCache();
-        m_mediaPlayer.stop();
-        m_mediaPlayer.release();
         m_soundPool.release();
         super.onDestroy();
 
@@ -112,7 +143,6 @@ public abstract class GameActivity extends AppCompatActivity
         m_game.pause(false);
         super.onPause();
 
-        m_mediaPlayer.pause();
         m_soundPool.autoPause();
 
         m_pauseOnResume = true;
@@ -124,7 +154,6 @@ public abstract class GameActivity extends AppCompatActivity
         super.onResume();
         m_glSurfaceView.onResume();
 
-        m_mediaPlayer.start();
         m_soundPool.autoResume();
 
         if (m_pauseOnResume)
@@ -164,6 +193,7 @@ public abstract class GameActivity extends AppCompatActivity
         {
             pauseMenu.cancel();
         }
+        notifyActivityChanging();
         finish();
     }
 
@@ -176,6 +206,10 @@ public abstract class GameActivity extends AppCompatActivity
     }
 
     public void onGamePause(AlertDialog pauseDialog)
+    {
+    }
+
+    public void onGameUnpause()
     {
     }
 

@@ -44,6 +44,10 @@
         <activity
             android:name=".SpaceInvadersActivity"
             android:screenOrientation="portrait" />
+
+        <service
+            android:enabled="true"
+            android:name=".engine.BackgroundSoundService"/>
     </application>
 
 </manifest>

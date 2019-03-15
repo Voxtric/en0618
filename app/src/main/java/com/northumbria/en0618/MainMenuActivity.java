@@ -3,10 +3,8 @@ package com.northumbria.en0618;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +20,14 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.northumbria.en0618.engine.BackgroundSoundAccessingActivity;
+import com.northumbria.en0618.engine.BackgroundSoundService;
 
-public class MainMenuActivity extends AppCompatActivity
+public class MainMenuActivity extends BackgroundSoundAccessingActivity
 {
     private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
     private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
 
-    private MediaPlayer m_mediaPlayer;
     private SoundPool m_soundPool;
 
     private int m_menuSoundId;
@@ -40,13 +39,12 @@ public class MainMenuActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         determineGooglePlayGamesButton();
+        startBackgroundSoundService();
 
         //set the font for the root view
         ViewGroup root = findViewById(R.id.view_root);
         FontUtils.setFont(root, getString(R.string.app_font));
 
-        m_mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mainmenu);
-        m_mediaPlayer.start();
 
         m_soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
 
@@ -57,11 +55,31 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onBackgroundSoundServiceBound()
+    {
+        BackgroundSoundService service = getBackgroundSoundService();
+        if (service.hasMusic())
+        {
+            service.unpauseMusic();
+        }
+        else
+        {
+            service.startMusic(R.raw.background_music);
+        }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        stopBackgroundSoundService();
+    }
+
+    @Override
     protected void onResume()
     {
         super.onResume();
 
-        m_mediaPlayer.start();
         m_soundPool.autoResume();
     }
 
@@ -70,7 +88,6 @@ public class MainMenuActivity extends AppCompatActivity
     {
         super.onPause();
 
-        m_mediaPlayer.pause();
         m_soundPool.autoPause();
     }
 
@@ -195,6 +212,7 @@ public class MainMenuActivity extends AppCompatActivity
     {
         m_soundPool.play(m_menuSoundId, 1, 1, 1, 0, 1);
 
+        notifyActivityChanging();
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
 
@@ -203,6 +221,7 @@ public class MainMenuActivity extends AppCompatActivity
 
     public void startSettingsActivity(View view)
     {
+        notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-public class SettingsActivity extends AppCompatActivity
+import com.northumbria.en0618.engine.BackgroundSoundAccessingActivity;
+
+public class SettingsActivity extends BackgroundSoundAccessingActivity
 {
     public static final String PREFERENCE_KEY_MUSIC = "play_music";
     public static final String PREFERENCE_KEY_SFX = "play_sfx";
@@ -74,8 +75,22 @@ public class SettingsActivity extends AppCompatActivity
         powerSaverToggle.setChecked(isPowerSaverOn);
     }
 
+    @Override
+    public void onBackgroundSoundServiceBound()
+    {
+        getBackgroundSoundService().unpauseMusic();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        notifyActivityChanging();
+        super.onBackPressed();
+    }
+
     public void backButtonClick(View view)
     {
+        notifyActivityChanging();
         finish();
     }
 

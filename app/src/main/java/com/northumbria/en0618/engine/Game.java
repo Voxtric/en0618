@@ -120,6 +120,7 @@ public class Game
         m_paused = false;
         m_currentFrameBegin = System.currentTimeMillis();
         m_activity.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        m_activity.onGameUnpause();
         if (m_pauseDialog != null)
         {
             m_pauseDialog.dismiss();
