@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.northumbria.en0618.engine.SpriteGameObject;
 import com.northumbria.en0618.engine.opengl.AnimatedSprite;
-import com.northumbria.en0618.engine.opengl.Texture;
 
 public class Explosion extends SpriteGameObject
 {

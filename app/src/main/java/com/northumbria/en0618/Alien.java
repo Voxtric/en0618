@@ -28,10 +28,10 @@ public class Alien extends CollidableGameObject
     @Override
     public void update(float frameTime)
     {
-        if(m_goingDown)
+        if (m_goingDown)
         {
             // If Alien is Moving down
-            if(getY() <= m_lastY - m_moveDownDistance)
+            if (getY() <= m_lastY - m_moveDownDistance)
             {
                 // If Alien has moved at least it's own size in a downward distance
                 // Move sideways and stop going down
@@ -54,7 +54,7 @@ public class Alien extends CollidableGameObject
     void switchDirection(float deltaTime)
     {
         // Switch Direction if not going down
-        if(!m_goingDown)
+        if (!m_goingDown)
         {
             m_moveSpeed = -m_moveSpeed; // Switches Move speed
             m_lastY = getY(); // Saving Current Y

@@ -11,7 +11,7 @@ public class SettingsButton extends ButtonGameObject
 
     private final Game m_game;
 
-    public SettingsButton(Game game)
+    SettingsButton(Game game)
     {
         super(Sprite.getSprite(game.getActivity(), R.drawable.settings),
               Input.getScreenWidth() - ((Input.getScreenHeight() * SCREEN_DISTANCE_SIZE) * 0.5f),

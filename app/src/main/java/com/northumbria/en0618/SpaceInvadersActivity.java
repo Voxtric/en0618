@@ -35,8 +35,6 @@ import com.northumbria.en0618.engine.opengl.Font;
 import com.northumbria.en0618.engine.opengl.GameSurfaceView;
 import com.northumbria.en0618.engine.opengl.Sprite;
 
-import java.util.Set;
-
 public class SpaceInvadersActivity extends GameActivity
 {
     // CONSTANTS
@@ -151,16 +149,16 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameUpdate(float deltaTime)
     {
         final Game game = getGame();
-        if(!m_player.isDead() && !m_alienManager.checkAlienWin())
+        if (!m_player.isDead() && !m_alienManager.checkAlienWin())
         {
-            if(m_alienManager.alienRemaining())
+            if (m_alienManager.alienRemaining())
             {
                 // Only runs if there is at least 1 alien alive
                 m_collidableObjects.checkCollisions(); // Checks Collisions for all objects
                 m_alienManager.update(deltaTime); // Updates Manager for Positional Checks and removal
 
                 m_timeToShotSpawn -= deltaTime;
-                if(m_timeToShotSpawn <= 0.0f)
+                if (m_timeToShotSpawn <= 0.0f)
                 {
                     // Calculates time to fire weapon and creates Bullet
                     float bulletX = m_player.getX() + m_playerShotOffset;
@@ -196,7 +194,7 @@ public class SpaceInvadersActivity extends GameActivity
                 }
                 m_inLevelTransition = true;
 
-                if(m_player.newLevel(deltaTime))
+                if (m_player.newLevel(deltaTime))
                 {
                     m_inLevelTransition = false;
                     // newLevel will continue to run until the player has made sufficient moves that result
@@ -264,7 +262,8 @@ public class SpaceInvadersActivity extends GameActivity
         m_gameOverDialog.dismiss();
     }
 
-    public void openSettings(View view) {
+    public void openSettings(View view)
+    {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }

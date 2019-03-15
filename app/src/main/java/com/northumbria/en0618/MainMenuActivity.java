@@ -57,7 +57,8 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
 
         m_mediaPlayer.start();

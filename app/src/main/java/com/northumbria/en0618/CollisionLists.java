@@ -37,16 +37,16 @@ class CollisionLists
         // Checks through every list for collisions
         int alienBulletCount = m_alienBulletList.size();
         int asteroidCount = m_asteroidList.size();
-        if(alienBulletCount > 0)
+        if (alienBulletCount > 0)
         {
             // Loops through each Alien Bullet to check for
             // Collision with Player or Asteroids
 
-            for(int i = 0; i < alienBulletCount; i++)
+            for (int i = 0; i < alienBulletCount; i++)
             {
                 Bullet bullet = m_alienBulletList.get(i);
                 CollidableGameObject.CollisionInfo collisionInfo = m_player.collidesWith(bullet);
-                if(collisionInfo != null)
+                if (collisionInfo != null)
                 {
                     // If Player and Bullet collide, lower payer health and
                     // destroy bullet
@@ -65,7 +65,7 @@ class CollisionLists
                         break;
                     }
                 }
-                if(asteroidCount > 0 && i >= 0)
+                if (asteroidCount > 0 && i >= 0)
                 {
                     // Loops through asteroids for collisions
                     for (int j = 0; j < asteroidCount; j++)
@@ -95,15 +95,15 @@ class CollisionLists
         int alienCount = m_alienList.size();
         int playerBulletCount = m_playerBulletList.size();
         asteroidCount = m_asteroidList.size();
-        if(playerBulletCount > 0)
+        if (playerBulletCount > 0)
         {
-            for(int i = 0; i < alienCount; i++)
+            for (int i = 0; i < alienCount; i++)
             {
                 // Loops through each Player Bullet to check for
                 // Collision with Aliens or Asteroids
                 Alien alien = m_alienList.get(i);
                 CollidableGameObject.CollisionInfo collisionInfo = m_player.collidesWith(alien);
-                if(collisionInfo != null)
+                if (collisionInfo != null)
                 {
                     // Player vs Alien? Kill player.
                     m_player.destroy();
@@ -112,7 +112,7 @@ class CollisionLists
                     m_game.addGameObject(explosion);
                 }
 
-                if(asteroidCount > 0)
+                if (asteroidCount > 0)
                 {
                     // Loops through asteroids for collisions
                     for (int j = 0; j < asteroidCount; j++)
@@ -132,12 +132,12 @@ class CollisionLists
                     }
                 }
 
-                for(int k = 0; k < playerBulletCount; k++)
+                for (int k = 0; k < playerBulletCount; k++)
                 {
                     // Alien vs Bullet? Destroy both, award Points.
                     Bullet playerBullet = m_playerBulletList.get(k);
                     collisionInfo = alien.collidesWith(playerBullet);
-                    if(collisionInfo != null)
+                    if (collisionInfo != null)
                     {
                         alien.awardScore(m_player, m_activity.getCurrentLevel());
 
@@ -160,15 +160,15 @@ class CollisionLists
             }
 
             asteroidCount = m_asteroidList.size();
-            for(int j = 0; j < asteroidCount; j++)
+            for (int j = 0; j < asteroidCount; j++)
             {
                 Asteroid asteroid = m_asteroidList.get(j);
-                for(int i = 0; i < playerBulletCount; i++)
+                for (int i = 0; i < playerBulletCount; i++)
                 {
                     // Loops through asteroids for collisions
                     Bullet bullet = m_playerBulletList.get(i);
                     CollidableGameObject.CollisionInfo collisionInfo = bullet.collidesWith(asteroid);
-                    if(collisionInfo != null)
+                    if (collisionInfo != null)
                     {
                         bullet.destroy();
                         m_playerBulletList.remove(i);
@@ -191,7 +191,7 @@ class CollisionLists
     void addBullet(Bullet newBullet, boolean firedByPlayer)
     {
         // Add Bullet to List based on who fired it.
-        if(firedByPlayer)
+        if (firedByPlayer)
         {
             m_playerBulletList.add(newBullet);
         }

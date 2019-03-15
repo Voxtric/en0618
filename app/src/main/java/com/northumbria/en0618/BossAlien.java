@@ -19,7 +19,7 @@ public class BossAlien extends Alien
     {
         // Moves each frame. Dies once off screen
         moveBy(m_moveSpeed * deltaTime, 0.0f);
-        if(getX() < -getXSize() || getX() > Input.getScreenWidth() + getXSize())
+        if (getX() < -getXSize() || getX() > Input.getScreenWidth() + getXSize())
         {
             destroy();
         }
@@ -28,7 +28,7 @@ public class BossAlien extends Alien
     @Override
     public void awardScore(Player player, int currentLevel)
     {
-        // Overides basic function to provide score when killed
+        // Overrides basic function to provide score when killed
         player.addScore(BASE_SCORE * currentLevel);
     }
 }

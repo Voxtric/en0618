@@ -82,12 +82,12 @@ class AlienManager
         float lowestHeight = (Input.getScreenHeight() * SCREEN_DISTANCE_START_HEIGHT) -
                 (ROWS * m_alienSize) - ((ROWS - 1) * (Input.getScreenWidth() * SCREEN_DISTANCE_GAP_BETWEEN_ALIENS));
         float xPosition = m_sideBorder + (m_alienSize * 0.5f);
-        for(int i = 0; i < COLUMNS; i++)
+        for (int i = 0; i < COLUMNS; i++)
         {
             // Loops through Column count and Row count to create the correct number of aliens
             float yPosition = lowestHeight;
             List<Alien> currentColumn = new ArrayList<>();
-            for(int j = 0; j < ROWS; j++)
+            for (int j = 0; j < ROWS; j++)
             {
                 // Each alien is given the universal values, with a unique location that changes each iteration
                 // Sprits are set based on Row number, returning to the first sprite if there are more rows then sprites available
@@ -117,7 +117,7 @@ class AlienManager
             {
                 // Either condition breaks from the loop, as so long as there is 1 successful
                 // use case, it applies to all aliens.
-                if(tempAlien.getY() < Player.getStartHeight())
+                if (tempAlien.getY() < Player.getStartHeight())
                 {
                     m_alienWin = true;
                     break;
@@ -149,12 +149,12 @@ class AlienManager
         // Runs on every frame.
         // Checks that there are aliens still existing, if so, bosses are spawned and bullets
         // are fired from any alien at the bottom of it's column
-        if(m_alienColumns.size() > 0)
+        if (m_alienColumns.size() > 0)
         {
             checkSides(deltaTime);
 
             m_timeToBossSpawn -= deltaTime;
-            if(m_timeToBossSpawn <= 0.0f)
+            if (m_timeToBossSpawn <= 0.0f)
             {
                 float bossAlienSize = m_alienSize * BOSS_ALIEN_SIZE_MULTIPLIER;
                 Alien bossAlien;
@@ -178,7 +178,7 @@ class AlienManager
             }
 
             m_timeToShotSpawn -= deltaTime;
-            if(m_timeToShotSpawn <= 0.0f)
+            if (m_timeToShotSpawn <= 0.0f)
             {
                 // randomly selects which column to choose from
                 int alienChoice = m_game.getRandom().nextInt(m_alienColumns.size());
@@ -214,7 +214,7 @@ class AlienManager
     {
         // Determines how many Aliens are currently alive
         // Before removing references of aliens that are dead.
-        for(int i = 0; i < m_alienColumns.size(); i++)
+        for (int i = 0; i < m_alienColumns.size(); i++)
         {
             List<Alien> alienColumn = m_alienColumns.get(i);
             for (int j = 0; j < alienColumn.size(); j++)
