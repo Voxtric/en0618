@@ -44,8 +44,8 @@ public class CollisionMask
     {
         float xRatio = m_collisionMaskXSize / objectWidth;
         float yRatio = m_collisionMaskYSize / objectHeight;
-        int x = (int)((i - (int)(objectOriginX - (objectWidth / 2.0f))) * xRatio);
-        int y = (int)((j - (int)(objectOriginY - (objectHeight / 2.0f))) * yRatio);
+        int x = (int)((i - (int)(objectOriginX - (objectWidth * 0.5f))) * xRatio);
+        int y = (int)((j - (int)(objectOriginY - (objectHeight * 0.5f))) * yRatio);
         int index = x + (y * m_collisionMaskXSize);
         return (index >= 0) && m_collisionMask.get(index);
     }
