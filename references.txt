@@ -8,3 +8,7 @@ shots		-	https://ya-webdesign.com/explore/transparent-laser-blast/?utm_source=gg
 asteroids	-	https://sketchfab.com/3d-models/asteroids-bi6oZSkyn9f9QGgTAqq7GvaCohn
 game_background	-	http://a1star.com/
 death_star font	-	https://www.dafont.com/star-jedi.font
+player_fire	-	https://freesound.org/people/Timbre/sounds/94159/
+player_damaged	-	https://freesound.org/people/joe93barlow/sounds/78667/
+enemy_fire	-	https://freesound.org/people/Timbre/sounds/94159/
+level_over	-	https://freesound.org/people/wildweasel/sounds/39025/

@@ -48,6 +48,9 @@ public class SpaceInvadersActivity extends GameActivity
 
     private static final float SCREEN_DISTANCE_FONT_SIZE = 0.05f;
 
+    @RawRes
+    private static final int[] PLAYER_SHOT_SOUND_RESOURCE_IDS = new int[] { R.raw.player_fire_1, R.raw.player_fire_2 };
+
     // Initialised Values
     private int m_currentLevel = 1;
     private float m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
@@ -62,6 +65,7 @@ public class SpaceInvadersActivity extends GameActivity
     private AsteroidManager m_asteroidManager;
 
     private boolean m_inLevelTransition = false;
+    private int m_levelTransitionSoundStreamID = -1;
 
     private AlertDialog m_gameOverDialog = null;
 
@@ -70,6 +74,7 @@ public class SpaceInvadersActivity extends GameActivity
     {
         // Signs into Google Account when Login Provided
         super.onCreate(savedInstanceState);
+        setPauseDialogButtonSoundID(R.raw.button_click);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null)
@@ -84,8 +89,17 @@ public class SpaceInvadersActivity extends GameActivity
     public void onStart()
     {
         super.onStart();
-        setPauseDialogButtonSoundID(R.raw.button_click);
-        @RawRes int[] activitySounds = new int[] { R.raw.button_click };
+        @RawRes int[] activitySounds = new int[] {
+                R.raw.button_click,
+                R.raw.player_fire_1,
+                R.raw.player_fire_2,
+                R.raw.player_damaged,
+                R.raw.alien_fire_1,
+                R.raw.alien_fire_2,
+                R.raw.alien_damaged,
+                R.raw.asteroid_damaged,
+                R.raw.level_over
+        };
         getSoundPool().loadSounds(this, activitySounds);
     }
 
@@ -145,7 +159,7 @@ public class SpaceInvadersActivity extends GameActivity
 
         // Member Variable to store all Collidable Objects for Automated Collision Detection
 
-        // Manager class for all ALien Objects
+        // Manager class for all Alien Objects
         m_alienManager = new AlienManager(m_collidableObjects, game);
         m_alienManager.createAliens();
 
@@ -177,7 +191,8 @@ public class SpaceInvadersActivity extends GameActivity
                             game.getActivity(), R.drawable.player_shot, bulletX, m_player.getY());
                     game.addGameObject(bullet);
                     m_collidableObjects.addBullet(bullet, true);
-                    getSoundPool().playSound(this, R.raw.player_fire);
+                    @RawRes int shotSoundResourceID = PLAYER_SHOT_SOUND_RESOURCE_IDS[game.getRandom().nextInt(2)];
+                    getSoundPool().playSound(this, shotSoundResourceID);
                     m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
                 }
             }
@@ -185,6 +200,8 @@ public class SpaceInvadersActivity extends GameActivity
             {
                 if (!m_inLevelTransition)
                 {
+                    m_levelTransitionSoundStreamID = getSoundPool().playSound(this, R.raw.level_over);
+
                     final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
                     if (account != null)
                     {
@@ -208,6 +225,7 @@ public class SpaceInvadersActivity extends GameActivity
                 if (m_player.newLevel(deltaTime))
                 {
                     m_inLevelTransition = false;
+                    getSoundPool().stopSound(m_levelTransitionSoundStreamID);
                     // newLevel will continue to run until the player has made sufficient moves that result
                     // in it being off the screen.
 
@@ -303,6 +321,8 @@ public class SpaceInvadersActivity extends GameActivity
             @Override
             public void run()
             {
+                getBackgroundSoundService().unpauseMusic();
+
                 @SuppressLint("InflateParams") final View root = getLayoutInflater().inflate(R.layout.dialog_game_over, null);
                 TextView scoreTextView = root.findViewById(R.id.score_text_view);
                 scoreTextView.setText(getString(R.string.score_message, score));

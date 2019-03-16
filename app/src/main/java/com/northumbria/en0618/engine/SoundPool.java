@@ -51,15 +51,17 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
         }
     }
 
-    public @RawRes int loadSound(Context context, @RawRes int soundResourceID)
+    @RawRes
+    private int loadSound(Context context, @RawRes int soundResourceID)
     {
         int soundID = m_soundPool.load(context, soundResourceID, PRIORITY);
         m_soundIDs.append(soundResourceID, soundID);
         return soundID;
     }
 
-    private void playSound(int soundID, Context context, @RawRes int soundResourceID)
+    private int playSound(int soundID, Context context, @RawRes int soundResourceID)
     {
+        // TODO: Sounds should not be played unless the preferences allow it.
         int streamID  = m_soundPool.play(soundID, FULL_VOLUME, FULL_VOLUME, PRIORITY, LOOPS, RATE);
         if (streamID == 0)
         {
@@ -70,10 +72,12 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
             }
             Log.e(TAG, String.format("Failed to play \"%s\"", resourceName));
         }
+        return streamID;
     }
 
-    public void playSound(Context context, @RawRes int soundResourceID)
+    public int playSound(Context context, @RawRes int soundResourceID)
     {
+        int streamID = -1;
         int soundID = m_soundIDs.get(soundResourceID, -1);
         if (soundID == -1)
         {
@@ -83,12 +87,19 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
         }
         else
         {
-            playSound(soundID, context, soundResourceID);
+            streamID = playSound(soundID, context, soundResourceID);
         }
+        return streamID;
+    }
+
+    public void stopSound(int streamID)
+    {
+        m_soundPool.stop(streamID);
     }
 
     public void pauseAll()
     {
+        // TODO: We need unpausable sounds for pause/gameover signifiers.
         m_soundPool.autoPause();
     }
 

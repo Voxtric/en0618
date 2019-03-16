@@ -1,9 +1,9 @@
 package com.northumbria.en0618;
 
 import android.support.annotation.DrawableRes;
+import android.support.annotation.RawRes;
 
 import com.northumbria.en0618.engine.Game;
-import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.Input;
 
 import java.util.ArrayList;
@@ -40,6 +40,9 @@ class AlienManager
     private static final int ROWS = 4;
     private static final int MAX_COUNT = COLUMNS * ROWS;
     private static final int STEPS_TO_PLAYER = 10;
+
+    @RawRes
+    private static final int[] ALIEN_SHOT_SOUND_RESOURCE_IDS = new int[] { R.raw.alien_fire_1, R.raw.alien_fire_2 };
 
     private float m_timeToBossSpawn = BOSS_ALIEN_SPAWN_WAIT;
     private float m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
@@ -189,7 +192,8 @@ class AlienManager
                         m_alienColumns.get(alienChoice).get(0).getY());
                 m_game.addGameObject(alienBullet);
                 m_colList.addBullet(alienBullet, false);
-                m_game.getActivity().getSoundPool().playSound(m_game.getActivity(), R.raw.alien_fire);
+                @RawRes int shotSoundResourceID = ALIEN_SHOT_SOUND_RESOURCE_IDS[m_game.getRandom().nextInt(2)];
+                m_game.getActivity().getSoundPool().playSound(m_game.getActivity(), shotSoundResourceID);
                 m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
             }
 

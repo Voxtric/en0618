@@ -158,9 +158,12 @@ public class Player extends CollidableGameObject
     public boolean newLevel(float deltaTime)
     {
         // Player Moves upwards until they are off the screen. Once they are, returns true.
-        moveBy(0.0f, (m_moveSpeed * LEVEL_COMPLETE_SPEED_MODIFIER) * deltaTime);
         boolean newLevel = false;
-        if (getY() >= Input.getScreenHeight())
+        if (getY() < Input.getScreenHeight())
+        {
+            moveBy(0.0f, (m_moveSpeed * LEVEL_COMPLETE_SPEED_MODIFIER) * deltaTime);
+        }
+        else
         {
             newLevel = true;
             setPosition(Input.getScreenWidth() * 0.5f, Input.getScreenHeight() * SCREEN_DISTANCE_BOTTOM_BORDER);
