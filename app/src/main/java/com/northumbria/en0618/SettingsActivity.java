@@ -60,7 +60,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
                 {
                     if (isChecked)
                     {
-                        backgroundMusicService.startMusic(R.raw.background_menu_music);
+                        backgroundMusicService.startMusic();
                     }
                     else
                     {
