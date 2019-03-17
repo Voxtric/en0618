@@ -1,10 +1,14 @@
 package com.northumbria.en0618.engine;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.RawRes;
 import android.util.Log;
 import android.util.SparseIntArray;
+
+import com.northumbria.en0618.SettingsActivity;
 
 import java.util.HashSet;
 
@@ -78,16 +82,20 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
     public int playSound(Context context, @RawRes int soundResourceID)
     {
         int streamID = -1;
-        int soundID = m_soundIDs.get(soundResourceID, -1);
-        if (soundID == -1)
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_SFX, true))
         {
-            Log.e(TAG, String.format("Sound asset \"%s\" not pre-loaded.", context.getResources().getResourceName(soundResourceID)));
-            soundID = loadSound(context, soundResourceID);
-            m_soundsToPlayOnLoad.add(soundID);
-        }
-        else
-        {
-            streamID = playSound(soundID, context, soundResourceID);
+            int soundID = m_soundIDs.get(soundResourceID, -1);
+            if (soundID == -1)
+            {
+                Log.e(TAG, String.format("Sound asset \"%s\" not pre-loaded.", context.getResources().getResourceName(soundResourceID)));
+                soundID = loadSound(context, soundResourceID);
+                m_soundsToPlayOnLoad.add(soundID);
+            }
+            else
+            {
+                streamID = playSound(soundID, context, soundResourceID);
+            }
         }
         return streamID;
     }

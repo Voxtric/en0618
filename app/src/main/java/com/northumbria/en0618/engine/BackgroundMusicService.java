@@ -21,7 +21,7 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
     private static final String TAG = "BackgroundMusicService";
 
     private static final float FULL_VOLUME = 1.0f;
-    private static final float DUCKED_VOLUME = 0.03f;
+    private static final float DUCKED_VOLUME = 0.3f;
 
     public class LocalBinder extends Binder
     {
@@ -53,6 +53,7 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
         switch (focusChange)
         {
         case AudioManager.AUDIOFOCUS_GAIN:
+            m_volume = FULL_VOLUME;
             if (m_clientsBound > 0)
             {
                 if (m_mediaPlayer == null)
@@ -60,11 +61,13 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
                     if (m_musicID != -1)
                     {
                         initialiseMediaPlayer(m_musicID);
+                        m_mediaPlayer.setVolume(m_volume, m_volume);
                     }
                 }
                 else
                 {
                     resumeMusic();
+                    m_mediaPlayer.setVolume(m_volume, m_volume);
                 }
             }
             break;
@@ -131,7 +134,6 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
             m_mediaPlayer.setLooping(true);
             requestAudioFocus();
             m_mediaPlayer.start();
-            m_mediaPlayer.setVolume(m_volume, m_volume);
             if (m_musicPosition != -1)
             {
                 m_mediaPlayer.seekTo(m_musicPosition);
@@ -196,7 +198,6 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
     {
         if (m_mediaPlayer != null)
         {
-            m_mediaPlayer.setVolume(m_volume, m_volume);
             m_mediaPlayer.start();
         }
         else if (m_musicID != -1)
