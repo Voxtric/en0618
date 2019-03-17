@@ -22,6 +22,13 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     public static final String PREFERENCE_KEY_SFX = "play_sfx";
     public static final String PREFERENCE_KEY_POWER_SAVER = "power_saver";
 
+    @RawRes
+    private static final int[] ALL_SOUNDS = new int[] {
+            R.raw.button_click_forward,
+            R.raw.button_click_backward,
+            R.raw.button_click_change
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -110,18 +117,14 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     {
         BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
         backgroundSoundService.resumeMusic();
-
-        @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward, R.raw.button_click_backward, R.raw.button_click_change };
-        backgroundSoundService.loadSounds(activitySounds, false);
+        backgroundSoundService.loadSounds(ALL_SOUNDS, false);
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-
-        @RawRes int[] activitySounds = new int[] { R.raw.button_click_backward, R.raw.button_click_change };
-        getBackgroundSoundService().unloadSounds(activitySounds);
+        getBackgroundSoundService().unloadSounds(ALL_SOUNDS);
     }
 
     @Override

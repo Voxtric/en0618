@@ -65,7 +65,7 @@ public class SpaceInvadersActivity extends GameActivity
 
     // Initialised Values
     private int m_currentLevel = 1;
-    private float m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
+    private float m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT * 2.0f;
     private float m_playerShotOffset = 0.0f;
 
     // References
@@ -86,7 +86,6 @@ public class SpaceInvadersActivity extends GameActivity
     {
         // Signs into Google Account when login Provided
         super.onCreate(savedInstanceState);
-        setPauseDialogButtonSoundID(R.raw.button_click_forward);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null)
@@ -107,6 +106,9 @@ public class SpaceInvadersActivity extends GameActivity
             soundService.startMusic(R.raw.background_game_music);
         }
         getBackgroundSoundService().loadSounds(ALL_SOUNDS, true);
+
+        // Will load sounds into background service.
+        setPauseDialogButtonSoundIDs(R.raw.button_click_forward, R.raw.button_click_backward);
     }
 
     @Override
@@ -283,7 +285,7 @@ public class SpaceInvadersActivity extends GameActivity
     @SuppressWarnings("unused")
     public void restartGame(View view)
     {
-        playPauseDialogButtonSound();
+        playPauseDialogForwardButtonSound();
         Game game = getGame();
 
         m_currentLevel = 1;
@@ -309,7 +311,7 @@ public class SpaceInvadersActivity extends GameActivity
 
     public void openSettings(View view)
     {
-        playPauseDialogButtonSound();
+        playPauseDialogForwardButtonSound();
         notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);

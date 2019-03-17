@@ -27,6 +27,11 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
     private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
     private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
 
+    @RawRes
+    private static final int[] ALL_SOUNDS = new int[] {
+            R.raw.button_click_forward
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -53,8 +58,14 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
         {
             backgroundSoundService.startMusic(R.raw.background_menu_music);
         }
-        @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward };
-        backgroundSoundService.loadSounds(activitySounds, false);
+        backgroundSoundService.loadSounds(ALL_SOUNDS, false);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        getBackgroundSoundService().unloadSounds(ALL_SOUNDS);
     }
 
     @Override

@@ -15,7 +15,8 @@ import com.northumbria.en0618.engine.opengl.Texture;
 
 public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
 {
-    private @RawRes int m_pauseDialogButtonSoundID = 0;
+    private @RawRes int m_pauseDialogForwardButtonSoundID = 0;
+    private @RawRes int m_pauseDialogBackwardButtonSoundID = 0;
 
     private Game m_game;
     private GLSurfaceView m_glSurfaceView;
@@ -63,14 +64,16 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     }
 
     @Override
-    protected void onDestroy()
+    protected void onResume()
     {
-        m_game.destroyAll();
-        Font.clearCache();
-        Sprite.clearCache();
-        Texture.clearCache();
-        Shader.clearCache();
-        super.onDestroy();
+        super.onResume();
+        m_glSurfaceView.onResume();
+
+        if (m_pauseOnResume)
+        {
+            m_pauseOnResume = false;
+            m_game.pause(true);
+        }
     }
 
     @Override
@@ -82,16 +85,21 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     }
 
     @Override
-    protected void onResume()
+    protected void onStop()
     {
-        super.onResume();
-        m_glSurfaceView.onResume();
+        super.onStop();
+        getBackgroundSoundService().unloadSounds(new int[] { m_pauseDialogForwardButtonSoundID, m_pauseDialogBackwardButtonSoundID });
+    }
 
-        if (m_pauseOnResume)
-        {
-            m_pauseOnResume = false;
-            m_game.pause(true);
-        }
+    @Override
+    protected void onDestroy()
+    {
+        m_game.destroyAll();
+        Font.clearCache();
+        Sprite.clearCache();
+        Texture.clearCache();
+        Shader.clearCache();
+        super.onDestroy();
     }
 
     @Override
@@ -114,10 +122,13 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     public void onResumeGame(View view)
     {
         getGame().unPause();
-        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
-        backgroundSoundService.resumeMusic();
-        backgroundSoundService.resumeAllSounds();
-        playPauseDialogButtonSound();
+        if (view != null)
+        {
+            BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+            backgroundSoundService.resumeMusic();
+            backgroundSoundService.resumeAllSounds();
+            playPauseDialogForwardButtonSound();
+        }
     }
 
     @SuppressWarnings("unused")
@@ -129,7 +140,7 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
         {
             pauseMenu.cancel();
         }
-        playPauseDialogButtonSound();
+        playPauseDialogBackwardButtonSound();
         notifyActivityChanging();
         finish();
     }
@@ -149,21 +160,30 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
         backgroundSoundService.pauseAllSounds();
     }
 
-    protected void setPauseDialogButtonSoundID(@RawRes int pauseDialogSoundID)
+    protected void setPauseDialogButtonSoundIDs(@RawRes int forwardSoundID, @RawRes int backwardSoundID)
     {
-        m_pauseDialogButtonSoundID = pauseDialogSoundID;
+        m_pauseDialogForwardButtonSoundID = forwardSoundID;
+        m_pauseDialogBackwardButtonSoundID = backwardSoundID;
         BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
         if (backgroundSoundService != null)
         {
-            backgroundSoundService.loadSounds(new int[] { pauseDialogSoundID }, false);
+            backgroundSoundService.loadSounds(new int[] { forwardSoundID, backwardSoundID }, false);
         }
     }
 
-    public void playPauseDialogButtonSound()
+    public void playPauseDialogForwardButtonSound()
     {
-        if (m_pauseDialogButtonSoundID != 0)
+        if (m_pauseDialogForwardButtonSoundID != 0)
         {
-            getBackgroundSoundService().playSound(m_pauseDialogButtonSoundID);
+            getBackgroundSoundService().playSound(m_pauseDialogForwardButtonSoundID);
+        }
+    }
+
+    public void playPauseDialogBackwardButtonSound()
+    {
+        if (m_pauseDialogBackwardButtonSoundID != 0)
+        {
+            getBackgroundSoundService().playSound(m_pauseDialogBackwardButtonSoundID);
         }
     }
 }

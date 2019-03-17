@@ -25,6 +25,6 @@ public class SettingsButton extends ButtonGameObject
     protected void onTouch()
     {
         m_game.pause(true);
-        m_game.getActivity().playPauseDialogButtonSound();
+        m_game.getActivity().playPauseDialogForwardButtonSound();
     }
 }
