@@ -54,7 +54,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
             backgroundSoundService.startMusic(R.raw.background_menu_music);
         }
         @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward };
-        backgroundSoundService.loadSounds(activitySounds);
+        backgroundSoundService.loadSounds(activitySounds, false);
     }
 
     @Override

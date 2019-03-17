@@ -47,7 +47,7 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
     public void onCreate()
     {
         super.onCreate();
-        m_soundPool = new SoundPool(this, AUDIO_STREAM_COUNT, null);
+        m_soundPool = new SoundPool(AUDIO_STREAM_COUNT);
     }
 
     @Override
@@ -265,9 +265,9 @@ public class BackgroundSoundService extends Service implements AudioManager.OnAu
         m_soundPool.pauseAll();
     }
 
-    public void loadSounds(@RawRes int[] soundResourceIDs)
+    public void loadSounds(@RawRes int[] soundResourceIDs, boolean pausable)
     {
-        m_soundPool.loadSounds(this, soundResourceIDs);
+        m_soundPool.loadSounds(this, soundResourceIDs, pausable);
     }
 
     public void unloadSounds(@RawRes int[] soundResourceIDs)

@@ -6,7 +6,7 @@ import android.media.AudioManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.RawRes;
 import android.util.Log;
-import android.util.SparseIntArray;
+import android.util.SparseArray;
 
 import com.northumbria.en0618.SettingsActivity;
 
@@ -14,6 +14,18 @@ import java.util.HashSet;
 
 public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
 {
+    private class Sound
+    {
+        final int soundID;
+        final boolean pauseable;
+
+        Sound(int soundID, boolean pauseable)
+        {
+            this.soundID = soundID;
+            this.pauseable = pauseable;
+        }
+    }
+
     private static final String TAG = "SoundPool";
 
     private static final int SOURCE_QUALITY = 0;
@@ -24,34 +36,59 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
     private android.media.SoundPool m_soundPool;
     private float m_volume = 1.0f;
 
-    private SparseIntArray m_soundIDs = new SparseIntArray();
-    private HashSet<Integer> m_soundsToPlayOnLoad = new HashSet<>();
+    private SparseArray<Sound> m_soundIDs = new SparseArray<>();
+    private SparseArray<Sound> m_soundsToPlayOnLoad = new SparseArray<>();
 
-    SoundPool(Context context, int streamCount, @RawRes int[] soundResourceIDs)
+    private HashSet<Integer> m_activeStreams = new HashSet<>();
+    private HashSet<Integer> m_pausableStreams = new HashSet<>();
+
+    SoundPool(int streamCount)
     {
         m_soundPool = new android.media.SoundPool(streamCount, AudioManager.STREAM_MUSIC, SOURCE_QUALITY);
         m_soundPool.setOnLoadCompleteListener(this);
-        if (soundResourceIDs != null)
-        {
-            loadSounds(context, soundResourceIDs);
-        }
     }
 
     @Override
     public void onLoadComplete(android.media.SoundPool soundPool, int soundID, int status)
     {
-        if (status == 0 && m_soundsToPlayOnLoad.contains(soundID))
+        if (status == 0)
         {
-            m_soundsToPlayOnLoad.remove(soundID);
-            playSound(soundID, null, -1);
+            Sound sound = m_soundsToPlayOnLoad.get(soundID);
+            if (sound != null)
+            {
+                m_soundsToPlayOnLoad.remove(soundID);
+                playSound(sound, null, -1);
+            }
         }
     }
 
-    public void loadSounds(Context context, @RawRes int[] soundResourceIDs)
+    private Sound loadSound(Context context, @RawRes int soundResourceID, boolean pausable)
+    {
+        Sound sound = m_soundIDs.get(soundResourceID);
+        if (sound == null)
+        {
+            int soundID = m_soundPool.load(context, soundResourceID, PRIORITY);
+            sound = new Sound(soundID, pausable);
+            m_soundIDs.append(soundResourceID, sound);
+        }
+        return sound;
+    }
+
+    private void unloadSound(@RawRes int soundResourceID)
+    {
+        Sound sound = m_soundIDs.get(soundResourceID);
+        if (sound != null)
+        {
+            m_soundPool.unload(sound.soundID);
+            m_soundIDs.delete(soundResourceID);
+        }
+    }
+
+    public void loadSounds(Context context, @RawRes int[] soundResourceIDs, boolean pausable)
     {
         for (int soundResourceID : soundResourceIDs)
         {
-            loadSound(context, soundResourceID);
+            loadSound(context, soundResourceID, pausable);
         }
     }
 
@@ -63,31 +100,9 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
         }
     }
 
-    @RawRes
-    private int loadSound(Context context, @RawRes int soundResourceID)
+    private int playSound(Sound sound, Context context, @RawRes int soundResourceID)
     {
-        int soundID = m_soundIDs.get(soundResourceID, -1);
-        if (soundID == -1)
-        {
-            soundID = m_soundPool.load(context, soundResourceID, PRIORITY);
-            m_soundIDs.append(soundResourceID, soundID);
-        }
-        return soundID;
-    }
-
-    private void unloadSound(@RawRes int soundResourceID)
-    {
-        int soundID = m_soundIDs.get(soundResourceID, -1);
-        if (soundID != -1)
-        {
-            m_soundPool.unload(soundID);
-            m_soundIDs.delete(soundResourceID);
-        }
-    }
-
-    private int playSound(int soundID, Context context, @RawRes int soundResourceID)
-    {
-        int streamID  = m_soundPool.play(soundID, m_volume, m_volume, PRIORITY, LOOPS, RATE);
+        int streamID  = m_soundPool.play(sound.soundID, m_volume, m_volume, PRIORITY, LOOPS, RATE);
         if (streamID == 0)
         {
             String resourceName = "ERROR: unknown_sound_resource";
@@ -96,6 +111,18 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
                 resourceName = context.getResources().getResourceName(soundResourceID);
             }
             Log.e(TAG, String.format("Failed to play \"%s\"", resourceName));
+        }
+        else
+        {
+            m_activeStreams.add(streamID);
+            if (sound.pauseable)
+            {
+                m_pausableStreams.add(streamID);
+            }
+            else
+            {
+                m_pausableStreams.remove(streamID);
+            }
         }
         return streamID;
     }
@@ -106,16 +133,16 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_SFX, true))
         {
-            int soundID = m_soundIDs.get(soundResourceID, -1);
-            if (soundID == -1)
+            Sound sound = m_soundIDs.get(soundResourceID);
+            if (sound == null)
             {
                 Log.e(TAG, String.format("Sound asset \"%s\" not pre-loaded.", context.getResources().getResourceName(soundResourceID)));
-                soundID = loadSound(context, soundResourceID);
-                m_soundsToPlayOnLoad.add(soundID);
+                sound = loadSound(context, soundResourceID, true);
+                m_soundsToPlayOnLoad.put(sound.soundID, sound);
             }
             else
             {
-                streamID = playSound(soundID, context, soundResourceID);
+                streamID = playSound(sound, context, soundResourceID);
             }
         }
         return streamID;
@@ -128,19 +155,27 @@ public class SoundPool implements android.media.SoundPool.OnLoadCompleteListener
 
     public void pauseAll()
     {
-        // TODO: We need unpausable sounds for pause/gameover signifiers.
-        m_soundPool.autoPause();
+        for (int streamID : m_pausableStreams)
+        {
+            m_soundPool.pause(streamID);
+        }
     }
 
     public void resumeAll()
     {
-        m_soundPool.autoResume();
+        for (int streamID : m_pausableStreams)
+        {
+            m_soundPool.resume(streamID);
+        }
     }
 
     public void setVolume(float volume)
     {
         m_volume = volume;
-        // TODO: Set volume of currently playing sounds.
+        for (int streamID : m_activeStreams)
+        {
+            m_soundPool.setVolume(streamID, volume, volume);
+        }
     }
 
     public void release()

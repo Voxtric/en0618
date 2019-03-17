@@ -112,7 +112,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
         backgroundSoundService.resumeMusic();
 
         @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward, R.raw.button_click_backward, R.raw.button_click_change };
-        backgroundSoundService.loadSounds(activitySounds);
+        backgroundSoundService.loadSounds(activitySounds, false);
     }
 
     @Override

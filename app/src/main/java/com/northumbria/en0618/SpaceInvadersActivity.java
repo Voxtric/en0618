@@ -106,7 +106,7 @@ public class SpaceInvadersActivity extends GameActivity
         {
             soundService.startMusic(R.raw.background_game_music);
         }
-        getBackgroundSoundService().loadSounds(ALL_SOUNDS);
+        getBackgroundSoundService().loadSounds(ALL_SOUNDS, true);
     }
 
     @Override

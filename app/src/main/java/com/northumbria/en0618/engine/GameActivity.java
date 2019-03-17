@@ -155,7 +155,7 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
         BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
         if (backgroundSoundService != null)
         {
-            backgroundSoundService.loadSounds(new int[] { pauseDialogSoundID });
+            backgroundSoundService.loadSounds(new int[] { pauseDialogSoundID }, false);
         }
     }
 
