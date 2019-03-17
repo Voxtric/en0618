@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RawRes;
+import android.util.Log;
 import android.view.View;
 
 import com.northumbria.en0618.engine.opengl.Font;
@@ -121,7 +122,7 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     @SuppressWarnings("unused")
     public void onResumeGame(View view)
     {
-        getGame().unPause();
+        getGame().resume();
         if (view != null)
         {
             BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
@@ -158,6 +159,10 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
         BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
         backgroundSoundService.pauseMusic();
         backgroundSoundService.pauseAllSounds();
+    }
+
+    public void onGameResume()
+    {
     }
 
     protected void setPauseDialogButtonSoundIDs(@RawRes int forwardSoundID, @RawRes int backwardSoundID)

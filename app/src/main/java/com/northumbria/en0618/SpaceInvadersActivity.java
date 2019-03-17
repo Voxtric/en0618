@@ -187,6 +187,7 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onGameUpdate(float deltaTime)
     {
+        super.onGameUpdate(deltaTime);
         final Game game = getGame();
         BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
         if (!m_player.isDead() && !m_alienManager.checkAlienWin())
@@ -277,6 +278,29 @@ public class SpaceInvadersActivity extends GameActivity
         }
     }
 
+    @Override
+    public void onGameResume()
+    {
+        super.onGameResume();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final boolean powerSaverOn = preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_POWER_SAVER, false);
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (powerSaverOn)
+                {
+                    ((GameSurfaceView)getSurfaceView()).setTargetFrameRate(POWER_SAVER_FRAME_RATE);
+                }
+                else
+                {
+                    ((GameSurfaceView)getSurfaceView()).setTargetFrameRate(0);
+                }
+            }
+        });
+    }
+
     public int getCurrentLevel()
     {
         return m_currentLevel;
@@ -305,7 +329,7 @@ public class SpaceInvadersActivity extends GameActivity
         m_asteroidManager.createAsteroids();
 
         game.setSuppressPauseDialog(false);
-        game.unPause();
+        game.resume();
         m_gameOverDialog.dismiss();
     }
 

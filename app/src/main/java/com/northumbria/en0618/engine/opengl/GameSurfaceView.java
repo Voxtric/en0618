@@ -49,8 +49,12 @@ public class GameSurfaceView extends GLSurfaceView
         else
         {
             setRenderMode(RENDERMODE_WHEN_DIRTY);
-            m_targetFrameTime = (long)((1 / (float)targetFrameRate) * 1000.0f);
-            renderFrame();
+            boolean beginFrameRender = m_targetFrameTime == 0;
+            m_targetFrameTime = (long)(1000 / (float)targetFrameRate);
+            if (beginFrameRender)
+            {
+                renderFrame();
+            }
         }
     }
 

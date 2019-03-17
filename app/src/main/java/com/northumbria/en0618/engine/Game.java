@@ -115,16 +115,16 @@ public class Game
         });
     }
 
-    public void unPause()
+    public void resume()
     {
         m_paused = false;
         m_currentFrameBegin = System.currentTimeMillis();
-        m_activity.getSurfaceView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         if (m_pauseDialog != null)
         {
             m_pauseDialog.dismiss();
             m_pauseDialog = null;
         }
+        m_activity.onGameResume();
     }
 
     public AlertDialog getPauseDialog()
