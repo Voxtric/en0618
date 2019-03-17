@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -27,7 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.northumbria.en0618.engine.BackgroundMusicService;
+import com.northumbria.en0618.engine.BackgroundSoundService;
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
@@ -73,7 +74,7 @@ public class SpaceInvadersActivity extends GameActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        // Signs into Google Account when Login Provided
+        // Signs into Google Account when login Provided
         super.onCreate(savedInstanceState);
         setPauseDialogButtonSoundID(R.raw.button_click_forward);
 
@@ -87,11 +88,16 @@ public class SpaceInvadersActivity extends GameActivity
     }
 
     @Override
-    public void onStart()
+    protected void onBackgroundSoundServiceBound()
     {
-        super.onStart();
+        super.onBackgroundSoundServiceBound();
+        BackgroundSoundService soundService = getBackgroundSoundService();
+        if (!soundService.musicStarted())
+        {
+            soundService.startMusic(R.raw.background_game_music);
+        }
+
         @RawRes int[] activitySounds = new int[] {
-                R.raw.button_click_forward,
                 R.raw.player_fire_1,
                 R.raw.player_fire_2,
                 R.raw.player_damaged,
@@ -101,18 +107,24 @@ public class SpaceInvadersActivity extends GameActivity
                 R.raw.asteroid_damaged,
                 R.raw.level_over
         };
-        getSoundPool().loadSounds(this, activitySounds);
+        getBackgroundSoundService().loadSounds(activitySounds);
     }
 
     @Override
-    protected void onBackgroundSoundServiceBound()
+    protected void onStop()
     {
-        super.onBackgroundSoundServiceBound();
-        BackgroundMusicService soundService = getBackgroundSoundService();
-        if (!soundService.musicStarted())
-        {
-            soundService.startMusic(R.raw.background_game_music);
-        }
+        super.onStop();
+        @RawRes int[] activitySounds = new int[] {
+                R.raw.player_fire_1,
+                R.raw.player_fire_2,
+                R.raw.player_damaged,
+                R.raw.alien_fire_1,
+                R.raw.alien_fire_2,
+                R.raw.alien_damaged,
+                R.raw.asteroid_damaged,
+                R.raw.level_over
+        };
+        getBackgroundSoundService().unloadSounds(activitySounds);
     }
 
     @Override
@@ -185,6 +197,7 @@ public class SpaceInvadersActivity extends GameActivity
     public void onGameUpdate(float deltaTime)
     {
         final Game game = getGame();
+        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
         if (!m_player.isDead() && !m_alienManager.checkAlienWin())
         {
             if (m_alienManager.alienRemaining())
@@ -204,7 +217,7 @@ public class SpaceInvadersActivity extends GameActivity
                     game.addGameObject(bullet);
                     m_collidableObjects.addBullet(bullet, true);
                     @RawRes int shotSoundResourceID = PLAYER_SHOT_SOUND_RESOURCE_IDS[game.getRandom().nextInt(2)];
-                    getSoundPool().playSound(this, shotSoundResourceID);
+                    backgroundSoundService.playSound(shotSoundResourceID);
                     m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
                 }
             }
@@ -212,7 +225,7 @@ public class SpaceInvadersActivity extends GameActivity
             {
                 if (!m_inLevelTransition)
                 {
-                    m_levelTransitionSoundStreamID = getSoundPool().playSound(this, R.raw.level_over);
+                    m_levelTransitionSoundStreamID = backgroundSoundService.playSound(R.raw.level_over);
 
                     final GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
                     if (account != null)
@@ -237,7 +250,7 @@ public class SpaceInvadersActivity extends GameActivity
                 if (m_player.newLevel(deltaTime))
                 {
                     m_inLevelTransition = false;
-                    getSoundPool().stopSound(m_levelTransitionSoundStreamID);
+                    backgroundSoundService.stopSound(m_levelTransitionSoundStreamID);
                     // newLevel will continue to run until the player has made sufficient moves that result
                     // in it being off the screen.
 

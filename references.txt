@@ -16,5 +16,5 @@ asteroid_damaged	-	https://freesound.org/people/plamdi1/sounds/95058/
 level_over		-	https://freesound.org/people/wildweasel/sounds/39025/
 button_click_navigate	-	https://freesound.org/people/plasterbrain/sounds/266166/
 button_click_change	-	https://freesound.org/people/KingSounds3D/sounds/442255/
-background_game_music	-	https://downloads.khinsider.com/game-soundtracks/album/star-wars-battlefront/85.%2520Horde%2520Menu%2520Endor.mp3
+background_menu_music	-	https://downloads.khinsider.com/game-soundtracks/album/star-wars-battlefront/85.%2520Horde%2520Menu%2520Endor.mp3
 background_game_music	-	https://downloads.khinsider.com/game-soundtracks/album/star-wars-battlefront/174.%2520Missions%2520Tatooine%2520Trials%2520XWing%2520Fight%2520Theme%2520A%2520Loop%252001.mp3

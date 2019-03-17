@@ -3,7 +3,6 @@ package com.northumbria.en0618;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.RawRes;
 import android.support.annotation.StringRes;
@@ -14,19 +13,14 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import com.northumbria.en0618.engine.BackgroundMusicService;
+import com.northumbria.en0618.engine.BackgroundSoundService;
 import com.northumbria.en0618.engine.BackgroundMusicServiceLinkedActivity;
-import com.northumbria.en0618.engine.SoundPool;
 
 public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
 {
     public static final String PREFERENCE_KEY_MUSIC = "play_music";
     public static final String PREFERENCE_KEY_SFX = "play_sfx";
     public static final String PREFERENCE_KEY_POWER_SAVER = "power_saver";
-
-    private static final int MAX_SOUND_STREAMS = 1;
-
-    private SoundPool m_soundPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,22 +43,22 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                if (m_soundPool != null)
+                BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+                if (backgroundSoundService != null)
                 {
-                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click_change);
+                    backgroundSoundService.playSound(R.raw.button_click_change);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
-                BackgroundMusicService backgroundMusicService = getBackgroundSoundService();
-                if (backgroundMusicService != null)
+                if (backgroundSoundService != null)
                 {
                     if (isChecked)
                     {
-                        backgroundMusicService.startMusic();
+                        backgroundSoundService.startMusic();
                     }
                     else
                     {
-                        backgroundMusicService.stopMusic(false);
+                        backgroundSoundService.stopMusic(false);
                     }
                 }
             }
@@ -74,12 +68,12 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                if (m_soundPool != null)
-                {
-                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click_change);
-                }
-
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_SFX, isChecked).apply();
+                BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+                if (backgroundSoundService != null)
+                {
+                    backgroundSoundService.playSound(R.raw.button_click_change);
+                }
             }
         });
 
@@ -87,9 +81,10 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
         {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                if (m_soundPool != null)
+                BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+                if (backgroundSoundService != null)
                 {
-                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click_change);
+                    backgroundSoundService.playSound(R.raw.button_click_change);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, isChecked).apply();
@@ -113,37 +108,32 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     @Override
     public void onBackgroundSoundServiceBound()
     {
-        getBackgroundSoundService().resumeMusic();
-    }
+        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+        backgroundSoundService.resumeMusic();
 
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
         @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward, R.raw.button_click_backward, R.raw.button_click_change };
-        m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, activitySounds);
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        backgroundSoundService.loadSounds(activitySounds);
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-        m_soundPool.release();
-        m_soundPool = null;
+        @RawRes int[] activitySounds = new int[] { R.raw.button_click_backward, R.raw.button_click_change };
+        getBackgroundSoundService().unloadSounds(activitySounds);
     }
 
     @Override
     public void onBackPressed()
     {
-        m_soundPool.playSound(this, R.raw.button_click_backward);
+        getBackgroundSoundService().playSound(R.raw.button_click_backward);
         notifyActivityChanging();
         super.onBackPressed();
     }
 
     public void backButtonClick(View view)
     {
-        m_soundPool.playSound(this, R.raw.button_click_backward);
+        getBackgroundSoundService().playSound(R.raw.button_click_backward);
         notifyActivityChanging();
         finish();
     }
@@ -152,9 +142,10 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     @SuppressLint("ApplySharedPref")    // We want the data to be available immediately.
     public void changeInputMethod(View view)
     {
-        if (m_soundPool != null)
+        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+        if (backgroundSoundService != null)
         {
-            m_soundPool.playSound(this, R.raw.button_click_change);
+            backgroundSoundService.playSound(R.raw.button_click_change);
         }
 
         // Find the current input method.

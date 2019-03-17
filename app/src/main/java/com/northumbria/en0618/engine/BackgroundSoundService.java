@@ -15,19 +15,20 @@ import android.util.Log;
 
 import com.northumbria.en0618.SettingsActivity;
 
-public class BackgroundMusicService extends Service implements AudioManager.OnAudioFocusChangeListener
+public class BackgroundSoundService extends Service implements AudioManager.OnAudioFocusChangeListener
 {
     // TODO: Move all sound pools into background service.
-    private static final String TAG = "BackgroundMusicService";
+    private static final String TAG = "BackgroundSoundService";
 
     private static final float FULL_VOLUME = 1.0f;
     private static final float DUCKED_VOLUME = 0.3f;
+    private static final int AUDIO_STREAM_COUNT = 10;
 
     public class LocalBinder extends Binder
     {
-        public BackgroundMusicService getBackgroundSoundServiceInstance()
+        public BackgroundSoundService getBackgroundSoundServiceInstance()
         {
-            return BackgroundMusicService.this;
+            return BackgroundSoundService.this;
         }
     }
 
@@ -38,12 +39,33 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
     @RawRes private int m_musicID = -1;
     private int m_musicPosition = -1;
 
+    private SoundPool m_soundPool;
+
+    private boolean m_hasAudioFocus = false;
     private float m_volume = FULL_VOLUME;
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        m_soundPool = new SoundPool(this, AUDIO_STREAM_COUNT, null);
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        releaseAudioFocus();
+        stopMusic(true);
+        m_soundPool.release();
+        m_soundPool = null;
+        super.onDestroy();
+    }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent)
     {
+        requestAudioFocus();
         return m_binder;
     }
 
@@ -53,7 +75,9 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
         switch (focusChange)
         {
         case AudioManager.AUDIOFOCUS_GAIN:
+            m_hasAudioFocus = true;
             m_volume = FULL_VOLUME;
+            m_soundPool.setVolume(m_volume);
             if (m_clientsBound > 0)
             {
                 if (m_mediaPlayer == null)
@@ -61,7 +85,6 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
                     if (m_musicID != -1)
                     {
                         initialiseMediaPlayer(m_musicID);
-                        m_mediaPlayer.setVolume(m_volume, m_volume);
                     }
                 }
                 else
@@ -72,6 +95,7 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
             }
             break;
         case AudioManager.AUDIOFOCUS_LOSS:
+            m_hasAudioFocus = false;
             if (m_mediaPlayer != null)
             {
                 m_musicPosition = m_mediaPlayer.getCurrentPosition();
@@ -81,10 +105,12 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
             }
             break;
         case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+            m_hasAudioFocus = false;
             pauseMusic();
             break;
         case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
             m_volume = DUCKED_VOLUME;
+            m_soundPool.setVolume(m_volume);
             if (m_mediaPlayer != null)
             {
                 m_mediaPlayer.setVolume(m_volume, m_volume);
@@ -109,7 +135,8 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
         if (audioManager != null)
         {
             int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+            m_hasAudioFocus = result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+            if (!m_hasAudioFocus)
             {
                 Log.e(TAG, "Audio focus not granted.");
             }
@@ -132,8 +159,8 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
         {
             m_mediaPlayer = MediaPlayer.create(this, musicID);
             m_mediaPlayer.setLooping(true);
-            requestAudioFocus();
             m_mediaPlayer.start();
+            m_mediaPlayer.setVolume(m_volume, m_volume);
             if (m_musicPosition != -1)
             {
                 m_mediaPlayer.seekTo(m_musicPosition);
@@ -187,7 +214,6 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
                 m_musicID = -1;
             }
         }
-        releaseAudioFocus();
     }
 
     public void pauseMusic()
@@ -213,5 +239,40 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
     public boolean musicStarted()
     {
         return m_mediaPlayer != null;
+    }
+
+    public int playSound(@RawRes int soundResourceID)
+    {
+        int streamID = -1;
+        if (m_hasAudioFocus)
+        {
+            streamID = m_soundPool.playSound(this, soundResourceID);
+        }
+        return streamID;
+    }
+
+    public void stopSound(int streamID)
+    {
+        m_soundPool.stopSound(streamID);
+    }
+
+    public void resumeAllSounds()
+    {
+        m_soundPool.resumeAll();
+    }
+
+    public void pauseAllSounds()
+    {
+        m_soundPool.pauseAll();
+    }
+
+    public void loadSounds(@RawRes int[] soundResourceIDs)
+    {
+        m_soundPool.loadSounds(this, soundResourceIDs);
+    }
+
+    public void unloadSounds(@RawRes int[] soundResourceIDs)
+    {
+        m_soundPool.unloadSounds(soundResourceIDs);
     }
 }

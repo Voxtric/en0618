@@ -3,27 +3,28 @@ package com.northumbria.en0618.engine;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 
 public abstract class BackgroundMusicServiceLinkedActivity extends AppCompatActivity
 {
     private boolean m_navigatingInApp = false;
-    private BackgroundMusicService m_backgroundMusicService = null;
+    private BackgroundSoundService m_backgroundSoundService = null;
     ServiceConnection m_serviceConnection = new ServiceConnection()
     {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service)
         {
-            BackgroundMusicService.LocalBinder binder = (BackgroundMusicService.LocalBinder)service;
-            m_backgroundMusicService = binder.getBackgroundSoundServiceInstance();
+            BackgroundSoundService.LocalBinder binder = (BackgroundSoundService.LocalBinder)service;
+            m_backgroundSoundService = binder.getBackgroundSoundServiceInstance();
             onBackgroundSoundServiceBound();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name)
         {
-            m_backgroundMusicService = null;
+            m_backgroundSoundService = null;
         }
     };
 
@@ -31,8 +32,9 @@ public abstract class BackgroundMusicServiceLinkedActivity extends AppCompatActi
     protected void onStart()
     {
         super.onStart();
-        Intent serviceIntent = new Intent(this, BackgroundMusicService.class);
+        Intent serviceIntent = new Intent(this, BackgroundSoundService.class);
         bindService(serviceIntent, m_serviceConnection, BIND_IMPORTANT);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
@@ -41,7 +43,7 @@ public abstract class BackgroundMusicServiceLinkedActivity extends AppCompatActi
         super.onStop();
         if (!m_navigatingInApp)
         {
-            m_backgroundMusicService.pauseMusic();
+            m_backgroundSoundService.pauseMusic();
         }
         unbindService(m_serviceConnection);
         onBackgroundSoundServiceUnbound();
@@ -50,28 +52,28 @@ public abstract class BackgroundMusicServiceLinkedActivity extends AppCompatActi
 
     protected void onBackgroundSoundServiceBound()
     {
-        m_backgroundMusicService.clientBound();
+        m_backgroundSoundService.clientBound();
     }
 
     protected void onBackgroundSoundServiceUnbound()
     {
-        m_backgroundMusicService.clientUnBound();
+        m_backgroundSoundService.clientUnBound();
     }
 
-    protected BackgroundMusicService getBackgroundSoundService()
+    public BackgroundSoundService getBackgroundSoundService()
     {
-        return m_backgroundMusicService;
+        return m_backgroundSoundService;
     }
 
     protected void startBackgroundSoundService()
     {
-        Intent serviceIntent = new Intent(this, BackgroundMusicService.class);
+        Intent serviceIntent = new Intent(this, BackgroundSoundService.class);
         startService(serviceIntent);
     }
 
     protected void stopBackgroundSoundService()
     {
-        Intent serviceIntent = new Intent(this, BackgroundMusicService.class);
+        Intent serviceIntent = new Intent(this, BackgroundSoundService.class);
         stopService(serviceIntent);
     }
 

@@ -1,5 +1,6 @@
 package com.northumbria.en0618;
 
+import com.northumbria.en0618.engine.BackgroundSoundService;
 import com.northumbria.en0618.engine.CollidableGameObject;
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.Input;
@@ -34,6 +35,8 @@ class CollisionLists
 
     void checkCollisions()
     {
+        BackgroundSoundService backgroundSoundService = m_activity.getBackgroundSoundService();
+
         // Checks through every list for collisions
         int alienBulletCount = m_alienBulletList.size();
         int asteroidCount = m_asteroidList.size();
@@ -64,7 +67,7 @@ class CollisionLists
 
                         Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                         m_game.addGameObject(explosion);
-                        m_activity.getSoundPool().playSound(m_activity, R.raw.player_damaged);
+                        backgroundSoundService.playSound(R.raw.player_damaged);
 
                         if (m_player.consumeLife())
                         {
@@ -94,7 +97,7 @@ class CollisionLists
 
                                 Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                                 m_game.addGameObject(explosion);
-                                m_activity.getSoundPool().playSound(m_activity, R.raw.asteroid_damaged);
+                                backgroundSoundService.playSound(R.raw.asteroid_damaged);
                             }
                         }
                     }
@@ -118,7 +121,7 @@ class CollisionLists
 
                     Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                     m_game.addGameObject(explosion);
-                    m_activity.getSoundPool().playSound(m_activity, R.raw.player_damaged);
+                    backgroundSoundService.playSound(R.raw.player_damaged);
                 }
 
                 if (asteroidCount > 0)
@@ -137,7 +140,7 @@ class CollisionLists
 
                             Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                             m_game.addGameObject(explosion);
-                            m_activity.getSoundPool().playSound(m_activity, R.raw.asteroid_damaged);
+                            backgroundSoundService.playSound(R.raw.asteroid_damaged);
                         }
                     }
                 }
@@ -173,7 +176,7 @@ class CollisionLists
 
                             Explosion explosion = new Explosion(m_activity, alien.getX(), alien.getY(), alien.getXSize());
                             m_game.addGameObject(explosion);
-                            m_activity.getSoundPool().playSound(m_activity, R.raw.alien_damaged);
+                            backgroundSoundService.playSound(R.raw.alien_damaged);
                         }
                     }
                 }
@@ -202,7 +205,7 @@ class CollisionLists
 
                         Explosion explosion = new Explosion(m_activity, collisionInfo.x, collisionInfo.y, m_explosionSize);
                         m_game.addGameObject(explosion);
-                        m_activity.getSoundPool().playSound(m_activity, R.raw.asteroid_damaged);
+                        backgroundSoundService.playSound(R.raw.asteroid_damaged);
                     }
                 }
             }

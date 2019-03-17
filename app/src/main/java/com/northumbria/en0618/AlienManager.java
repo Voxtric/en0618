@@ -193,7 +193,7 @@ class AlienManager
                 m_game.addGameObject(alienBullet);
                 m_colList.addBullet(alienBullet, false);
                 @RawRes int shotSoundResourceID = ALIEN_SHOT_SOUND_RESOURCE_IDS[m_game.getRandom().nextInt(2)];
-                m_game.getActivity().getSoundPool().playSound(m_game.getActivity(), shotSoundResourceID);
+                m_game.getActivity().getBackgroundSoundService().playSound(shotSoundResourceID);
                 m_timeToShotSpawn = ALIEN_SHOT_SPAWN_WAIT;
             }
 

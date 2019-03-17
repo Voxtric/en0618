@@ -1,7 +1,6 @@
 package com.northumbria.en0618.engine;
 
 import android.app.AlertDialog;
-import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,9 +15,6 @@ import com.northumbria.en0618.engine.opengl.Texture;
 
 public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
 {
-    private static final int MAX_SOUND_STREAMS = 10;
-
-    private SoundPool m_soundPool;
     private @RawRes int m_pauseDialogButtonSoundID = 0;
 
     private Game m_game;
@@ -62,25 +58,8 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
 
         GameSurfaceView gameSurfaceView = new GameSurfaceView(this);
         gameSurfaceView.setPreserveEGLContextOnPause(true);
-        //gameSurfaceView.setTargetFrameRate(30);
         setContentView(gameSurfaceView);
         m_glSurfaceView = gameSurfaceView;
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, null);
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-    }
-
-    @Override
-    protected void onStop()
-    {
-        super.onStop();
-        m_soundPool.release();
-        m_soundPool = null;
     }
 
     @Override
@@ -135,8 +114,9 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     public void onResumeGame(View view)
     {
         getGame().unPause();
-        getBackgroundSoundService().resumeMusic();
-        m_soundPool.resumeAll();
+        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+        backgroundSoundService.resumeMusic();
+        backgroundSoundService.resumeAllSounds();
         playPauseDialogButtonSound();
     }
 
@@ -164,25 +144,26 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
 
     public void onGamePause(AlertDialog pauseDialog)
     {
-        getBackgroundSoundService().pauseMusic();
-        m_soundPool.pauseAll();
-    }
-
-    public SoundPool getSoundPool()
-    {
-        return m_soundPool;
+        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+        backgroundSoundService.pauseMusic();
+        backgroundSoundService.pauseAllSounds();
     }
 
     protected void setPauseDialogButtonSoundID(@RawRes int pauseDialogSoundID)
     {
         m_pauseDialogButtonSoundID = pauseDialogSoundID;
+        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+        if (backgroundSoundService != null)
+        {
+            backgroundSoundService.loadSounds(new int[] { pauseDialogSoundID });
+        }
     }
 
     public void playPauseDialogButtonSound()
     {
         if (m_pauseDialogButtonSoundID != 0)
         {
-            m_soundPool.playSound(this, m_pauseDialogButtonSoundID);
+            getBackgroundSoundService().playSound(m_pauseDialogButtonSoundID);
         }
     }
 }

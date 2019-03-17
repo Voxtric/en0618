@@ -47,7 +47,7 @@
 
         <service
             android:enabled="true"
-            android:name=".engine.BackgroundMusicService"/>
+            android:name=".engine.BackgroundSoundService"/>
     </application>
 
 </manifest>

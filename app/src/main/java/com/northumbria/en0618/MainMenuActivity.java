@@ -2,7 +2,6 @@ package com.northumbria.en0618;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.RawRes;
@@ -21,17 +20,12 @@ import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.northumbria.en0618.engine.BackgroundMusicServiceLinkedActivity;
-import com.northumbria.en0618.engine.BackgroundMusicService;
-import com.northumbria.en0618.engine.SoundPool;
+import com.northumbria.en0618.engine.BackgroundSoundService;
 
 public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
 {
     private static final int REQUEST_CODE_LEADERBOARD_ACTIVITY = 301;
     private static final int REQUEST_CODE_GOOGLE_SIGN_IN_ACTIVITY = 302;
-
-    private static final int MAX_SOUND_STREAMS = 1;
-
-    private SoundPool m_soundPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,32 +44,17 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
     protected void onBackgroundSoundServiceBound()
     {
         super.onBackgroundSoundServiceBound();
-        BackgroundMusicService soundService = getBackgroundSoundService();
-        if (soundService.musicStarted())
+        BackgroundSoundService backgroundSoundService = getBackgroundSoundService();
+        if (backgroundSoundService.musicStarted())
         {
-            soundService.resumeMusic();
+            backgroundSoundService.resumeMusic();
         }
         else
         {
-            soundService.startMusic(R.raw.background_menu_music);
+            backgroundSoundService.startMusic(R.raw.background_menu_music);
         }
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
         @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward };
-        m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, activitySounds);
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-    }
-
-    @Override
-    protected void onStop()
-    {
-        super.onStop();
-        m_soundPool.release();
-        m_soundPool = null;
+        backgroundSoundService.loadSounds(activitySounds);
     }
 
     @Override
@@ -152,7 +131,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
             @Override
             public void onClick(View view)
             {
-                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click_forward);
+                getBackgroundSoundService().playSound(R.raw.button_click_forward);
 
                 // Create an activity to sign into google for the explicit purpose of using
                 // google play game services.
@@ -181,7 +160,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
             @Override
             public void onClick(View view)
             {
-                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click_forward);
+                getBackgroundSoundService().playSound(R.raw.button_click_forward);
 
                 // Create an activity to view the global leaderboard for the game.
                 Games.getLeaderboardsClient(MainMenuActivity.this, account)
@@ -208,8 +187,9 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
 
     public void startGameActivity(View view)
     {
-        m_soundPool.playSound(this, R.raw.button_click_forward);
-        getBackgroundSoundService().stopMusic(true);
+        BackgroundSoundService soundService = getBackgroundSoundService();
+        soundService.playSound(R.raw.button_click_forward);
+        soundService.stopMusic(true);
         notifyActivityChanging();
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
@@ -217,7 +197,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
 
     public void startSettingsActivity(View view)
     {
-        m_soundPool.playSound(this, R.raw.button_click_forward);
+        getBackgroundSoundService().playSound(R.raw.button_click_forward);
         notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
