@@ -299,6 +299,8 @@ public class SpaceInvadersActivity extends GameActivity
                 }
             }
         });
+
+        getBackgroundSoundService().resumeMusic();
     }
 
     public int getCurrentLevel()
