@@ -209,7 +209,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
     public void startGameActivity(View view)
     {
         m_soundPool.playSound(this, R.raw.button_click_forward);
-        getBackgroundSoundService().stopMusic();
+        getBackgroundSoundService().stopMusic(true);
         notifyActivityChanging();
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);

@@ -143,6 +143,7 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     @SuppressWarnings("unused")
     public void onQuitGame(View view)
     {
+        getBackgroundSoundService().stopMusic(true);
         AlertDialog pauseMenu = m_game.getPauseDialog();
         if (pauseMenu != null)
         {

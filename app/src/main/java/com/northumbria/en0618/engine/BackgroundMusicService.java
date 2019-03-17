@@ -151,7 +151,7 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
             }
             else
             {
-                stopMusic();
+                stopMusic(true);
                 initialiseMediaPlayer(musicID);
             }
         }
@@ -174,7 +174,7 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
         }
     }
 
-    public void stopMusic()
+    public void stopMusic(boolean unsetMusicID)
     {
         if (m_mediaPlayer != null)
         {
@@ -182,6 +182,10 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
             m_mediaPlayer.release();
             m_mediaPlayer = null;
             m_musicPosition = -1;
+            if (unsetMusicID)
+            {
+                m_musicID = -1;
+            }
         }
         releaseAudioFocus();
     }

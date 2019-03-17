@@ -316,7 +316,7 @@ public class SpaceInvadersActivity extends GameActivity
     @SuppressWarnings("unused")
     public void returnToMainMenu(View view)
     {
-        getBackgroundSoundService().stopMusic();
+        getBackgroundSoundService().stopMusic(true);
         if (m_gameOverDialog != null)
         {
             m_gameOverDialog.dismiss();

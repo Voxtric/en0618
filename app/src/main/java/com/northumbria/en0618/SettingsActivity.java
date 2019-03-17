@@ -64,7 +64,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
                     }
                     else
                     {
-                        backgroundMusicService.stopMusic();
+                        backgroundMusicService.stopMusic(false);
                     }
                 }
             }
