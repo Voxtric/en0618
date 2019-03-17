@@ -51,7 +51,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
             {
                 if (m_soundPool != null)
                 {
-                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click);
+                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click_change);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_MUSIC, isChecked).apply();
@@ -60,7 +60,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
                 {
                     if (isChecked)
                     {
-                        backgroundMusicService.startMusic(R.raw.background_music);
+                        backgroundMusicService.startMusic(R.raw.background_menu_music);
                     }
                     else
                     {
@@ -76,7 +76,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
             {
                 if (m_soundPool != null)
                 {
-                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click);
+                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click_change);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_SFX, isChecked).apply();
@@ -89,7 +89,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
             {
                 if (m_soundPool != null)
                 {
-                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click);
+                    m_soundPool.playSound(SettingsActivity.this, R.raw.button_click_change);
                 }
 
                 sharedPrefs.edit().putBoolean(PREFERENCE_KEY_POWER_SAVER, isChecked).apply();
@@ -113,14 +113,14 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     @Override
     public void onBackgroundSoundServiceBound()
     {
-        getBackgroundSoundService().unpauseMusic();
+        getBackgroundSoundService().resumeMusic();
     }
 
     @Override
     protected void onStart()
     {
         super.onStart();
-        @RawRes int[] activitySounds = new int[] { R.raw.button_click };
+        @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward, R.raw.button_click_backward, R.raw.button_click_change };
         m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, activitySounds);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -136,13 +136,14 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     @Override
     public void onBackPressed()
     {
+        m_soundPool.playSound(this, R.raw.button_click_backward);
         notifyActivityChanging();
         super.onBackPressed();
     }
 
     public void backButtonClick(View view)
     {
-        m_soundPool.playSound(this, R.raw.button_click);
+        m_soundPool.playSound(this, R.raw.button_click_backward);
         notifyActivityChanging();
         finish();
     }
@@ -153,7 +154,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     {
         if (m_soundPool != null)
         {
-            m_soundPool.playSound(this, R.raw.button_click);
+            m_soundPool.playSound(this, R.raw.button_click_change);
         }
 
         // Find the current input method.

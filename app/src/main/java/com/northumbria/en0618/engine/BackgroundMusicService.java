@@ -17,6 +17,7 @@ import com.northumbria.en0618.SettingsActivity;
 
 public class BackgroundMusicService extends Service implements AudioManager.OnAudioFocusChangeListener
 {
+    // TODO: Move all sound pools into background service.
     private static final String TAG = "BackgroundMusicService";
 
     private static final float FULL_VOLUME = 1.0f;
@@ -36,6 +37,8 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
     private MediaPlayer m_mediaPlayer = null;
     @RawRes private int m_musicID = -1;
     private int m_musicPosition = -1;
+
+    private float m_volume = FULL_VOLUME;
 
     @Nullable
     @Override
@@ -61,21 +64,28 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
                 }
                 else
                 {
-                    unpauseMusic();
+                    resumeMusic();
                 }
             }
             break;
         case AudioManager.AUDIOFOCUS_LOSS:
-            m_musicPosition = m_mediaPlayer.getCurrentPosition();
-            m_mediaPlayer.stop();
-            m_mediaPlayer.release();
-            m_mediaPlayer = null;
+            if (m_mediaPlayer != null)
+            {
+                m_musicPosition = m_mediaPlayer.getCurrentPosition();
+                m_mediaPlayer.stop();
+                m_mediaPlayer.release();
+                m_mediaPlayer = null;
+            }
             break;
         case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
             pauseMusic();
             break;
         case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-            m_mediaPlayer.setVolume(DUCKED_VOLUME, DUCKED_VOLUME);
+            m_volume = DUCKED_VOLUME;
+            if (m_mediaPlayer != null)
+            {
+                m_mediaPlayer.setVolume(m_volume, m_volume);
+            }
             break;
         }
     }
@@ -121,6 +131,7 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
             m_mediaPlayer.setLooping(true);
             requestAudioFocus();
             m_mediaPlayer.start();
+            m_mediaPlayer.setVolume(m_volume, m_volume);
             if (m_musicPosition != -1)
             {
                 m_mediaPlayer.seekTo(m_musicPosition);
@@ -170,11 +181,11 @@ public class BackgroundMusicService extends Service implements AudioManager.OnAu
         }
     }
 
-    public void unpauseMusic()
+    public void resumeMusic()
     {
         if (m_mediaPlayer != null)
         {
-            m_mediaPlayer.setVolume(FULL_VOLUME, FULL_VOLUME);
+            m_mediaPlayer.setVolume(m_volume, m_volume);
             m_mediaPlayer.start();
         }
         else if (m_musicID != -1)

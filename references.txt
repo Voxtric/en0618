@@ -1,14 +1,20 @@
-player		-	https://sketchfab.com/3d-models/arc-170-cb7ea09963c240b1ad15e5681074b048
-alien_1		-	https://sketchfab.com/3d-models/tie-fighter-6f6d1a25af844d758a06a156052a686e
-alien_2		-	https://sketchfab.com/3d-models/tie-interceptor-4f6e0afa79e846828902a4d16ea1ce5f
-alien_3		-	https://sketchfab.com/3d-models/star-wars-imperial-tie-bomber-e17d74b999a34ae4a0ed9c75ea808a33
-alien_4		-	https://sketchfab.com/3d-models/tie-runner-b209951dbdff45a297fcf212f0fc6bd7
-large_alien	-	https://sketchfab.com/3d-models/star-wars-imperial-lambda-shuttle-4786e7c069c64f609c3fd51ef36e0390
-shots		-	https://ya-webdesign.com/explore/transparent-laser-blast/?utm_source=gg#gal_1514199
-asteroids	-	https://sketchfab.com/3d-models/asteroids-bi6oZSkyn9f9QGgTAqq7GvaCohn
-game_background	-	http://a1star.com/
-death_star font	-	https://www.dafont.com/star-jedi.font
-player_fire	-	https://freesound.org/people/Timbre/sounds/94159/
-player_damaged	-	https://freesound.org/people/joe93barlow/sounds/78667/
-enemy_fire	-	https://freesound.org/people/Timbre/sounds/94159/
-level_over	-	https://freesound.org/people/wildweasel/sounds/39025/
+player			-	https://sketchfab.com/3d-models/arc-170-cb7ea09963c240b1ad15e5681074b048
+alien_1			-	https://sketchfab.com/3d-models/tie-fighter-6f6d1a25af844d758a06a156052a686e
+alien_2			-	https://sketchfab.com/3d-models/tie-interceptor-4f6e0afa79e846828902a4d16ea1ce5f
+alien_3			-	https://sketchfab.com/3d-models/star-wars-imperial-tie-bomber-e17d74b999a34ae4a0ed9c75ea808a33
+alien_4			-	https://sketchfab.com/3d-models/tie-runner-b209951dbdff45a297fcf212f0fc6bd7
+large_alien		-	https://sketchfab.com/3d-models/star-wars-imperial-lambda-shuttle-4786e7c069c64f609c3fd51ef36e0390
+shots			-	https://ya-webdesign.com/explore/transparent-laser-blast/?utm_source=gg#gal_1514199
+asteroids		-	https://sketchfab.com/3d-models/asteroids-bi6oZSkyn9f9QGgTAqq7GvaCohn
+game_background		-	http://a1star.com/
+death_star font		-	https://www.dafont.com/star-jedi.font
+player_fire		-	https://freesound.org/people/Timbre/sounds/94159/
+player_damaged		-	https://freesound.org/people/joe93barlow/sounds/78667/
+alien_fire		-	https://freesound.org/people/Timbre/sounds/94159/
+alien_damaged		-	https://freesound.org/people/studiomandragore/sounds/401628/
+asteroid_damaged	-	https://freesound.org/people/plamdi1/sounds/95058/
+level_over		-	https://freesound.org/people/wildweasel/sounds/39025/
+button_click_navigate	-	https://freesound.org/people/plasterbrain/sounds/266166/
+button_click_change	-	https://freesound.org/people/KingSounds3D/sounds/442255/
+background_game_music	-	https://downloads.khinsider.com/game-soundtracks/album/star-wars-battlefront/85.%2520Horde%2520Menu%2520Endor.mp3
+background_game_music	-	https://downloads.khinsider.com/game-soundtracks/album/star-wars-battlefront/174.%2520Missions%2520Tatooine%2520Trials%2520XWing%2520Fight%2520Theme%2520A%2520Loop%252001.mp3

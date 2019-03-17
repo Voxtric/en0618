@@ -135,7 +135,7 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     public void onResumeGame(View view)
     {
         getGame().unPause();
-        getBackgroundSoundService().unpauseMusic();
+        getBackgroundSoundService().resumeMusic();
         m_soundPool.resumeAll();
         playPauseDialogButtonSound();
     }

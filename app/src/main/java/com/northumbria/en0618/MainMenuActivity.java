@@ -50,14 +50,14 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
     protected void onBackgroundSoundServiceBound()
     {
         super.onBackgroundSoundServiceBound();
-        BackgroundMusicService service = getBackgroundSoundService();
-        if (service.musicStarted())
+        BackgroundMusicService soundService = getBackgroundSoundService();
+        if (soundService.musicStarted())
         {
-            service.unpauseMusic();
+            soundService.resumeMusic();
         }
         else
         {
-            service.startMusic(R.raw.background_music);
+            soundService.startMusic(R.raw.background_menu_music);
         }
     }
 
@@ -65,7 +65,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
     protected void onStart()
     {
         super.onStart();
-        @RawRes int[] activitySounds = new int[] { R.raw.button_click };
+        @RawRes int[] activitySounds = new int[] { R.raw.button_click_forward };
         m_soundPool = new SoundPool(this, MAX_SOUND_STREAMS, activitySounds);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
@@ -152,7 +152,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
             @Override
             public void onClick(View view)
             {
-                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click);
+                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click_forward);
 
                 // Create an activity to sign into google for the explicit purpose of using
                 // google play game services.
@@ -181,7 +181,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
             @Override
             public void onClick(View view)
             {
-                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click);
+                m_soundPool.playSound(MainMenuActivity.this, R.raw.button_click_forward);
 
                 // Create an activity to view the global leaderboard for the game.
                 Games.getLeaderboardsClient(MainMenuActivity.this, account)
@@ -208,7 +208,8 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
 
     public void startGameActivity(View view)
     {
-        m_soundPool.playSound(this, R.raw.button_click);
+        m_soundPool.playSound(this, R.raw.button_click_forward);
+        getBackgroundSoundService().stopMusic();
         notifyActivityChanging();
         Intent intent = new Intent(this, SpaceInvadersActivity.class);
         startActivity(intent);
@@ -216,7 +217,7 @@ public class MainMenuActivity extends BackgroundMusicServiceLinkedActivity
 
     public void startSettingsActivity(View view)
     {
-        m_soundPool.playSound(this, R.raw.button_click);
+        m_soundPool.playSound(this, R.raw.button_click_forward);
         notifyActivityChanging();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);

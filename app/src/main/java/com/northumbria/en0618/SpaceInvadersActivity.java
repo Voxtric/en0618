@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.northumbria.en0618.engine.BackgroundMusicService;
 import com.northumbria.en0618.engine.Game;
 import com.northumbria.en0618.engine.GameActivity;
 import com.northumbria.en0618.engine.GameObject;
@@ -74,7 +75,7 @@ public class SpaceInvadersActivity extends GameActivity
     {
         // Signs into Google Account when Login Provided
         super.onCreate(savedInstanceState);
-        setPauseDialogButtonSoundID(R.raw.button_click);
+        setPauseDialogButtonSoundID(R.raw.button_click_forward);
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null)
@@ -90,7 +91,7 @@ public class SpaceInvadersActivity extends GameActivity
     {
         super.onStart();
         @RawRes int[] activitySounds = new int[] {
-                R.raw.button_click,
+                R.raw.button_click_forward,
                 R.raw.player_fire_1,
                 R.raw.player_fire_2,
                 R.raw.player_damaged,
@@ -101,6 +102,17 @@ public class SpaceInvadersActivity extends GameActivity
                 R.raw.level_over
         };
         getSoundPool().loadSounds(this, activitySounds);
+    }
+
+    @Override
+    protected void onBackgroundSoundServiceBound()
+    {
+        super.onBackgroundSoundServiceBound();
+        BackgroundMusicService soundService = getBackgroundSoundService();
+        if (!soundService.musicStarted())
+        {
+            soundService.startMusic(R.raw.background_game_music);
+        }
     }
 
     @Override
@@ -304,6 +316,7 @@ public class SpaceInvadersActivity extends GameActivity
     @SuppressWarnings("unused")
     public void returnToMainMenu(View view)
     {
+        getBackgroundSoundService().stopMusic();
         if (m_gameOverDialog != null)
         {
             m_gameOverDialog.dismiss();
@@ -321,7 +334,7 @@ public class SpaceInvadersActivity extends GameActivity
             @Override
             public void run()
             {
-                getBackgroundSoundService().unpauseMusic();
+                getBackgroundSoundService().resumeMusic();
 
                 @SuppressLint("InflateParams") final View root = getLayoutInflater().inflate(R.layout.dialog_game_over, null);
                 TextView scoreTextView = root.findViewById(R.id.score_text_view);
