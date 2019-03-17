@@ -17,7 +17,6 @@ import com.northumbria.en0618.SettingsActivity;
 
 public class BackgroundSoundService extends Service implements AudioManager.OnAudioFocusChangeListener
 {
-    // TODO: Move all sound pools into background service.
     private static final String TAG = "BackgroundSoundService";
 
     private static final float FULL_VOLUME = 1.0f;

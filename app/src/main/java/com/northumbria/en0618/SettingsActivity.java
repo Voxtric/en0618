@@ -119,6 +119,7 @@ public class SettingsActivity extends BackgroundMusicServiceLinkedActivity
     protected void onStop()
     {
         super.onStop();
+
         @RawRes int[] activitySounds = new int[] { R.raw.button_click_backward, R.raw.button_click_change };
         getBackgroundSoundService().unloadSounds(activitySounds);
     }

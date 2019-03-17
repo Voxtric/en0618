@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -50,6 +49,17 @@ public class SpaceInvadersActivity extends GameActivity
 
     private static final float SCREEN_DISTANCE_FONT_SIZE = 0.05f;
 
+    @RawRes
+    private static final int[] ALL_SOUNDS = new int[] {
+            R.raw.player_fire_1,
+            R.raw.player_fire_2,
+            R.raw.player_damaged,
+            R.raw.alien_fire_1,
+            R.raw.alien_fire_2,
+            R.raw.alien_damaged,
+            R.raw.asteroid_damaged,
+            R.raw.level_over
+    };
     @RawRes
     private static final int[] PLAYER_SHOT_SOUND_RESOURCE_IDS = new int[] { R.raw.player_fire_1, R.raw.player_fire_2 };
 
@@ -96,35 +106,14 @@ public class SpaceInvadersActivity extends GameActivity
         {
             soundService.startMusic(R.raw.background_game_music);
         }
-
-        @RawRes int[] activitySounds = new int[] {
-                R.raw.player_fire_1,
-                R.raw.player_fire_2,
-                R.raw.player_damaged,
-                R.raw.alien_fire_1,
-                R.raw.alien_fire_2,
-                R.raw.alien_damaged,
-                R.raw.asteroid_damaged,
-                R.raw.level_over
-        };
-        getBackgroundSoundService().loadSounds(activitySounds);
+        getBackgroundSoundService().loadSounds(ALL_SOUNDS);
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-        @RawRes int[] activitySounds = new int[] {
-                R.raw.player_fire_1,
-                R.raw.player_fire_2,
-                R.raw.player_damaged,
-                R.raw.alien_fire_1,
-                R.raw.alien_fire_2,
-                R.raw.alien_damaged,
-                R.raw.asteroid_damaged,
-                R.raw.level_over
-        };
-        getBackgroundSoundService().unloadSounds(activitySounds);
+        getBackgroundSoundService().unloadSounds(ALL_SOUNDS);
     }
 
     @Override
