@@ -5,12 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.opengl.GLES20;
 import android.opengl.Matrix;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 // A collection of sprites that can be used to render individual characters to display text.
 public class Font implements IRenderable
@@ -27,37 +22,11 @@ public class Font implements IRenderable
     private final static int FONT_SIZE_MIN = 6;
     private final static int FONT_SIZE_MAX = 180;
 
-    // Font cache for fast font lookup.
-    private static final HashMap<String, Font> s_fonts = new HashMap<>();
-
     public static Font getFont(Context context, String fontName, int fontSize, int fontPadding)
     {
-        // Combine the font attributes into the font identifier.
-        String fullFontName = String.format(
-                Locale.getDefault(), "%s%d%d", fontName.hashCode(), fontSize, fontPadding);
-        Font font = s_fonts.get(fullFontName);
-        if (font == null)
-        {
-            // Create and cache a new font if it doesn't already exist within the cache.
-            Typeface typeface = Typeface.createFromAsset(context.getAssets(), fontName);
-            font = new Font(typeface, fontSize, fontPadding);
-            s_fonts.put(fullFontName, font);
-        }
-        return font;
-    }
-
-    // Clears the font cache.
-    public static void clearCache()
-    {
-        for (Object mapEntry : s_fonts.entrySet())
-        {
-            // Font sprites are not stored under the normal sprite cache, so they must be
-            // released manually.
-            Font font = (Font)((Map.Entry)mapEntry).getValue();
-            Texture texture = font.getTexture();
-            GLES20.glDeleteTextures(1, new int[] {texture.getHandle()}, 0);
-        }
-        s_fonts.clear();
+        // Create and cache a new font if it doesn't already exist within the cache.
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), fontName);
+        return new Font(typeface, fontSize, fontPadding);
     }
 
     private final int m_cellWidth;

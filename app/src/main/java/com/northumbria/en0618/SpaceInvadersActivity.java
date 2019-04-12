@@ -138,20 +138,6 @@ public class SpaceInvadersActivity extends GameActivity
             });
         }
 
-        Font font = Font.getFont(this, getString(R.string.app_font), (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);
-        // Score
-        m_scoreText = new TextGameObject(font, getString(R.string.score_text_label, 0), 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
-        m_scoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-        game.addGameObject(m_scoreText, true);
-        // Level
-        m_levelText = new TextGameObject(font, getString(R.string.level_text_label, 1), 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
-        m_levelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-        game.addGameObject(m_levelText, true);
-
-        // Settings Button
-        GameObject settingsButton = new SettingsButton(game);
-        game.addGameObject(settingsButton, true);
-
         // Add the tiling background.
         int count = (int)(Input.getScreenHeight() / BackgroundTile.SIZE) + 2;
         float height = count * BackgroundTile.SIZE;
@@ -164,6 +150,20 @@ public class SpaceInvadersActivity extends GameActivity
                 game.addGameObject(backgroundTile);
             }
         }
+
+        Font font = Font.getFont(this, getString(R.string.app_font), (int)(Input.getScreenHeight() * SCREEN_DISTANCE_FONT_SIZE), 6);
+        // Score
+        m_scoreText = new TextGameObject(font, getString(R.string.score_text_label, 0), 10.0f, Input.getScreenHeight() - (font.getHeight() * 0.5f) - 10.0f);
+        m_scoreText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_scoreText);
+        // Level
+        m_levelText = new TextGameObject(font, getString(R.string.level_text_label, 1), 10.0f, Input.getScreenHeight() - (font.getHeight() * 1.5f) - 10.0f);
+        m_levelText.setColor(1.0f, 1.0f, 1.0f, 0.8f);
+        game.addGameObject(m_levelText);
+
+        // Settings Button
+        GameObject settingsButton = new SettingsButton(game);
+        game.addGameObject(settingsButton);
 
         // Creation of Player Character
         m_player = new Player(game, m_scoreText);
@@ -209,7 +209,10 @@ public class SpaceInvadersActivity extends GameActivity
                     game.addGameObject(bullet);
                     m_collidableObjects.addBullet(bullet, true);
                     @RawRes int shotSoundResourceID = PLAYER_SHOT_SOUND_RESOURCE_IDS[game.getRandom().nextInt(2)];
-                    backgroundSoundService.playSound(shotSoundResourceID);
+                    if (backgroundSoundService != null)
+                    {
+                        backgroundSoundService.playSound(shotSoundResourceID);
+                    }
                     m_timeToShotSpawn = PLAYER_SHOT_SPAWN_WAIT;
                 }
             }

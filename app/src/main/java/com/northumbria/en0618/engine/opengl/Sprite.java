@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.HashMap;
 
 // A renderable texture.
 public class Sprite implements IRenderable
@@ -36,27 +35,10 @@ public class Sprite implements IRenderable
     // Draw order for drawing the vertices of the sprite.
     static final short[] INDICES = { 0, 1, 2, 0, 2, 3 };
 
-    // Sprite cache for fast sprite lookup.
-    private static final HashMap<Texture, Sprite> s_sprites = new HashMap<>();
-
     // Gets a sprite using a texture, creating if it it hasn't already been created.
     private static Sprite getSprite(Texture texture)
     {
-        Sprite sprite = s_sprites.get(texture);
-        if (sprite == null)
-        {
-            sprite = new Sprite(SpriteShader.getInstance(), texture);
-            s_sprites.put(texture, sprite);
-        }
-        return sprite;
-    }
-
-    // Gets a sprite using the ID of what should be loaded in, creating the texture for it and the
-    // sprite itself if it it hasn't already been created. Also directs the texture manager to
-    // create a collision mask for the generated texture if requested.
-    public static Sprite getSprite(Context context, @DrawableRes int drawableID, boolean generateCollisionMask)
-    {
-        return getSprite(Texture.getTexture(context, drawableID, generateCollisionMask));
+        return new Sprite(SpriteShader.getInstance(), texture);
     }
 
     // Gets a sprite using the ID of what should be loaded in, creating the texture for it and the
@@ -64,12 +46,6 @@ public class Sprite implements IRenderable
     public static Sprite getSprite(Context context, @DrawableRes int drawableID)
     {
         return getSprite(Texture.getTexture(context, drawableID));
-    }
-
-    // Clears the sprite cache.
-    public static void clearCache()
-    {
-        s_sprites.clear();
     }
 
     // Buffers for the different attributes of a vertex

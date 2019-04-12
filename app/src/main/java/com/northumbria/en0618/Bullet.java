@@ -20,7 +20,7 @@ public class Bullet extends CollidableGameObject
     Bullet(Context context, @DrawableRes int spriteType, float x, float y)
     {
         super(context,
-                Sprite.getSprite(context, spriteType, true),
+                Sprite.getSprite(context, spriteType),
                 x, y,
                 (Input.getScreenHeight() * SCREEN_DISTANCE_HEIGHT) * WIDTH_TO_HEIGHT_RATIO,
                 Input.getScreenHeight() * SCREEN_DISTANCE_HEIGHT);

@@ -16,7 +16,7 @@ public class BackgroundTile extends SpriteGameObject
 
     BackgroundTile(Context context, float x, float y, float resetHeight)
     {
-        super(Sprite.getSprite(context, R.drawable.game_background, false),
+        super(Sprite.getSprite(context, R.drawable.game_background),
                 x, y, SIZE, SIZE);
         m_resetHeight = resetHeight;
     }

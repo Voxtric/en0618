@@ -22,21 +22,10 @@ public class FontShader extends SpriteShader
             "  gl_FragColor = texture2D(uTexture, vUV).w * uColor;" +
             "}";
 
-    private static FontShader s_instance = null;
-
     // Gets the only instance allowed of the font shader, creating it if it doesn't already exist.
     public static FontShader getInstance()
     {
-        if (s_instance == null)
-        {
-            s_instance = new FontShader();
-        }
-        return s_instance;
-    }
-
-    public static void releaseInstance()
-    {
-        s_instance = null;
+        return new FontShader();
     }
 
     // Creates the shader using the specified vertex and fragment shader code.

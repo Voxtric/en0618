@@ -96,10 +96,6 @@ public abstract class GameActivity extends BackgroundMusicServiceLinkedActivity
     protected void onDestroy()
     {
         m_game.destroyAll();
-        Font.clearCache();
-        Sprite.clearCache();
-        Texture.clearCache();
-        Shader.clearCache();
         super.onDestroy();
     }
 

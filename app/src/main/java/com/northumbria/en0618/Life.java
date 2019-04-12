@@ -16,7 +16,7 @@ class Life extends SpriteGameObject
 
     Life(Context context, float x, float y, float size)
     {
-        super(Sprite.getSprite(context, R.drawable.player, false),
+        super(Sprite.getSprite(context, R.drawable.player),
                 x, y, size, size * Player.HEIGHT_TO_WIDTH_RATIO);
     }
 

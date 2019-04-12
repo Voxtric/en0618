@@ -33,16 +33,6 @@ public abstract class Shader
         }
     }
 
-    // Clears the shader cache.
-    public static void clearCache()
-    {
-        s_activeShader = null;
-
-        SpriteShader.releaseInstance();
-        FontShader.releaseInstance();
-        AnimatedSpriteShader.releaseInstance();
-    }
-
     final int m_handle;   // OpenGL shader program identifier.
 
     // Create a shader program using code for the vertex and fragment shader.

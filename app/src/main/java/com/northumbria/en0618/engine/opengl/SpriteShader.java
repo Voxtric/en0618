@@ -23,21 +23,10 @@ public class SpriteShader extends Shader
             "  gl_FragColor = texture2D(uTexture, vUV) * uColor;" +
             "}";
 
-    private static SpriteShader s_instance = null;
-
     // Gets the only instance allowed of the font shader, creating it if it doesn't already exist.
     public static SpriteShader getInstance()
     {
-        if (s_instance == null)
-        {
-            s_instance = new SpriteShader();
-        }
-        return s_instance;
-    }
-
-    public static void releaseInstance()
-    {
-        s_instance = null;
+        return new SpriteShader();
     }
 
     // Handles pointing to OpenGL shader attributes and uniforms.

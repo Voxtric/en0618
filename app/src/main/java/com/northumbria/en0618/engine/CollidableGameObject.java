@@ -56,21 +56,18 @@ public class CollidableGameObject extends SpriteGameObject
 
     public CollisionInfo collidesWith(CollidableGameObject other)
     {
-        if (m_boundingRect.intersects(other.m_boundingRect.left, other.m_boundingRect.top, other.m_boundingRect.right, other.m_boundingRect.bottom))
-        {
-            int left = (int)Math.max(m_boundingRect.left, other.m_boundingRect.left);
-            int top = (int)Math.max(m_boundingRect.top, other.m_boundingRect.top);
-            int right = (int)Math.min(m_boundingRect.right, other.m_boundingRect.right);
-            int bottom = (int)Math.min(m_boundingRect.bottom, other.m_boundingRect.bottom);
+        int left = (int)Math.max(m_boundingRect.left, other.m_boundingRect.left);
+        int top = (int)Math.max(m_boundingRect.top, other.m_boundingRect.top);
+        int right = (int)Math.min(m_boundingRect.right, other.m_boundingRect.right);
+        int bottom = (int)Math.min(m_boundingRect.bottom, other.m_boundingRect.bottom);
 
-            for (int i = left; i < right; i++)
+        for (int i = left; i < right; i++)
+        {
+            for (int j = top; j < bottom; j++)
             {
-                for (int j = top; j < bottom; j++)
+                if (getMaskValue(i, j) && other.getMaskValue(i, j))
                 {
-                    if (getMaskValue(i, j) && other.getMaskValue(i, j))
-                    {
-                        return new CollisionInfo(i, j);
-                    }
+                    return new CollisionInfo(i, j);
                 }
             }
         }

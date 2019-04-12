@@ -18,7 +18,7 @@ public class Game
     private @LayoutRes int m_pauseDialogLayoutID = 0;
     private boolean m_suppressPauseDialog = false;
 
-    private final List<GameObjectGroup> m_gameObjectGroups = new ArrayList<>();
+    private final List<GameObject> m_gameObjects = new ArrayList<>();
     private long m_currentFrameBegin = 0L;
     private boolean m_launched = false;
     private boolean m_paused = false;
@@ -137,48 +137,14 @@ public class Game
         return m_activity;
     }
 
-    public void addGameObject(GameObject gameObject, boolean isHUD)
-    {
-        boolean added = false;
-        int bestGroupIndex = -1;
-        int bestMatchLevel = -1;
-
-        int gameObjectGroupCount = m_gameObjectGroups.size();
-        for (int i = 0; i < gameObjectGroupCount; i++)
-        {
-            GameObjectGroup group = m_gameObjectGroups.get(i);
-            if (group.isHUDGroup() == isHUD)
-            {
-                int matchLevel = group.matchLevel(isHUD, gameObject.getRenderable());
-                if (matchLevel == GameObjectGroup.FULL_MATCH_LEVEL)
-                {
-                    group.addGameObject(gameObject);
-                    added = true;
-                    break;
-                }
-                else if (matchLevel > bestMatchLevel)
-                {
-                    bestGroupIndex = i;
-                    bestMatchLevel = matchLevel;
-                }
-            }
-        }
-
-        if (!added)
-        {
-            GameObjectGroup group = new GameObjectGroup(isHUD, gameObject);
-            m_gameObjectGroups.add(bestGroupIndex + 1, group);
-        }
-    }
-
     public void addGameObject(GameObject gameObject)
     {
-        addGameObject(gameObject, false);
+        m_gameObjects.add(gameObject);
     }
 
     public void destroyAll()
     {
-        m_gameObjectGroups.clear();
+        m_gameObjects.clear();
     }
 
     public void update(float[] vpMatrix)
@@ -189,21 +155,26 @@ public class Game
 
         if (!m_paused)
         {
-            int gameObjectGroupCount = m_gameObjectGroups.size();
-            for (int i = 0; i < gameObjectGroupCount; i++)
+            int gameObjectCount = m_gameObjects.size();
+            for (int i = 0; i < gameObjectCount; i++)
             {
-                GameObjectGroup group = m_gameObjectGroups.get(i);
-                if (group.size() > 0)
+                if (m_gameObjects.get(i).isDestroyed())
                 {
-                    group.update(deltaTime);
+                    m_gameObjects.remove(i);
+                    --i;
+                    --gameObjectCount;
+                }
+                else
+                {
+                    m_gameObjects.get(i).update(deltaTime);
                 }
             }
             m_activity.onGameUpdate(deltaTime);
         }
 
-        for (GameObjectGroup gameObjectGroup : m_gameObjectGroups)
+        for (GameObject gameObject : m_gameObjects)
         {
-            gameObjectGroup.draw(vpMatrix);
+            gameObject.draw(vpMatrix);
         }
 
         Input.update();

@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.support.annotation.DrawableRes;
-import android.util.SparseArray;
-
 
 public class Texture
 {
@@ -41,46 +39,19 @@ public class Texture
         }
     }
 
-    // Texture cache for fast texture lookup.
-    private static final SparseArray<Texture> s_textures = new SparseArray<>();
-    // Collision mask cache for fast collision mask lookup.
-    private static final SparseArray<CollisionMask> s_collisionMasks = new SparseArray<>();
-
     private static int s_activeTexture = -1;    // The handle of the currently active texture.
     // Indicates whether transparency blending is currently enabled.
     private static boolean s_transparencyActive = false;
 
-    // Gets a texture, creating if it it hasn't already been created.
-    public static Texture getTexture(Context context, @DrawableRes int drawableID)
-    {
-        return getTexture(context, drawableID, false);
-    }
-
     // Gets a texture, creating if it it hasn't already been created and generating a collision mask
     // if one is requested but hasn't already been created.
-    public static Texture getTexture(Context context, @DrawableRes int drawableID, boolean generateCollisionMask)
+    public static Texture getTexture(Context context, @DrawableRes int drawableID)
     {
-        Texture texture = s_textures.get(drawableID, null);
-        if (texture == null)
-        {
-            // Create a bitmap using the drawable ID if the texture doesn't already exist.
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;
-            final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawableID, options);
-
-            // Create an OpenGL texture from the bitmap and cache it.
-            texture = createFromBitmap(bitmap, drawableID);
-            cacheTexture(texture, drawableID);
-
-            // Generate a collision mask if one has been requested but not yet created.
-            if (generateCollisionMask && (s_collisionMasks.get(drawableID) == null))
-            {
-                s_collisionMasks.put(drawableID, new CollisionMask(bitmap));
-            }
-
-            bitmap.recycle();
-        }
-        return texture;
+        // Create a bitmap using the drawable ID if the texture doesn't already exist.
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawableID, options);
+        return createFromBitmap(bitmap, drawableID);
     }
 
     // Creates an OpenGL texture from a bitmap.
@@ -101,46 +72,14 @@ public class Texture
         return new Texture(textureHandle[0], drawableID);
     }
 
-    private static void cacheTexture(Texture texture, int id)
-    {
-        s_textures.put(id, texture);
-    }
-
     // Gets a texture, creating if it it hasn't already been created.
     public static CollisionMask getCollisionMask(Context context, @DrawableRes int drawableID)
     {
-        CollisionMask collisionMask = s_collisionMasks.get(drawableID, null);
-        if (collisionMask == null)
-        {
-            // If the collision mask hasn't been cached, create it.
-
-            // Load the bitmap.
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawableID, options);
-
-            // Create the collision mask and cache it.
-            collisionMask = new CollisionMask(bitmap);
-            s_collisionMasks.put(drawableID, collisionMask);
-
-            bitmap.recycle();
-        }
-        return collisionMask;
-    }
-
-    // Clears the texture cache.
-    public static void clearCache()
-    {
-        int textureCount = s_textures.size();
-        for (int i = 0; i < textureCount; i++)
-        {
-            // Releases each OpenGl texture handle.
-            int key = s_textures.keyAt(i);
-            GLES20.glDeleteTextures(1, new int[] {s_textures.get(key).getHandle()}, 0);
-        }
-        s_textures.clear();
-        s_activeTexture = -1;
-        s_transparencyActive = false;
+        // Load the bitmap.
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawableID, options);
+        return new CollisionMask(bitmap);
     }
 
     private final int m_handle;   // The OpenGL handle pointing to the texture.

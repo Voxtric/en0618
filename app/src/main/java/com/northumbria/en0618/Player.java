@@ -58,7 +58,7 @@ public class Player extends CollidableGameObject
     Player(Game game, TextGameObject scoreTracker)
     {
         super(game.getActivity(),
-                Sprite.getSprite(game.getActivity(), R.drawable.player, true),
+                Sprite.getSprite(game.getActivity(), R.drawable.player),
                 Input.getScreenWidth() * 0.5f,
                 getStartHeight(),
                 Input.getScreenWidth() * SCREEN_DISTANCE_WIDTH,

@@ -24,7 +24,7 @@ public class AnimatedSprite extends Sprite
     public AnimatedSprite(Context context, @DrawableRes int drawableID, int xFrames, int yFrames, float secondsPerFrame, boolean repeating)
     {
         super(AnimatedSpriteShader.getInstance(),
-                Texture.getTexture(context, drawableID, false),
+                Texture.getTexture(context, drawableID),
                 new Texture.Region(0.0f, 0.0f, 1.0f / (float)xFrames, 1.0f / (float)yFrames));
 
         m_xFrames = xFrames;

@@ -23,21 +23,10 @@ public class AnimatedSpriteShader extends SpriteShader
             "  gl_FragColor = texture2D(uTexture, vUV) * uColor;" +
             "}";
 
-    private static AnimatedSpriteShader s_instance = null;
-
     // Gets the only instance allowed of the font shader, creating it if it doesn't already exist.
     public static AnimatedSpriteShader getInstance()
     {
-        if (s_instance == null)
-        {
-            s_instance = new AnimatedSpriteShader();
-        }
-        return s_instance;
-    }
-
-    public static void releaseInstance()
-    {
-        s_instance = null;
+        return new AnimatedSpriteShader();
     }
 
     private int m_uvOffsetHandle;

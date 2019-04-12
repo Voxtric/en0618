@@ -20,7 +20,7 @@ public class Alien extends CollidableGameObject
 
     Alien(Context context, @DrawableRes int spriteType, float x, float y, float size, float moveSpeed, float moveDownDistance)
     {
-        super(context, Sprite.getSprite(context, spriteType, true), x, y, size, size);
+        super(context, Sprite.getSprite(context, spriteType), x, y, size, size);
         m_moveSpeed = moveSpeed;
         m_moveDownDistance = moveDownDistance;
     }
