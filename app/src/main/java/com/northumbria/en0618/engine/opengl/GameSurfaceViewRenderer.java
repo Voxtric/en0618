@@ -52,7 +52,7 @@ class GameSurfaceViewRenderer implements GLSurfaceView.Renderer
                 0, m_viewMatrix, 0);
 
         // Initialise the input manager.
-        Input.initialise(m_activity, width, height, 10);
+        Input.initialise(m_activity, width, height, 2);
 
         // If the game hasn't already been started, now is a good time to start it.
         if (!m_game.isLaunched())

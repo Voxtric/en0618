@@ -19,6 +19,7 @@ public class Player extends CollidableGameObject
     private static final float SCREEN_DISTANCE_WIDTH = 0.2f;
     public static final float HEIGHT_TO_WIDTH_RATIO = 0.6f;
     private static final float LEVEL_COMPLETE_SPEED_MODIFIER = 3.0f;
+    private static final float MAX_TILT_SPEED_ANGLE = 25.0f;
 
     private static final int START_LIVES_COUNT = 3;
 
@@ -94,16 +95,18 @@ public class Player extends CollidableGameObject
         {
             case INPUT_METHOD_SCREEN_TILT:
                 float deviceRoll = Input.getDeviceRoll();
-                if (deviceRoll > 0.0f)
+                float rotationPercentage = deviceRoll / MAX_TILT_SPEED_ANGLE;
+                float speed = m_moveSpeed * rotationPercentage * deltaTime;
+                if (speed > 0.0f)
                 {
                     if (x < (screenWidth - halfWidth - m_sideBorder))
                     {
-                        moveBy(m_moveSpeed * deltaTime, 0.0f);
+                        moveBy(speed, 0.0f);
                     }
                 }
-                else if ((deviceRoll < 0.0f) && (x > (halfWidth + m_sideBorder)))
+                else if ((speed < 0.0f) && (x > (halfWidth + m_sideBorder)))
                 {
-                    moveBy(-m_moveSpeed * deltaTime, 0.0f);
+                    moveBy(speed, 0.0f);
                 }
                 break;
             case INPUT_METHOD_PLAYER_SIDE:

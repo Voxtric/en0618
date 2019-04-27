@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 public class Input
 {
     private static final int FROM_RADS_TO_DEGREES = -57;
-    private static final float DEAD_ZONE = 5.0f;
+    private static final float DEAD_ZONE = 1.0f;
 
     private static class RotationSensorListener implements SensorEventListener
     {
